@@ -1,10 +1,10 @@
-# Introduction to single-cell RNA-seq analysis
+# Single-cell RNA-seq analysis with R/Bioconductor
 
 This repository contains instructions related to 
 the 2021 Physalia course entitled "Introduction 
 to single-cell RNA-seq analysis". 
 
-## Courses presentations and exercices 
+## Courses presentations and exercises 
 
 Course slides are available in the `Presentations` directory.  
 

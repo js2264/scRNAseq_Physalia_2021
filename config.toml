@@ -1,0 +1,28 @@
+baseURL = "https://js2264.github.io/scRNAseq_Physalia_2021/"
+publishDir = "docs"
+languageCode = "en-US"
+defaultContentLanguage = "en"
+
+title = "Single-cell RNA-seq analysis with R/Bioconductor"
+theme = "hugo-theme-learn"
+metaDataFormat = "yaml"
+defaultContentLanguageInSubdir= true
+
+[params]
+  editURL = "https://github.com/js2264/scRNAseq_Physalia_2021/blob/master/content/"
+  packageBaseUrl = "scRNAseq_Physalia_2021/"
+  description = "Single-cell RNA-seq analysis with R/Bioconductor"
+  author = "Jacques Serizay"
+  showVisitedLinks = false
+  disableBreadcrumb = false
+  disableNextPrev = false
+  disableLandingPageButton = true
+  disableMermaid = false
+  customMermaidURL = "https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"
+  titleSeparator = "::"
+  themeVariant = "red"
+  ordersectionsby = "title"
+  disableSearch = true
+
+[blackfriday]
+  hrefTargetBlank = true

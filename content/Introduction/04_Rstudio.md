@@ -1,0 +1,21 @@
+---
+title: "4. Rstudio"
+---
+
+Rstudio offers a graphical interface 
+to facilitate the interaction between a user and an underlying 
+programming language (this is sometimes called IDE, or 
+integrated development environment). It can be very useful when a user is 
+not necessarily proficent with command line-based computing. However, such graphical interfaces are not 
+always able to connect to services such as AWS.  
+
+Since most of the preliminary analysis we do is on AWS, 
+we'd like to be able to use Rtudio directly from there. Here is how we can do!
+
+## RStudio 
+
+Simply go to the following address: 
+
+```sh
+"http://${IP}:8787"
+```

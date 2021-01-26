@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.79.1" />
+    <meta name="description" content="Single-cell RNA-seq analysis with R/Bioconductor">
+<meta name="author" content="Jacques Serizay">
+
+    <link rel="icon" href="/scRNAseq_Physalia_2021/images/favicon.png" type="image/png">
+
+    <title>1. Presentation :: Single-cell RNA-seq analysis with R/Bioconductor</title>
+
+    
+    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme.css?1611652806" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1611652806" rel="stylesheet">
+    
+    <link href="/scRNAseq_Physalia_2021/css/theme-red.css?1611652806" rel="stylesheet">
+    
+    
+
+    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1611652806"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/scRNAseq_Physalia_2021/introduction/01_presentation/">
+    <nav id="sidebar" class="">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo">
+
+
+
+</a>
+
+    </div>
+    
+  </div>
+  
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/introduction/" title=" Single-cell RNA-seq analysis with R/Bioconductor" class="dd-item
+        parent
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/introduction/">
+           Single-cell RNA-seq analysis with R/Bioconductor
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/scRNAseq_Physalia_2021/introduction/01_presentation/" title="1. Presentation" class="dd-item active">
+        <a href="/scRNAseq_Physalia_2021/introduction/01_presentation/">
+        1. Presentation
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/scRNAseq_Physalia_2021/introduction/02_program/" title="2. Program" class="dd-item ">
+        <a href="/scRNAseq_Physalia_2021/introduction/02_program/">
+        2. Program
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/scRNAseq_Physalia_2021/introduction/03_contacts/" title="3. Contacts" class="dd-item ">
+        <a href="/scRNAseq_Physalia_2021/introduction/03_contacts/">
+        3. Contacts
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/scRNAseq_Physalia_2021/introduction/04_rstudio/" title="4. Rstudio" class="dd-item ">
+        <a href="/scRNAseq_Physalia_2021/introduction/04_rstudio/">
+        4. Rstudio
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/scRNAseq_Physalia_2021/introduction/05_prerequisites/" title="5. Prerequisites and required local config" class="dd-item ">
+        <a href="/scRNAseq_Physalia_2021/introduction/05_prerequisites/">
+        5. Prerequisites and required local config
+        
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/day01/" title="1. Day 01" class="dd-item
+        
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/day01/">
+          1. Day 01
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/day02/" title="2. Day 02" class="dd-item
+        
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/day02/">
+          2. Day 02
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/day03/" title="3. Day 03" class="dd-item
+        
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/day03/">
+          3. Day 03
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/day04/" title="4. Day 04" class="dd-item
+        
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/day04/">
+          4. Day 04
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/day05/" title="5. Day 05" class="dd-item
+        
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/day05/">
+          5. Day 05
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/extra-resources/" title="Extra resources" class="dd-item
+        
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/extra-resources/">
+          Extra resources
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/scRNAseq_Physalia_2021/how_to_load_in_aws/" title="How to log in AWS" class="dd-item
+        
+        
+        
+        ">
+      <a href="/scRNAseq_Physalia_2021/how_to_load_in_aws/">
+          How to log in AWS
+          
+      </a>
+      
+      
+    </li>
+  
+ 
+
+          
+        
+    </ul>
+
+    
+    
+
+    
+    <section id="footer">
+      <center>
+
+    <a href="https://github.com/js2264/NGS-analysis_Physalia_2021">Check this website source on Github</a>
+    <p>Created by J. Serizay and C. Matthey-Doret</p>
+    <p>Copyright 2021</p>
+
+</center>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='Edit this page' href="https://github.com/js2264/scRNAseq_Physalia_2021/blob/master/content/Introduction/01_Presentation.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">Edit this page</span>
+                    </a>
+                  </div>
+                  
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/scRNAseq_Physalia_2021/'>Home</a> > <a href='/scRNAseq_Physalia_2021/introduction/'> Single-cell RNA-seq analysis with R/Bioconductor</a> > 1. Presentation
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#dates">Dates</a></li>
+    <li><a href="#where">Where</a></li>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#format">Format</a></li>
+    <li><a href="#targeted-audience-and-required-background">Targeted audience and required background</a></li>
+    <li><a href="#learning-outcomes">Learning outcomes</a></li>
+    <li><a href="#instructors">Instructors</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              1. Presentation
+            </h1>
+          
+
+        
+
+
+<p><em>Jacques Serizay</em><br>
+<em>Manik Garg</em></p>
+<h2 id="dates">Dates</h2>
+<p>07-11 June 2021</p>
+<h2 id="where">Where</h2>
+<p>This course will be held online in response to the coronavirus outbreak.</p>
+<h2 id="overview">Overview</h2>
+<p>This course will introduce biologists and bioinformaticians to the field of single-cell RNA sequencing.
+We will cover a range of software and analysis workflows that extend
+over the spectrum from the best practices in the filtering scRNAseq data<br>
+to the downstream analysis of cell clusters and temporal ordering.
+This course will help the attendees gain accurate insights in pre-processing,
+analysis and interpretation of scRNAseq data.</p>
+<p>We will start by introducing general concepts about single-cell RNA-sequencing. From there, we will then continue to describe the main analysis steps to go from raw sequencing data to processed and usable data. Finally, we will focus more specifically on the different analyses strategies to use in order to extract information from genomic datasets such as Hi-C, ATAC-seq or ChIP-seq.</p>
+<p>Throughout the workshop, <code>bash</code> tools and <code>R/Bioconductor</code> packages will be used to analyse datasets and learn new approaches.</p>
+<h2 id="format">Format</h2>
+<p>The course is structured in modules over five days.
+Each day will include formal lectures covering the key concepts required to understand scRNAseq analysis.
+The remainder of each day will consist in practical hands-on sessions focusing on analysis of scRNA-seq data.
+These sessions will involve a combination of both mirroring exercises with
+the instructor to demonstrate a skill, as well as applying these skills on
+your own to complete individual exercises.<br>
+During and after each exercise, interpretation of results will be discussed
+as a group.</p>
+<h2 id="targeted-audience-and-required-background">Targeted audience and required background</h2>
+<p>The course will be mostly beneficial to those who have, or will shortly have, scRNA-seq data ready to analyse.</p>
+<p>The material is suitable both for experimentalists who want to learn
+more about data-analysis as well as computational biologists
+who want to learn about scRNASeq methods.</p>
+<p>Examples demonstrated in this course can be applied to any experimental protocol or biological system.</p>
+<p>The requirements for this course are:</p>
+<ol>
+<li>Working knowledge of Unix / command line interface (managing files, running programs, reading manuals!). Basic bash commands (<code>cd</code>, <code>ls</code>, <code>...</code>) and CLI usage will <em>not</em> be covered in this course. We advice attendees to not register if they lack fundamental experience in CLI.</li>
+<li>Programming experience in <code>R</code> (writing a function, basic I/O operations, variable types, using packages). <code>Bioconductor</code> experience is a plus.</li>
+<li>Familiarity with next-generation sequencing data and its analyses (using alignment and quantification tools for bulk sequencing data)</li>
+</ol>
+<h2 id="learning-outcomes">Learning outcomes</h2>
+<p>At the end of this course, you should be able to:</p>
+<ul>
+<li>Understand the pros/cons of different single-cell RNA-seq methods</li>
+<li>Process and QC of scRNA-seq data</li>
+<li>Normalize scRNA-seq data</li>
+<li>Correct for batch effects</li>
+<li>Visualise the data and applying dimensionality reduction</li>
+<li>Perform cell clustering and annotation</li>
+<li>Perform differential expression analysis</li>
+<li>Infer pseudo-time and perform temporal differential expression</li>
+</ul>
+<p>Throughout the course, we will also have a focus on reproducible research, documented content and interactive reports.</p>
+<hr>
+<h2 id="instructors">Instructors</h2>
+<p>Dr. Jacques Serizay<br>
+Dr. Manik Garg</p>
+
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div>
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="/scRNAseq_Physalia_2021/introduction/" title=" Single-cell RNA-seq analysis with R/Bioconductor"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="/scRNAseq_Physalia_2021/introduction/02_program/" title="2. Program" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1611652806"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1611652806"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1611652806"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1611652806"></script>
+    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1611652806"></script>
+    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1611652806"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1611652806"></script>
+    <script src="/scRNAseq_Physalia_2021/js/learn.js?1611652806"></script>
+    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1611652806"></script>
+    
+        
+            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1611652806"></script>
+        
+        <script>
+            mermaid.initialize({ startOnLoad: true });
+        </script>
+    
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-105947713-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  </body>
+</html>
+
