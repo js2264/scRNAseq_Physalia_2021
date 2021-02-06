@@ -127,7 +127,7 @@ Individual projects: analysing scRNA-seq data by yourself, from A to Z.
 - Small groups 
 - Pick your favorite scRNA-seq dataset (one you have never looked at before!)
 - Work your way through pre-processing / analysis / interpretation of the data
-- Support from Jacques & Manik whenever needed: try and solve things by yourself, but don't hesitate if you are stuck!
+- Support from Jacques & Orr whenever needed: try and solve things by yourself, but don't hesitate if you are stuck!
 - Flash presentation at the end of the day: what/why/where/when/how, conclusions
 
 

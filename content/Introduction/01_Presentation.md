@@ -3,7 +3,7 @@ title: "1. Presentation"
 ---
 
 _Jacques Serizay_  
-_Manik Garg_
+_Orr Ashenberg_
 
 ## Dates
 07-11 June 2021
@@ -72,4 +72,4 @@ Throughout the course, we will also have a focus on reproducible research, docum
 ## Instructors
 
 Dr. Jacques Serizay  
-Dr. Manik Garg
+Dr. Orr Ashenberg
