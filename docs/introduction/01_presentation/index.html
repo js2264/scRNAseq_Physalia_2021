@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.79.1" />
+    <meta name="generator" content="Hugo 0.80.0" />
     <meta name="description" content="Single-cell RNA-seq analysis with R/Bioconductor">
 <meta name="author" content="Jacques Serizay">
 
@@ -12,21 +12,21 @@
     <title>1. Presentation :: Single-cell RNA-seq analysis with R/Bioconductor</title>
 
     
-    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/theme.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1611653798" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1621949694" rel="stylesheet">
     
-    <link href="/scRNAseq_Physalia_2021/css/theme-red.css?1611653798" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme-red.css?1621949694" rel="stylesheet">
     
     
 
-    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1611653798"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1621949694"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -484,19 +484,19 @@
 <h2 id="dates">Dates</h2>
 <p>07-11 June 2021</p>
 <h2 id="where">Where</h2>
-<p>This course will be held online in response to the coronavirus outbreak.</p>
+<p>This course will be held online.</p>
 <h2 id="overview">Overview</h2>
 <p>This course will introduce biologists and bioinformaticians to the field of single-cell RNA sequencing.
 We will cover a range of software and analysis workflows that extend
-over the spectrum from the best practices in the filtering scRNAseq data<br>
+over the spectrum from the best practices in the filtering scRNA-seq data<br>
 to the downstream analysis of cell clusters and temporal ordering.
 This course will help the attendees gain accurate insights in pre-processing,
-analysis and interpretation of scRNAseq data.</p>
-<p>We will start by introducing general concepts about single-cell RNA-sequencing. From there, we will then continue to describe the main analysis steps to go from raw sequencing data to processed and usable data. Finally, we will focus more specifically on the different analyses strategies to use in order to extract information from genomic datasets such as Hi-C, ATAC-seq or ChIP-seq.</p>
+analysis and interpretation of scRNA-seq data.</p>
+<p>We will start by introducing general concepts about single-cell RNA-sequencing. From there, we will then continue to describe the main analysis steps to go from raw sequencing data to processed and usable data. We will present classical analysis workflows, their output and the possible paths to investigate downstream of this.</p>
 <p>Throughout the workshop, <code>bash</code> tools and <code>R/Bioconductor</code> packages will be used to analyse datasets and learn new approaches.</p>
 <h2 id="format">Format</h2>
 <p>The course is structured in modules over five days.
-Each day will include formal lectures covering the key concepts required to understand scRNAseq analysis.
+Each day will include formal lectures covering the key concepts required to understand scRNA-seq analysis.
 The remainder of each day will consist in practical hands-on sessions focusing on analysis of scRNA-seq data.
 These sessions will involve a combination of both mirroring exercises with
 the instructor to demonstrate a skill, as well as applying these skills on
@@ -507,7 +507,7 @@ as a group.</p>
 <p>The course will be mostly beneficial to those who have, or will shortly have, scRNA-seq data ready to analyse.</p>
 <p>The material is suitable both for experimentalists who want to learn
 more about data-analysis as well as computational biologists
-who want to learn about scRNASeq methods.</p>
+who want to learn about scRNA-seq methods.</p>
 <p>Examples demonstrated in this course can be applied to any experimental protocol or biological system.</p>
 <p>The requirements for this course are:</p>
 <ol>
@@ -524,8 +524,8 @@ who want to learn about scRNASeq methods.</p>
 <li>Correct for batch effects</li>
 <li>Visualise the data and applying dimensionality reduction</li>
 <li>Perform cell clustering and annotation</li>
-<li>Perform differential expression analysis</li>
-<li>Infer pseudo-time and perform temporal differential expression</li>
+<li>Perform differential gene expression analysis</li>
+<li>Infer cell trajectory and pseudotime, and perform temporal differential expression</li>
 </ul>
 <p>Throughout the course, we will also have a focus on reproducible research, documented content and interactive reports.</p>
 <hr>
@@ -799,19 +799,19 @@ Dr. Orr Ashenberg</p>
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1611653798"></script>
+    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1621949694"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/learn.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1611653798"></script>
+    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/learn.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1621949694"></script>
     
         
-            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1611653798"></script>
+            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1621949694"></script>
         
         <script>
             mermaid.initialize({ startOnLoad: true });

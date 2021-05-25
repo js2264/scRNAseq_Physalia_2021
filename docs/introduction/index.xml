@@ -15,9 +15,9 @@
       <description>Jacques Serizay
 Orr Ashenberg
 Dates 07-11 June 2021
-Where This course will be held online in response to the coronavirus outbreak.
-Overview This course will introduce biologists and bioinformaticians to the field of single-cell RNA sequencing. We will cover a range of software and analysis workflows that extend over the spectrum from the best practices in the filtering scRNAseq data
-to the downstream analysis of cell clusters and temporal ordering. This course will help the attendees gain accurate insights in pre-processing, analysis and interpretation of scRNAseq data.</description>
+Where This course will be held online.
+Overview This course will introduce biologists and bioinformaticians to the field of single-cell RNA sequencing. We will cover a range of software and analysis workflows that extend over the spectrum from the best practices in the filtering scRNA-seq data
+to the downstream analysis of cell clusters and temporal ordering. This course will help the attendees gain accurate insights in pre-processing, analysis and interpretation of scRNA-seq data.</description>
     </item>
     
     <item>
@@ -29,7 +29,7 @@ to the downstream analysis of cell clusters and temporal ordering. This course w
       <description>Classes are from:
  2 to 8 pm Paris time. 1 to 7 pm London time. 8 am to 2 pm NY time. 5 am to 11 am SF time.  Monday – Classes from 14:00 to 20:00 (Paris time)   30-sec presentation
   Shared Google doc:
-   We&amp;rsquo;re a team! Present yourself! Course notes Ideas/questions/challenges/feedbacks&amp;hellip;  Overview of the course  Lecture 1 – scRNA-Seq experimental design  General introduction: cell atlas overviews Comparison of Bulk and single cell RNA-Seq Overview of available scRNA-seq technologies (10x) and experimental protocols  Lecture 2 - Intro to Data processing: from bcl file to count matrix  scRNA-Seq processing workflow starting with choice of sequencer (NextSeq, HiSeq, MiSeq) / barcode swapping and bcl files Overview of Popular tools and algorithms Common single-cell analyses and interpretation Sequencing data: alignment and quality control Looking at cool things in alignment like where reads are, mutations, splicing Read &amp;amp; UMI counting (Kallisto alignment-free pseudocounts as well), how RSEM works (length dependence, sequencing depth, multimapping reads), CellRanger (dropest), bustools  Lab 1 – Familiarizing yourself with the course AWS instance  Logging in AWS Shell and Unix commands to navigate directories, create folders, open files Raw file formats Using RStudio Get data from 10x website, single cell portal, from GEO (fastqs, counts)  Lab 2 – Processing raw scRNA-Seq data  Data outputs from different scRNAseq technologies (10x, Smart-seq2) Quality Control reports (CellRanger, dropEst, fastqc) Mapping sequencing data with Cellranger  Tuesday – Classes from 14:00 to 20:00 (Paris time) Lecture 3 - Expression QC, normalisation and gene-level batch correction  What CellRanger does for quality filtering PBMC data Normalisation methods https://www.</description>
+   We&amp;rsquo;re a team! Present yourself! Course notes Ideas/questions/challenges/feedbacks&amp;hellip;  Overview of the course  Lecture 1 – scRNA-Seq experimental design [Orr]  General introduction: cell atlas overviews Comparison of bulk and single cell RNA-Seq Overview of available scRNA-seq technologies (10x) and experimental protocols  Lab 1 – Familiarizing yourself with the course AWS instance [Jacques]  Logging in AWS Shell and Unix commands to navigate directories, create folders, open files Raw file formats Using RStudio Get data from 10x website, single cell portal, from GEO (fastqs, counts)  Lecture 2 - Intro to Data processing: from bcl file to count matrix [Jacques]  scRNA-Seq processing workflow starting with choice of sequencer (NextSeq, HiSeq, MiSeq) / barcode swapping and bcl files Overview of Popular tools and algorithms Common single-cell analyses and interpretation Sequencing data: alignment and quality control IGV: Looking at cool things in alignment like where reads are, mutations, splicing  Lab 2 – Processing raw scRNA-Seq data [Orr]  Data outputs from different scRNAseq technologies (10x, Smart-seq2) Demultiplexing sequencing data Quality Control reports (CellRanger, dropEst, fastqc) Mapping sequencing data with Cellranger  Tuesday – Classes from 14:00 to 20:00 (Paris time) Flash talks [Everybody] Lab 3 - Introduction to R/Bioconductor [Jacques]  Installing packages with CRAN and Bioconductor Data types, data manipulation, slicing I/O  Lecture 3 - Expression QC, normalisation and gene-level batch correction [Orr]  What CellRanger does for quality filtering PBMC data Normalisation methods https://www.</description>
     </item>
     
     <item>
@@ -38,7 +38,7 @@ to the downstream analysis of cell clusters and temporal ordering. This course w
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://js2264.github.io/scRNAseq_Physalia_2021/introduction/03_contacts/</guid>
-      <description>Contacts Jacques Serizay: jacques.serizay@pasteur.fr Orr Ashenberg: manikg@ebi.ac.uk Shared Google Drive folder: https://drive.google.com/drive/folders/1AhShrHbS4bK_ta7gKqcXGLGgAEXmc9lJ?usp=sharing Don&amp;rsquo;t hesitate to introduce yourself!</description>
+      <description>Contacts Jacques Serizay: jacques.serizay@pasteur.fr Orr Ashenberg: orr@broadinstitute.org Shared Google Drive folder: https://drive.google.com/drive/folders/1AhShrHbS4bK_ta7gKqcXGLGgAEXmc9lJ?usp=sharing Don&amp;rsquo;t hesitate to introduce yourself!</description>
     </item>
     
     <item>
@@ -59,7 +59,7 @@ Since most of the preliminary analysis we do is on AWS, we&amp;rsquo;d like to b
       <guid>https://js2264.github.io/scRNAseq_Physalia_2021/introduction/05_prerequisites/</guid>
       <description>Prerequisites The course is intended for those who have basic familiarity with Unix and the R scripting language.
 We will also assume that you are familiar with mapping and analysing bulk RNA-seq data as well as with the commonly available computational tools.
- If a refresher is needed for Unix command line (hopefully not), please go over this tutorial and its companion cheatsheet . For a refresher in R/Bioconductor: please read the comprehensive R/Bioconductor book from Kasper D.</description>
+ If a refresher is needed for Unix command line (hopefully not), please go over this tutorial and its companion cheatsheet . Getting down to basics: an introduction to the fundamentals of R (courtesy of Mark Ravinet ).</description>
     </item>
     
   </channel>

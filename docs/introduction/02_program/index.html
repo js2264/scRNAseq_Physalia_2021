@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="Hugo 0.79.1" />
+    <meta name="generator" content="Hugo 0.80.0" />
     <meta name="description" content="Single-cell RNA-seq analysis with R/Bioconductor">
 <meta name="author" content="Jacques Serizay">
 
@@ -12,21 +12,21 @@
     <title>2. Program :: Single-cell RNA-seq analysis with R/Bioconductor</title>
 
     
-    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/theme.css?1611653798" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1611653798" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme.css?1621949694" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1621949694" rel="stylesheet">
     
-    <link href="/scRNAseq_Physalia_2021/css/theme-red.css?1611653798" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme-red.css?1621949694" rel="stylesheet">
     
     
 
-    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1611653798"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1621949694"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -450,33 +450,34 @@
   <ul>
     <li><a href="#monday--classes-from-1400-to-2000-paris-time">Monday – Classes from 14:00 to 20:00 (Paris time)</a>
       <ul>
-        <li><a href="#lecture-1--scrna-seq-experimental-design">Lecture 1 – scRNA-Seq experimental design</a></li>
-        <li><a href="#lecture-2---intro-to-data-processing-from-bcl-file-to-count-matrix">Lecture 2 - Intro to Data processing: from bcl file to count matrix</a></li>
-        <li><a href="#lab-1--familiarizing-yourself-with-the-course-aws-instance">Lab 1 – Familiarizing yourself with the course AWS instance</a></li>
-        <li><a href="#lab-2--processing-raw-scrna-seq-data">Lab 2 – Processing raw scRNA-Seq data</a></li>
+        <li><a href="#lecture-1--scrna-seq-experimental-design-orr">Lecture 1 – scRNA-Seq experimental design [Orr]</a></li>
+        <li><a href="#lab-1--familiarizing-yourself-with-the-course-aws-instance-jacques">Lab 1 – Familiarizing yourself with the course AWS instance [Jacques]</a></li>
+        <li><a href="#lecture-2---intro-to-data-processing-from-bcl-file-to-count-matrix-jacques">Lecture 2 - Intro to Data processing: from bcl file to count matrix [Jacques]</a></li>
+        <li><a href="#lab-2--processing-raw-scrna-seq-data-orr">Lab 2 – Processing raw scRNA-Seq data [Orr]</a></li>
       </ul>
     </li>
     <li><a href="#tuesday--classes-from-1400-to-2000-paris-time">Tuesday – Classes from 14:00 to 20:00 (Paris time)</a>
       <ul>
-        <li><a href="#lecture-3---expression-qc-normalisation-and-gene-level-batch-correction">Lecture 3 - Expression QC, normalisation and gene-level batch correction</a></li>
-        <li><a href="#lab-3---introduction-to-rbioconductor">Lab 3 - Introduction to R/Bioconductor</a></li>
-        <li><a href="#lab-4--data-wrangling-for-scrnaseq-data">Lab 4 – Data wrangling for scRNAseq data</a></li>
+        <li><a href="#flash-talks-everybody">Flash talks [Everybody]</a></li>
+        <li><a href="#lab-3---introduction-to-rbioconductor-jacques">Lab 3 - Introduction to R/Bioconductor [Jacques]</a></li>
+        <li><a href="#lecture-3---expression-qc-normalisation-and-gene-level-batch-correction-orr">Lecture 3 - Expression QC, normalisation and gene-level batch correction [Orr]</a></li>
+        <li><a href="#lab-4--data-wrangling-for-scrnaseq-data-orr">Lab 4 – Data wrangling for scRNAseq data [Orr]</a></li>
       </ul>
     </li>
     <li><a href="#wednesday--classes-from-1400-to-2000-paris-time">Wednesday – Classes from 14:00 to 20:00 (Paris time)</a>
       <ul>
-        <li><a href="#lecture-4---identifying-cell-populations">Lecture 4 - Identifying cell populations</a></li>
-        <li><a href="#lecture-5---batch-effects-correction">Lecture 5 - Batch effects correction</a></li>
-        <li><a href="#lab-5--feature-selection--clustering-analyses">Lab 5 – Feature selection &amp; Clustering analyses</a></li>
-        <li><a href="#lab-6---correcting-batch-effects">Lab 6 - Correcting batch effects</a></li>
+        <li><a href="#lecture-4---identifying-cell-populations-jacques">Lecture 4 - Identifying cell populations [Jacques]</a></li>
+        <li><a href="#lab-5--feature-selection--clustering-analyses-jacques">Lab 5 – Feature selection &amp; Clustering analyses [Jacques]</a></li>
+        <li><a href="#lecture-5---batch-effects-correction-orr">Lecture 5 - Batch effects correction [Orr]</a></li>
+        <li><a href="#lab-6---correcting-batch-effects-orr">Lab 6 - Correcting batch effects [Orr]</a></li>
       </ul>
     </li>
     <li><a href="#thursday--classes-from-1400-to-2000-paris-time">Thursday – Classes from 14:00 to 20:00 (Paris time)</a>
       <ul>
-        <li><a href="#lecture-6---advanced-topics">Lecture 6 - Advanced topics</a></li>
-        <li><a href="#lecture-7---single-cell-multi-omic-technologies">Lecture 7 - Single-cell multi-omic technologies</a></li>
-        <li><a href="#lab-7---pseudotime-analyses">Lab 7 - Pseudotime analyses</a></li>
-        <li><a href="#lab-8---functional-analyses">Lab 8 - Functional analyses</a></li>
+        <li><a href="#lecture-6---trajectories-and-pseudotimes-jacques">Lecture 6 - Trajectories and pseudotimes [Jacques]</a></li>
+        <li><a href="#lab-7---pseudotime-analyses-jacques">Lab 7 - Pseudotime analyses [Jacques]</a></li>
+        <li><a href="#lecture-7---single-cell-multi-omic-technologies-orr">Lecture 7 - Single-cell multi-omic technologies [Orr]</a></li>
+        <li><a href="#lab-8---multi-omics-analysis-of-spatial-single-cell-transcriptomics-orr">Lab 8 - multi-Omics: analysis of spatial single-cell transcriptomics [Orr]</a></li>
       </ul>
     </li>
     <li><a href="#friday--classes-from-1400-to-2000-paris-time">Friday – Classes from 14:00 to 20:00 (Paris time)</a></li>
@@ -528,22 +529,13 @@
 <ol start="3">
 <li>Overview of the course</li>
 </ol>
-<h3 id="lecture-1--scrna-seq-experimental-design">Lecture 1 – scRNA-Seq experimental design</h3>
+<h3 id="lecture-1--scrna-seq-experimental-design-orr">Lecture 1 – scRNA-Seq experimental design [Orr]</h3>
 <ul>
 <li>General introduction: cell atlas overviews</li>
-<li>Comparison of Bulk and single cell RNA-Seq</li>
+<li>Comparison of bulk and single cell RNA-Seq</li>
 <li>Overview of available scRNA-seq technologies (10x) and experimental protocols</li>
 </ul>
-<h3 id="lecture-2---intro-to-data-processing-from-bcl-file-to-count-matrix">Lecture 2 - Intro to Data processing: from bcl file to count matrix</h3>
-<ul>
-<li>scRNA-Seq processing workflow starting with choice of sequencer (NextSeq, HiSeq, MiSeq) / barcode swapping and bcl files</li>
-<li>Overview of Popular tools and algorithms</li>
-<li>Common single-cell analyses and interpretation</li>
-<li>Sequencing data: alignment and quality control</li>
-<li>Looking at cool things in alignment like where reads are, mutations, splicing</li>
-<li>Read &amp; UMI counting (Kallisto alignment-free pseudocounts as well), how RSEM works (length dependence, sequencing depth, multimapping reads), CellRanger (dropest), bustools</li>
-</ul>
-<h3 id="lab-1--familiarizing-yourself-with-the-course-aws-instance">Lab 1 – Familiarizing yourself with the course AWS instance</h3>
+<h3 id="lab-1--familiarizing-yourself-with-the-course-aws-instance-jacques">Lab 1 – Familiarizing yourself with the course AWS instance [Jacques]</h3>
 <ul>
 <li>Logging in AWS</li>
 <li>Shell and Unix commands to navigate directories, create folders, open files</li>
@@ -551,14 +543,30 @@
 <li>Using RStudio</li>
 <li>Get data from 10x website, single cell portal, from GEO (fastqs, counts)</li>
 </ul>
-<h3 id="lab-2--processing-raw-scrna-seq-data">Lab 2 – Processing raw scRNA-Seq data</h3>
+<h3 id="lecture-2---intro-to-data-processing-from-bcl-file-to-count-matrix-jacques">Lecture 2 - Intro to Data processing: from bcl file to count matrix [Jacques]</h3>
+<ul>
+<li>scRNA-Seq processing workflow starting with choice of sequencer (NextSeq, HiSeq, MiSeq) / barcode swapping and bcl files</li>
+<li>Overview of Popular tools and algorithms</li>
+<li>Common single-cell analyses and interpretation</li>
+<li>Sequencing data: alignment and quality control</li>
+<li>IGV: Looking at cool things in alignment like where reads are, mutations, splicing</li>
+</ul>
+<h3 id="lab-2--processing-raw-scrna-seq-data-orr">Lab 2 – Processing raw scRNA-Seq data [Orr]</h3>
 <ul>
 <li>Data outputs from different scRNAseq technologies (10x, Smart-seq2)</li>
+<li>Demultiplexing sequencing data</li>
 <li>Quality Control reports (CellRanger, dropEst, fastqc)</li>
 <li>Mapping sequencing data with Cellranger</li>
 </ul>
 <h2 id="tuesday--classes-from-1400-to-2000-paris-time">Tuesday – Classes from 14:00 to 20:00 (Paris time)</h2>
-<h3 id="lecture-3---expression-qc-normalisation-and-gene-level-batch-correction">Lecture 3 - Expression QC, normalisation and gene-level batch correction</h3>
+<h3 id="flash-talks-everybody">Flash talks [Everybody]</h3>
+<h3 id="lab-3---introduction-to-rbioconductor-jacques">Lab 3 - Introduction to R/Bioconductor [Jacques]</h3>
+<ul>
+<li>Installing packages with CRAN and Bioconductor</li>
+<li>Data types, data manipulation, slicing</li>
+<li>I/O</li>
+</ul>
+<h3 id="lecture-3---expression-qc-normalisation-and-gene-level-batch-correction-orr">Lecture 3 - Expression QC, normalisation and gene-level batch correction [Orr]</h3>
 <ul>
 <li>What CellRanger does for quality filtering</li>
 <li>PBMC data</li>
@@ -568,14 +576,7 @@
 <li>Regression with technical covariates</li>
 <li>What about imputation?</li>
 </ul>
-<h3 id="lab-3---introduction-to-rbioconductor">Lab 3 - Introduction to R/Bioconductor</h3>
-<ul>
-<li>Installing packages with CRAN and Bioconductor</li>
-<li>Data types</li>
-<li>Data manipulation, slicing</li>
-<li>I/O</li>
-</ul>
-<h3 id="lab-4--data-wrangling-for-scrnaseq-data">Lab 4 – Data wrangling for scRNAseq data</h3>
+<h3 id="lab-4--data-wrangling-for-scrnaseq-data-orr">Lab 4 – Data wrangling for scRNAseq data [Orr]</h3>
 <ul>
 <li>Introducing SingleCellExperiment object</li>
 <li>Quality control of cells and genes (doublets, ambient, empty drops)</li>
@@ -587,7 +588,7 @@
 <li>Find variable genes</li>
 </ul>
 <h2 id="wednesday--classes-from-1400-to-2000-paris-time">Wednesday – Classes from 14:00 to 20:00 (Paris time)</h2>
-<h3 id="lecture-4---identifying-cell-populations">Lecture 4 - Identifying cell populations</h3>
+<h3 id="lecture-4---identifying-cell-populations-jacques">Lecture 4 - Identifying cell populations [Jacques]</h3>
 <ul>
 <li>Feature selection</li>
 <li>Dimensionality reduction</li>
@@ -595,56 +596,55 @@
 <li>Assigning cluster identity</li>
 <li>Differential expression tests</li>
 </ul>
-<h3 id="lecture-5---batch-effects-correction">Lecture 5 - Batch effects correction</h3>
-<ul>
-<li>Batch correction methods (regress out batch, scaling within batch, Seurat v3, MNN, Liger, Harmony, scvi, scgen)</li>
-<li>Evaluation methods for batch correction (ARI, average silhouette width, kBET…)</li>
-</ul>
-<h3 id="lab-5--feature-selection--clustering-analyses">Lab 5 – Feature selection &amp; Clustering analyses</h3>
+<h3 id="lab-5--feature-selection--clustering-analyses-jacques">Lab 5 – Feature selection &amp; Clustering analyses [Jacques]</h3>
 <ul>
 <li>Parameters and clustering</li>
 <li>Comparison of feature selection methods</li>
 <li>Annotating clusters</li>
 </ul>
-<h3 id="lab-6---correcting-batch-effects">Lab 6 - Correcting batch effects</h3>
+<h3 id="lecture-5---batch-effects-correction-orr">Lecture 5 - Batch effects correction [Orr]</h3>
+<ul>
+<li>Batch correction methods (regress out batch, scaling within batch, Seurat v3, MNN, Liger, Harmony, scvi, scgen)</li>
+<li>Evaluation methods for batch correction (ARI, average silhouette width, kBET…)</li>
+</ul>
+<h3 id="lab-6---correcting-batch-effects-orr">Lab 6 - Correcting batch effects [Orr]</h3>
 <ul>
 <li>Comparison of batch correction methods</li>
 <li>Choosing the optimal batch correction approach</li>
 </ul>
 <h2 id="thursday--classes-from-1400-to-2000-paris-time">Thursday – Classes from 14:00 to 20:00 (Paris time)</h2>
-<h3 id="lecture-6---advanced-topics">Lecture 6 - Advanced topics</h3>
+<h3 id="lecture-6---trajectories-and-pseudotimes-jacques">Lecture 6 - Trajectories and pseudotimes [Jacques]</h3>
 <ul>
 <li>Trajectory inference</li>
-<li>RNA velocity</li>
+<li>Popular tools and packages for trajectory analysis (<a href="https://github.com/dynverse/dynmethods#list-of-included-methods">https://github.com/dynverse/dynmethods#list-of-included-methods</a>)</li>
 <li>Pseudotime inference</li>
+<li>RNA velocity</li>
 <li>Differential expression through pseudotime</li>
 </ul>
-<h3 id="lecture-7---single-cell-multi-omic-technologies">Lecture 7 - Single-cell multi-omic technologies</h3>
+<h3 id="lab-7---pseudotime-analyses-jacques">Lab 7 - Pseudotime analyses [Jacques]</h3>
+<ul>
+<li>Review concepts from papers</li>
+<li>Comparison of pseudotime methods</li>
+</ul>
+<h3 id="lecture-7---single-cell-multi-omic-technologies-orr">Lecture 7 - Single-cell multi-omic technologies [Orr]</h3>
 <ul>
 <li>Introduction to other omic data types</li>
 <li>Integrating scRNA-seq with other single-cell modalities (CITE, Perturb, ATAC, methylation…)</li>
 </ul>
-<h3 id="lab-7---pseudotime-analyses">Lab 7 - Pseudotime analyses</h3>
-<ul>
-<li>Popular tools and packages for functional analysis (<a href="https://github.com/dynverse/dynmethods#list-of-included-methods">https://github.com/dynverse/dynmethods#list-of-included-methods</a>)</li>
-<li>Review concepts from papers</li>
-<li>Comparison of pseudotime methods</li>
-</ul>
-<h3 id="lab-8---functional-analyses">Lab 8 - Functional analyses</h3>
+<h3 id="lab-8---multi-omics-analysis-of-spatial-single-cell-transcriptomics-orr">Lab 8 - multi-Omics: analysis of spatial single-cell transcriptomics [Orr]</h3>
 <ul>
 <li>GO over-representation analyses</li>
 <li>GSEA analyses</li>
 <li>Finding regulatory elements with scATAC-seq and CICERO: <a href="https://www.bioconductor.org/packages/devel/bioc/vignettes/cicero/inst/doc/website.html">https://www.bioconductor.org/packages/devel/bioc/vignettes/cicero/inst/doc/website.html</a></li>
 </ul>
 <h2 id="friday--classes-from-1400-to-2000-paris-time">Friday – Classes from 14:00 to 20:00 (Paris time)</h2>
-<p>Individual projects: analysing scRNA-seq data by yourself, from A to Z.</p>
+<p>Friday will be divided in three parts:</p>
 <ul>
-<li>Small groups</li>
-<li>Pick your favorite scRNA-seq dataset (one you have never looked at before!)</li>
-<li>Work your way through pre-processing / analysis / interpretation of the data</li>
-<li>Support from Jacques &amp; Orr whenever needed: try and solve things by yourself, but don&rsquo;t hesitate if you are stuck!</li>
-<li>Flash presentation at the end of the day: what/why/where/when/how, conclusions</li>
+<li>Morning (1h): &ldquo;Journal club&rdquo;: discussion of a method paper</li>
+<li>Morning (1h + 1h30): Group projects: analysing scRNA-seq data by yourself, from A to Z</li>
+<li>Afternoon (1h): Group presentations (10' each group, max 5 slides: what/why/where/when/how, conclusions)</li>
 </ul>
+<p>Happy hour time!!</p>
 
 
 <footer class="footline">
@@ -915,19 +915,19 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1611653798"></script>
+    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1621949694"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/learn.js?1611653798"></script>
-    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1611653798"></script>
+    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/learn.js?1621949694"></script>
+    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1621949694"></script>
     
         
-            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1611653798"></script>
+            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1621949694"></script>
         
         <script>
             mermaid.initialize({ startOnLoad: true });
