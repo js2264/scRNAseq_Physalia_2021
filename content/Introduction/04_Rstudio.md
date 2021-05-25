@@ -19,3 +19,5 @@ Simply go to the following address:
 ```sh
 "http://${IP}:8787"
 ```
+
+Don't forget, you can run a `bash` terminal from within RStudio! This may come handy if you want to process some data with `cellranger`, for example. To do this, simply click on the `terminal` button next on the bottom left panel. You should now be in your own `${home}` directory (`~`). 

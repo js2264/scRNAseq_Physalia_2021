@@ -10,25 +10,25 @@ _Orr Ashenberg_
 
 ## Where
 
-This course will be held online in response to the coronavirus outbreak.
+This course will be held online.
 
 ## Overview
 
 This course will introduce biologists and bioinformaticians to the field of single-cell RNA sequencing. 
 We will cover a range of software and analysis workflows that extend 
-over the spectrum from the best practices in the filtering scRNAseq data  
+over the spectrum from the best practices in the filtering scRNA-seq data  
 to the downstream analysis of cell clusters and temporal ordering. 
 This course will help the attendees gain accurate insights in pre-processing, 
-analysis and interpretation of scRNAseq data.
+analysis and interpretation of scRNA-seq data.
 
-We will start by introducing general concepts about single-cell RNA-sequencing. From there, we will then continue to describe the main analysis steps to go from raw sequencing data to processed and usable data. Finally, we will focus more specifically on the different analyses strategies to use in order to extract information from genomic datasets such as Hi-C, ATAC-seq or ChIP-seq.  
+We will start by introducing general concepts about single-cell RNA-sequencing. From there, we will then continue to describe the main analysis steps to go from raw sequencing data to processed and usable data. We will present classical analysis workflows, their output and the possible paths to investigate downstream of this.  
 
 Throughout the workshop, `bash` tools and `R/Bioconductor` packages will be used to analyse datasets and learn new approaches. 
 
 ## Format
 
 The course is structured in modules over five days. 
-Each day will include formal lectures covering the key concepts required to understand scRNAseq analysis. 
+Each day will include formal lectures covering the key concepts required to understand scRNA-seq analysis. 
 The remainder of each day will consist in practical hands-on sessions focusing on analysis of scRNA-seq data. 
 These sessions will involve a combination of both mirroring exercises with 
 the instructor to demonstrate a skill, as well as applying these skills on 
@@ -42,7 +42,7 @@ The course will be mostly beneficial to those who have, or will shortly have, sc
 
 The material is suitable both for experimentalists who want to learn 
 more about data-analysis as well as computational biologists 
-who want to learn about scRNASeq methods.  
+who want to learn about scRNA-seq methods.  
 
 Examples demonstrated in this course can be applied to any experimental protocol or biological system.
 
@@ -62,8 +62,8 @@ At the end of this course, you should be able to:
 - Correct for batch effects
 - Visualise the data and applying dimensionality reduction
 - Perform cell clustering and annotation 
-- Perform differential expression analysis
-- Infer pseudo-time and perform temporal differential expression 
+- Perform differential gene expression analysis
+- Infer cell trajectory and pseudotime, and perform temporal differential expression 
 
 Throughout the course, we will also have a focus on reproducible research, documented content and interactive reports.
 
