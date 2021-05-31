@@ -551,12 +551,12 @@ cursor: pointer;
 .figure {
 margin: 5px 10px 30px 0px;
 display: table;
+text-align: center;
 }
 .figure img {
 margin-bottom: 5px;
 }
 .figure p.caption {
-text-align: center;
 font-style: italic;
 font-size: 90%;
 }
@@ -654,7 +654,8 @@ font-size:16px;
 line-height:24px;
 margin:0px 0px 24px 0px;
 }
-#content ul {
+#content ul,
+#content ol {
 font-size: 16px;
 }
 #content p {
@@ -916,7 +917,8 @@ width: 100%;
 max-width: 100%;
 margin-bottom: 20px;
 }
-table:not(.dataTable) td,table:not(.dataTable) th{
+#main table:not(.dataTable) td,
+#main table:not(.dataTable) th {
 font-size:90%;
 padding: 8px;
 margin:0;
@@ -927,6 +929,8 @@ border:1px solid #e1e4e5;
 font-weight:bold;
 border-top: 1px solid #ddd;
 border-bottom: 2px solid #ddd;
+}
+#main table:not(.dataTable) thead th {
 background-color:white;
 }
 table caption{
@@ -934,14 +938,17 @@ color:#000;
 font:italic 85%/1 arial,sans-serif;
 padding:1em 0;
 }
-table tr:nth-child(2n-1) {
+table:not(.dataTable) tr:nth-child(2n-1) {
 background-color:#f3f6f6;
 }
-table tr:nth-child(2n) {
+table:not(.dataTable) tr:nth-child(2n) {
 background-color:white;
 }
 .dataTables_wrapper {
 overflow-x: auto;
+}
+.dataTables_wrapper .table-wrapper {
+margin-top: 3em;
 }
 #main .dataTables_wrapper a {
 background-image: none;
@@ -1162,6 +1169,11 @@ font-size:90%;
 color:#b3b3b3;
 direction: ltr;
 text-decoration: none;
+}
+#sidebar #postamble a {
+display: inline;
+padding: 0 2px;
+font-size: 100%;
 }
 #sidebar a:hover{
 background-color:#4e4a4a;
@@ -1627,10 +1639,9 @@ background-color: #edf9ff
     <div id="toc">
       <ul>
       <li><a href="#rstudio">1. RStudio</a></li>
-      <li><a href="#installing-packages">2. Installing packages</a></li>
-      <li><a href="#connect-directly-to-aws">3. Connect directly to AWS</a></li>
-      <li><a href="#basic-commands-in-aws">4. Basic commands in AWS</a></li>
-      <li><a href="#single-cell-rna-seq-datasets">5. Single-cell RNA-seq datasets</a></li>
+      <li><a href="#connect-directly-to-aws">2. Connect directly to AWS</a></li>
+      <li><a href="#basic-commands-in-aws">3. Basic commands in AWS</a></li>
+      <li><a href="#single-cell-rna-seq-datasets">4. Single-cell RNA-seq datasets</a></li>
       </ul>
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
@@ -1668,44 +1679,8 @@ Show code
 </details>
 <p><br></p>
 </div>
-<div id="installing-packages" class="section level2">
-<h2>2. Installing packages</h2>
-<p>“Hey, I’ve heard so many good things about this piece of software, it’s called ‘Seurat’? Heard of it? I wanna try it out soooo badly!”</p>
-<p>In other words: “how do I install this or that brand new cutting-edge fancy <code>package</code>?”</p>
-<p><code>R</code> works with <code>packages</code>, available from different sources:</p>
-<ul>
-<li><code>CRAN</code>, the <code>R</code> developer team and official package provider: <a href="https://cran.r-project.org/">CRAN</a> (which can probably win the title of “the worst webpage ever designed in 1982”).</li>
-<li><code>Bioconductor</code>, another package provider, with a primary focus on genomic-related packages.</li>
-<li>Other unofficial sources, such as <code>GitHub</code>.</li>
-</ul>
-<blockquote>
-<p>Install <code>mgcv</code>, <code>HCAData</code> and <code>revelio</code> packages</p>
-</blockquote>
-<p>Each of these three packages is available from a different source.</p>
-<details>
-<summary style="color: #ff7f00; font-weight: bold">
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="st">&#39;mgcv&#39;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="st">&#39;HCAData&#39;</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&#39;danielschw188/revelio&#39;</span>)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<blockquote>
-<p>Check package help pages</p>
-</blockquote>
-<p>Package help pages are available at different places, depending on their source. That being said, there is a place I like to go to easily find information related to most packages:</p>
-<p><a href="https://rdrr.io/">https://rdrr.io/</a></p>
-<p>For instance, check out <code>Revelio</code> package help pages.</p>
-<ul>
-<li>What is this package designed for?</li>
-<li>What are its main functions? What type of input does it require?</li>
-</ul>
-</div>
 <div id="connect-directly-to-aws" class="section level2">
-<h2>3. Connect directly to AWS</h2>
+<h2>2. Connect directly to AWS</h2>
 <p>A general issue with bioinformatic analyses stems from the fact that nobody works in the same environment:</p>
 <ul>
 <li>Are you working on Mac? Linux? Windows?</li>
@@ -1735,15 +1710,15 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co">## Example</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="bu">cd</span> ~/Downloads/</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="fu">chmod</span> 600 <span class="st">&quot;</span><span class="va">${USER}</span><span class="st">&quot;</span>.pem</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="fu">ssh</span> -i <span class="st">&quot;</span><span class="va">${USER}</span><span class="st">&quot;</span>.pem <span class="st">&quot;</span><span class="va">${USER}</span><span class="st">&quot;</span>@<span class="st">&quot;</span><span class="va">${IP}</span><span class="st">&quot;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">## Actual Command Example</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="bu">cd</span> ~/Downloads/</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="fu">chmod</span> 600 user45.pem</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a><span class="fu">ssh</span> -i user45.pem user45@34.213.180.241</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="co">## Example</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="bu">cd</span> ~/Downloads/</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="fu">chmod</span> 600 <span class="st">&quot;</span><span class="va">${USER}</span><span class="st">&quot;</span>.pem</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="fu">ssh</span> -i <span class="st">&quot;</span><span class="va">${USER}</span><span class="st">&quot;</span>.pem <span class="st">&quot;</span><span class="va">${USER}</span><span class="st">&quot;</span>@<span class="st">&quot;</span><span class="va">${IP}</span><span class="st">&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="co">## Actual Command Example</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="bu">cd</span> ~/Downloads/</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="fu">chmod</span> 600 user45.pem</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="fu">ssh</span> -i user45.pem user45@34.213.180.241</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1753,57 +1728,58 @@ Show code
 <p>Things are a little bit more tedious for Windows users, but luckily not impossible! There is a nice breakdown from another Physalia course on instructions for different operating systems and accessing AWS. It is called <a href="https://gitlab.com/bfosso/metabarcoding_physalia/-/blob/master/unix_short_tutorial/how_to_connect.md">Connection to the Amazon EC2 service</a>. This will help with connecting to the AWS instance to run analyses.</p>
 </div>
 <div id="basic-commands-in-aws" class="section level2">
-<h2>4. Basic commands in AWS</h2>
+<h2>3. Basic commands in AWS</h2>
 <p>The same <code>bash</code> commands are available in AWS <code>terminal</code>, regardless of whether you access the terminal from <code>RStudio</code> or through <code>ssh</code>.</p>
 <p>One can list files, download files, check help pages, …, just like in <code>R</code>.</p>
 <ul>
 <li>Check the your present directory</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="bu">pwd</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="bu">pwd</span></span></code></pre></div>
 <ul>
 <li>Check history</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="bu">history</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="bu">history</span></span></code></pre></div>
 <ul>
 <li>put history into a <code>history.txt</code> file</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="bu">history</span> <span class="op">&gt;</span> history.txt</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="bu">history</span> <span class="op">&gt;</span> history.txt</span></code></pre></div>
 <ul>
 <li>make a new folder called data</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="fu">mkdir</span> data</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="fu">mkdir</span> data</span></code></pre></div>
 <ul>
 <li>Go to the new <code>data</code> directory</li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="bu">cd</span> data</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="bu">cd</span> data</span></code></pre></div>
 <ul>
 <li>move <code>history.txt</code> file into <code>data</code> directory</li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="fu">mv</span> ../history.txt ./</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="fu">mv</span> ../history.txt ./</span></code></pre></div>
 <ul>
 <li>check manual page of <code>wget</code> command</li>
 </ul>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="fu">man</span> wget</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="fu">man</span> wget</span></code></pre></div>
 <ul>
 <li>check specific help for <code>cellranger</code> command and subcommands</li>
 </ul>
-<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="ex">cellranger</span> --help</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="ex">cellranger</span> count --help</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="ex">cellranger</span> --help</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="ex">cellranger</span> count --help</span></code></pre></div>
 <ul>
 <li>redirect wget help output into a file called <code>cellranger-help.txt</code></li>
 </ul>
-<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="ex">cellranger</span> count --help <span class="op">&gt;</span> cellranger-help.txt</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="ex">cellranger</span> count --help <span class="op">&gt;</span> cellranger-help.txt</span></code></pre></div>
 <ul>
 <li>Download a file from Internet with <code>wget</code></li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="fu">wget</span> https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="fu">wget</span> https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz</span></code></pre></div>
 <ul>
 <li>List all files in a folder</li>
 </ul>
-<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="fu">ls</span> --color -Flh ~/data</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="fu">ls</span> -l ~/data</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="fu">ls</span> --color -Flh ~/data</span></code></pre></div>
 </div>
 <div id="single-cell-rna-seq-datasets" class="section level2">
-<h2>5. Single-cell RNA-seq datasets</h2>
+<h2>4. Single-cell RNA-seq datasets</h2>
 <p>“This is a course about single-cell RNA-seq analysis, after all, so where is my data?”</p>
 <p>Ok, <strong>“your”</strong> data is (most likely) yet to be sequenced! Or maybe you’re interested in digging already existing databases! I mean, who isn’t interested in <a href="https://www.10xgenomics.com/blog/our-13-million-single-cell-dataset-is-ready-to-download">this mind-blowing achievement from 10X Genomics</a>??</p>
 <p><a href="https://data.humancellatlas.org/explore/projects">Human Cell Atlas</a> is probably a good place to start digging, if you are interested in mammal-related studies. For instance, let’s say I want to check</p>
@@ -1813,26 +1789,26 @@ Show code
 <p>Here is the study:<br />
 <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7471510/">An atlas of human proximal epididymis reveals cell-specific functions and distinct roles for CFTR</a></p>
 <p>Can you find the raw data from this paper? Tip: try the <a href="https://github.com/pachterlab/ffq">brand new <code>ffq</code> tool</a>!</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="ex">ffq</span> --help</span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="ex">ffq</span> -t GSE GSE148963 <span class="op">&gt;</span> GSE148963_ffq.json</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a><span class="fu">cat</span> GSE148963_ffq.json</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="ex">ffq</span> --help</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="ex">ffq</span> -t GSE GSE148963 <span class="op">&gt;</span> GSE148963_ffq.json</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a><span class="fu">cat</span> GSE148963_ffq.json</span></code></pre></div>
 <p>Can you find the links to raw data? You should use a <code>grep</code> command!</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json</span></code></pre></div>
 <p>And with a bit of magick…</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,.*ftp:,ftp:,&#39;</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,&quot;.*,,&#39;</span> <span class="op">&gt;</span> GSE148963_fastqlist.txt</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a><span class="co">#wget -i GSE148963_fastqlist.txt ## Do not run, it would take too long...</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,.*ftp:,ftp:,&#39;</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,&quot;.*,,&#39;</span> <span class="op">&gt;</span> GSE148963_fastqlist.txt</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a><span class="co">#wget -i GSE148963_fastqlist.txt ## Do not run, it would take too long...</span></span></code></pre></div>
 <blockquote>
 <p>Check the content of the reads</p>
 </blockquote>
 <p>A subset of the reads has been downloaded and put in the <code>~/Share/</code> folder. Have a look at it!</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="fu">zcat</span> ~/Share/SRR11575369_1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> -n 12</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="fu">zcat</span> ~/Share/SRR11575369_1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> -n 12</span></code></pre></div>
 <p>Try and understand the structure of the <code>fastq.gz</code> file. What is the meaning of each line?</p>
 <p>How many reads are there in the <code>fastq.gz</code> file? And how long are they? Can you get a summary of what is in this file? All of these questions can be quickly answered using the <a href="https://bioinf.shenwei.me/seqkit/usage/"><code>seqkit</code></a> tool:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="ex">seqkit</span> --help</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a><span class="ex">seqkit</span> stats --help</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a><span class="ex">seqkit</span> stat ~/Share/SRR11575369_1.fastq.gz</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="ex">seqkit</span> --help</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a><span class="ex">seqkit</span> stats --help</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a><span class="ex">seqkit</span> stat ~/Share/SRR11575369_1.fastq.gz</span></code></pre></div>
 <blockquote>
-<p>Download the matrix directly from the HCA portal</p>
+<p>Download processed count matrices directly from the HCA portal</p>
 </blockquote>
 <p>You will learn in the next practical how to process raw data, from reads to count matrices. However, many times, researchers provide a filtered count matrix when they publish scRNAseq experiments. It’s way lighter than <code>fastq</code> reads, and you can go ahead with downstream analyses a lot quicker. But how do you get these matrices?</p>
 <ul>
@@ -1841,12 +1817,15 @@ Show code
 </ul>
 <p>In this case, we have downloaded some of the processed files available in GEO, from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE148963">the following webpage</a>.</p>
 <p>Check the content of the count matrix and the additional files. Can you understand what they contain? How are they structured?</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a><span class="fu">wc</span> -l ~/Share/GSM4486714_AXH009*</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a><span class="fu">head</span> ~/Share/GSM4486714_AXH009*</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="fu">wc</span> -l ~/Share/GSM4486714_AXH009*</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a><span class="fu">head</span> ~/Share/GSM4486714_AXH009*</span></code></pre></div>
 <ul>
 <li>How many cells were sequenced? How many genes were counted?</li>
 <li>Is it easy to interpret the count matrix? Why is it in such format?</li>
+<li>Comment on the file sizes between processed count matrix files and raw reads.</li>
 </ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a><span class="fu">ls</span> -l ~/Share/GSM4486714_AXH009*</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a><span class="fu">ls</span> -l ~/Share/SRR11575369_1.fastq.gz</span></code></pre></div>
 </div>
 </div>
 

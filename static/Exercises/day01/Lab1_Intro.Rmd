@@ -50,43 +50,8 @@ download.file("...") # equivalent of `wget ...` in terminal
 ```
 </p></details><br>
 
-## 2. Installing packages 
 
-"Hey, I've heard so many good things about this piece of software, it's called 'Seurat'? Heard of it? I wanna try it out soooo badly!"
-
-In other words: "how do I install this or that brand new cutting-edge fancy `package`?"
-
-`R` works with `packages`, available from different sources: 
-
-- `CRAN`, the `R` developer team and official package provider: [CRAN](https://cran.r-project.org/) (which can probably win the title of "the worst webpage ever designed in 1982"). 
-- `Bioconductor`, another package provider, with a primary focus on genomic-related packages. 
--  Other unofficial sources, such as `GitHub`.
-
-> Install `mgcv`, `HCAData` and `revelio` packages
-
-Each of these three packages is available from a different source. 
-
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
-```{r eval = FALSE}
-install.packages('mgcv')
-BiocManager::install('HCAData')
-devtools::install_github('danielschw188/revelio')
-```
-</p></details><br>
-
-> Check package help pages
-
-Package help pages are available at different places, depending on their source. 
-That being said, there is a place I like to go to easily find information related to most packages: 
-
-[https://rdrr.io/](https://rdrr.io/)
-
-For instance, check out `Revelio` package help pages. 
-
-- What is this package designed for? 
-- What are its main functions? What type of input does it require? 
-
-## 3. Connect directly to AWS
+## 2. Connect directly to AWS
 
 A general issue with bioinformatic analyses stems from the fact that nobody works in the same environment: 
 
@@ -142,7 +107,7 @@ There is a nice breakdown from another Physalia course on instructions for diffe
 It is called [Connection to the Amazon EC2 service](https://gitlab.com/bfosso/metabarcoding_physalia/-/blob/master/unix_short_tutorial/how_to_connect.md). 
 This will help with connecting to the AWS instance to run analyses.
 
-## 4. Basic commands in AWS
+## 3. Basic commands in AWS
 
 The same `bash` commands are available in AWS `terminal`, regardless of whether you access the terminal from `RStudio` or through `ssh`. 
 
@@ -212,10 +177,11 @@ wget https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz
 - List all files in a folder
 
 ```{sh eval = FALSE}
+ls -l ~/data
 ls --color -Flh ~/data
 ```
 
-## 5. Single-cell RNA-seq datasets
+## 4. Single-cell RNA-seq datasets
 
 "This is a course about single-cell RNA-seq analysis, after all, so where is my data?"
 
@@ -272,7 +238,7 @@ seqkit stats --help
 seqkit stat ~/Share/SRR11575369_1.fastq.gz
 ```
 
-> Download the matrix directly from the HCA portal
+> Download processed count matrices directly from the HCA portal
 
 You will learn in the next practical how to process raw data, from reads to count matrices. 
 However, many times, researchers provide a filtered count matrix when they publish scRNAseq experiments. It's way lighter than `fastq` reads, 
@@ -292,4 +258,9 @@ head ~/Share/GSM4486714_AXH009*
 
 - How many cells were sequenced? How many genes were counted? 
 - Is it easy to interpret the count matrix? Why is it in such format? 
+- Comment on the file sizes between processed count matrix files and raw reads. 
 
+```{sh eval = FALSE}
+ls -l ~/Share/GSM4486714_AXH009*
+ls -l ~/Share/SRR11575369_1.fastq.gz
+```

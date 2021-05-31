@@ -3,10 +3,8 @@ title: "2. Day 02"
 day: "Day 02"
 presentation1: " "
 presentation2: " "
-presentation3: " "
-practical1: " "
+practical1: "day02/Lab3_Rbioc"
 practical2: " "
-practical3: " "
 ---
 
 ---
@@ -19,24 +17,17 @@ practical3: " "
 - **\[XX min\]** ..... 
 [[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation2" >}})
 
-- **\[XX min\]** ..... 
-[[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation3" >}})
-
 ---
 
 ## Exercises for {{< param "day" >}}
 
--  **\[XX min\]** ..... 
+-  **\[1h15\]** Lab 3 - Introduction to R/Bioconductor
     [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.Rmd)]
 
-    > .......
+    > Installing packages for R, data types, I/O
 
 -  **\[XX min\]** ..... 
     [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.Rmd)]
 
     > .......
 
--  **\[XX min\]** ..... 
-    [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical3" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical3" >}}.Rmd)]
-
-    > .......
