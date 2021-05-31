@@ -7,14 +7,6 @@ output:
         df_print: tibble
         toc_depth: 4
         css: ../../../custom.css
-    rmarkdown::html_document: 
-        theme: simplex
-        highlight: tango
-        preserve_yaml: true
-        code_folding: hide
-        df_print: tibble
-        toc: true
-        toc_float: true
 ---
 
 ## 1. RStudio
@@ -263,4 +255,10 @@ head ~/Share/GSM4486714_AXH009*
 ```{sh eval = FALSE}
 ls -l ~/Share/GSM4486714_AXH009*
 ls -l ~/Share/SRR11575369_1.fastq.gz
+```
+
+## Session info 
+
+```{r echo = FALSE}
+devtools::session_info() 
 ```

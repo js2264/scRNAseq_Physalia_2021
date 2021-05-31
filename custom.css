@@ -4,3 +4,8 @@ pre {
 #content pre.sourceCode {
     background-color: #edf9ff
 }
+
+summary {
+    color: #ff7f00;
+    font-weight: bold
+}

@@ -7,15 +7,19 @@ output:
         df_print: tibble
         toc_depth: 4
         css: ../../../custom.css
-    rmarkdown::html_document: 
-        theme: simplex
-        highlight: tango
-        preserve_yaml: true
-        code_folding: hide
-        df_print: tibble
-        toc: true
-        toc_float: true
 ---
+
+```{r eval = TRUE, echo = FALSE, warning = FALSE, error = FALSE, comment = FALSE, message = FALSE}
+require(tidyverse)
+require(BiocManager)
+require(Seurat)
+require(scran)
+require(scater)
+require(airway)
+require(uwot)
+require(DropletUtils)
+require(scRNAseq)
+```
 
 ## 1. Installing packages in `R` 
 
@@ -33,7 +37,7 @@ In other words: "how do I install this or that brand new cutting-edge fancy `pac
 
 Each of these three packages is available from a different source. 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 install.packages('mgcv')
 BiocManager::install('HCAData')
@@ -155,7 +159,7 @@ airway
 
 - What are the dimensions of the dataset? What type of quantitative data is stored? Which features are assessed? 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 dim(airway)
 rowData(airway)
@@ -165,7 +169,7 @@ colData(airway)
 
 - Can you create a subset of the data corresponding to `LRG` genes in untreated samples? 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 untreated_LRG <- airway[grepl('^LRG_', rownames(airway)), airway$dex == 'untrt']
 ```
@@ -203,7 +207,7 @@ gr %>%
 
 - Can you find a way to easily read common input files such as `bed` or `gff` files into `GRanges`? 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 library(rtracklayer)
 genes2 <- import('~/Downloads/GRCm39_genes.bed')
@@ -218,10 +222,6 @@ genes3
 ### scRNAseq in Bioconductor
 
 For single-cell RNA-seq projects, `Bioconductor` has been introducting new classes and standards very rapidly in the past few years. 
-This is very well-documented in the **[4th chapter of the `Bioconductor` book on single-cell RNA-seq analysis workflows](https://bioconductor.org/books/release/OSCA/data-infrastructure.html)**. 
-
-![](.img/2021-05-31-09-38-24.png)
-
 Notably, several packages are increasingly becoming central for single-cell analysis: 
 
 - **SingleCellExperiment**
@@ -238,6 +238,8 @@ Notably, several packages are increasingly becoming central for single-cell anal
 
 **SingleCellExperiment** is the fundamental class designed to contain single-cell (RNA-seq) data in `Bioconductor` ecosystem. It is a modified version of the 
 `SummarizedExperiment` object, so most of the getters/setters are shared with this class. 
+
+![](.img/2021-05-31-09-38-24.png)
 
 ```{r eval = FALSE}
 sce <- readRDS("~/Downloads/nestorowa.rds") # Adapted from A single-cell resolution map of mouse hematopoietic stem and progenitor cell differentiation, Nestorowa et al., Blood 2016, doi: 10.1182/blood-2016-05-716480
@@ -266,7 +268,7 @@ head(reducedDim(sce, 'diffusion'))
 
 - Check the `colData()` output of the `sce` object. What information is stored there? How can you access the different objects stored in `colData`? 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 colData(sce)
 lapply(colData(sce), class)
@@ -278,7 +280,7 @@ head(sce$sizeFactor)
 
 - Are there any reduced dimensionality representation of the data stored in the `sce` object? Can we run a `PCA` using normalized counts?
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 reducedDims(sce)
 #
@@ -292,7 +294,7 @@ reducedDim(sce, "pca") <- pca$x
 
 - Now, let's compute a `UMAP` embedding from this `PCA` and compare it to the `diffusion` embedding. 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 umap <- uwot::umap(reducedDim(sce, "pca"))
 reducedDim(sce, "umap") <- umap
@@ -328,7 +330,7 @@ sce2 <- Seurat::as.SingleCellExperiment(sce_seurat)
 
 - Do you see any change between `sce` and the corresponding, "back-converted", `sce2` objects? Explain these differences.
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 sce
 sce2
@@ -340,7 +342,7 @@ colData(sce2)
 
 - Try and access the underlying raw or normalized data from the `sce_seurat` object. How does it compare to data access from an `SingleCellExperiment` object? 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 colnames(sce_seurat)
 ncol(sce_seurat)
@@ -363,7 +365,7 @@ Seurat::Embeddings(object = sce_seurat, 'umap')[1:10,]
 **Side note (personal point of view!):** 
 
 Although `Seurat` has initially attracted a large crowd of enthusiastic scRNAseq-ers, and is currently surfing on the wave of its popularity. 
-That being said, it currently introduces "standards" that are different from those introduced by `Bioconductor`, and `Seurat` is actively kept **away** from the `Bioconductor` ecosystem, **inter-operabilty** and **non-redundant** standards. 
+That being said, it currently introduces "standards" that are different from those introduced by `Bioconductor`, and `Seurat` is actively kept **away** from the `Bioconductor` ecosystem and from its **inter-operabilty** and **non-redundant** standards.  
 In my humble opinion, I find that this approach is questionable: it impedes standardization of analysis approaches and limits the impact of newly developed methods which have to rely on one type of standards or the other. 
 I also find it non-ideal to rely on analysis workflows thought and developed by a single lab, rather than by an entire consortium who collectively develop, review, and maintain 2000+ packages and host international conferences to improve their ecosystem in a coherent manner with long-term perspectives.
 
@@ -373,7 +375,7 @@ I also find it non-ideal to rely on analysis workflows thought and developed by 
 
 - Try to load the raw `10X` single-cell RNA-seq data downloaded yesterday (from `Lier et al.`) into a **SingleCellExperiment** object using `DropletUtils` package. 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 library(SingleCellExperiment)
 sce <- DropletUtils::read10xCounts('~/Downloads/GSM4486714_AXH009_', type = 'prefix')
@@ -387,7 +389,7 @@ Public single-cell RNA-seq data can be retrieved from within R directly, thanks 
 
 - Check out the `He et al., Genome Biol. 2020` paper. Can you find a way to load the scRNAseq data from this paper without having to leave the `R` console? 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 organs <- scRNAseq::HeOrganAtlasData(ensembl = TRUE)
 organs
@@ -397,7 +399,7 @@ organs
 - The interest of this approach is that one can recover a full-fledged **SingleCellExperiment** (often) provided by the authors of the corresponding study. 
 This means that lots of information, such as batch ID, clustering, cell annotation, etc., may be readily available. Check the data available for cells/features in the dataset from `He et al.`. 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 colData(organs)
 table(organs$Tissue)
@@ -408,7 +410,7 @@ table(organs$reclustered.fine, organs$Tissue)
 - Does the **SingleCellExperiment** object corresponding to `He et al., Genome Biol. 2020` data (obtained through `scRNAseq` package) contain normalized data? 
 What about cell projections on embedded spaces? Try and add them. 
 
-<details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 library(scater)
 library(patchwork)
@@ -419,3 +421,8 @@ p
 ```
 </p></details><br>
 
+## Session info 
+
+```{r echo = FALSE}
+devtools::session_info() 
+```

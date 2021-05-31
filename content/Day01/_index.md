@@ -21,7 +21,7 @@ practical2: " "
 
 ## Exercises for {{< param "day" >}}
 
--  **\[1h15\]** Lab 1 - Familiarizing yourself with the course AWS instance
+-  **\[1h 15\]** Lab 1 - Familiarizing yourself with the course AWS instance
     [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.Rmd)]
 
     > Logging in AWS, opening RStudio, copying files from/to remote server, accessing scRNAseq data portals

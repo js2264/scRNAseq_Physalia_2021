@@ -21,7 +21,7 @@ practical2: " "
 
 ## Exercises for {{< param "day" >}}
 
--  **\[1h15\]** Lab 3 - Introduction to R/Bioconductor
+-  **\[1h 15\]** Lab 3 - Introduction to R/Bioconductor
     [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.Rmd)]
 
     > Installing packages for R, data types, I/O
