@@ -7,7 +7,7 @@
 
     
     
-    <title>Lab 4: Dimension reduction, clustering and annotation</title>
+    <title>Lab 5: Dimension reduction, clustering and annotation</title>
 
         <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1635,11 +1635,11 @@ font-weight: bold
          
    
         
-      <h1 class="title">Lab 4: Dimension reduction, clustering and annotation</h1>
+      <h1 class="title">Lab 5: Dimension reduction, clustering and annotation</h1>
       
          <!-- readthedown authors -->
    <div id="sidebar">
-    <h2><a href="#content">Lab 4: Dimension reduction, clustering and annotation</a></h2>
+    <h2><a href="#content">Lab 5: Dimension reduction, clustering and annotation</a></h2>
     <div id="toc">
       <ul>
       <li><a href="#dimensional-reduction-for-clustering">1. Dimensional reduction for clustering</a>
@@ -1653,11 +1653,15 @@ font-weight: bold
       <li><a href="#clustering">2. Clustering</a>
       <ul>
       <li><a href="#clustering-algorithms">Clustering algorithms</a></li>
-      <li><a href="#dimensional-reduction-for-clustering-visualization-tsne-umap">Dimensional reduction for clustering visualization: tSNE, UMAP</a></li>
+      <li><a href="#dimensional-reduction-for-clustering-visualization">Dimensional reduction for clustering visualization</a></li>
       <li><a href="#comparing-different-clustering-approaches">Comparing different clustering approaches</a></li>
       </ul></li>
-      <li><a href="#cell-annotation">3. Cell annotation</a></li>
-      <li><a href="#cell-annotation-1">5. Cell annotation</a></li>
+      <li><a href="#cell-annotation">3. Cell annotation</a>
+      <ul>
+      <li><a href="#find-marker-genes">Find marker genes</a></li>
+      <li><a href="#automated-cell-annotation">Automated cell annotation</a></li>
+      </ul></li>
+      <li><a href="#session-info">Session info</a></li>
       </ul>
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
@@ -1683,7 +1687,7 @@ font-weight: bold
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>TENxPBMCData<span class="op">::</span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc8k&#39;</span>)</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>TENxPBMCData<span class="op">::</span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc4k&#39;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>sce</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">rowData</span>(sce)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="kw">colData</span>(sce)</span>
@@ -1698,8 +1702,10 @@ Show code
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>ah &lt;-<span class="st"> </span>AnnotationHub<span class="op">::</span><span class="kw">AnnotationHub</span>()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>AnnotationHub<span class="op">::</span><span class="kw">query</span>(ah, <span class="st">&#39;Ensembl 102 EnsDb for Homo sapiens&#39;</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>ens.hs<span class="fl">.102</span> &lt;-<span class="st"> </span>AnnotationHub<span class="op">::</span><span class="kw">query</span>(ah, <span class="st">&#39;Ensembl 102 EnsDb for Homo sapiens&#39;</span>)[[<span class="dv">1</span>]]</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>chr &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">mapIds</span>(ens.hs<span class="fl">.102</span>, <span class="dt">keys =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="dt">keytype =</span> <span class="st">&quot;GENEID&quot;</span>, <span class="dt">column =</span> <span class="st">&quot;SEQNAME&quot;</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>gene_biotype &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">mapIds</span>(ens.hs<span class="fl">.102</span>, <span class="dt">keys =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="dt">keytype =</span> <span class="st">&quot;GENEID&quot;</span>, <span class="dt">column =</span> <span class="st">&quot;GENEBIOTYPE&quot;</span>)</span></code></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>ID &lt;-<span class="st"> </span>scuttle<span class="op">::</span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol_TENx, <span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce)<span class="op">$</span>ID</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>chr &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">mapIds</span>(ens.hs<span class="fl">.102</span>, <span class="dt">keys =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="dt">keytype =</span> <span class="st">&quot;GENEID&quot;</span>, <span class="dt">column =</span> <span class="st">&quot;SEQNAME&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>gene_biotype &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">mapIds</span>(ens.hs<span class="fl">.102</span>, <span class="dt">keys =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="dt">keytype =</span> <span class="st">&quot;GENEID&quot;</span>, <span class="dt">column =</span> <span class="st">&quot;GENEBIOTYPE&quot;</span>)</span></code></pre></div>
 <ul>
 <li>Filter the data to only retain protein-coding genes which are neither mitochondrial or ribosomal.</li>
 </ul>
@@ -1745,27 +1751,28 @@ Show code
 <h3>Feature selection</h3>
 <p>We often use scRNAseq data in exploratory analyses to characterize heterogeneity across cells. Procedures like clustering and dimensionality reduction compare cells based on their gene expression profiles. The choice of genes to include in this comparison may have a major impact on the performance of downstream methods. Ideally, one wants to only select genes that contain useful information about the biology of the system while removing genes that contain random noise. This aims to preserve interesting biological structure without the variance that obscures that structure.</p>
 <p>The simplest approach to feature selection is to simply compute the variance of the log-normalized expression values, to select the most variable genes. Modelling of the mean-variance relationship can be achieved by the <code>modelGeneVar()</code> function from the <code>scran</code> package:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>sce_filtered_variance &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">modelGeneVar</span>(sce_filtered)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>HVGs &lt;-<span class="st"> </span>sce_filtered_variance <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">as_tibble</span>(<span class="dt">rownames =</span> <span class="st">&quot;gene&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="st">    </span><span class="kw">slice_max</span>(bio, <span class="dt">n =</span> <span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="st">    </span><span class="kw">pull</span>(gene)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a><span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce_filtered) <span class="op">%in%</span><span class="st"> </span>HVGs</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">rowData</span>(sce_filtered))</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a><span class="kw">table</span>(<span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a><span class="co">## --- Visualizing the mean-variance fit</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>    <span class="dt">mean =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>mean, </span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="dt">var =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>var, </span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>    <span class="dt">trend =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    <span class="dt">HVG =</span> <span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a><span class="kw">ggplot</span>(df) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> var, <span class="dt">col =</span> HVG)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend)) <span class="op">+</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">require</span>(tidyverse)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>sce_filtered_variance &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">modelGeneVar</span>(sce_filtered)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>HVGs &lt;-<span class="st"> </span>sce_filtered_variance <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">as_tibble</span>(<span class="dt">rownames =</span> <span class="st">&quot;gene&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="st">    </span><span class="kw">slice_max</span>(bio, <span class="dt">n =</span> <span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a><span class="st">    </span><span class="kw">pull</span>(gene)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce_filtered) <span class="op">%in%</span><span class="st"> </span>HVGs</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">rowData</span>(sce_filtered))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a><span class="kw">table</span>(<span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a><span class="co">## --- Visualizing the mean-variance fit</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="dt">mean =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>mean, </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>    <span class="dt">var =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>var, </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    <span class="dt">trend =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>    <span class="dt">HVG =</span> <span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a><span class="kw">ggplot</span>(df) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> var, <span class="dt">col =</span> HVG)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend)) <span class="op">+</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
 <ul>
 <li>It is well known that UMI counts exhibit near-Poisson variation if we only consider technical noise from library preparation and sequencing. This can be used to construct a mean-variance trend in the log-counts with the <code>modelGeneVarByPoisson()</code> function (rather than simpler <code>modelGeneVar()</code>). What do you observed in this case? Can you comment on this?</li>
 </ul>
@@ -1863,7 +1870,7 @@ Show code
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>    <span class="dt">deepSplit =</span> <span class="dv">1</span></span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>)</span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a><span class="kw">table</span>(sce_clust)</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_hclust &lt;-<span class="st"> </span>sce_clust</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_hclust &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust)</span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a><span class="co">## --- Plot dendogram</span></span>
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a>dendextend<span class="op">::</span><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span>sce_clust[<span class="kw">order.dendrogram</span>(dend)]</span>
 <span id="cb10-16"><a href="#cb10-16" aria-hidden="true"></a><span class="kw">plot</span>(dend)</span></code></pre></div>
@@ -1884,7 +1891,7 @@ Show code
 <p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>sce_clust &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce_filtered, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers =</span> <span class="dv">5</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="kw">table</span>(sce_clust<span class="op">$</span>cluster)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_kmeans &lt;-<span class="st"> </span>sce_clust<span class="op">$</span>cluster</span></code></pre></div>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_kmeans &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust<span class="op">$</span>cluster)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1898,7 +1905,7 @@ Show code
 <p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>sce_clust2 &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce_filtered, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers =</span> <span class="dv">10</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="kw">table</span>(sce_clust<span class="op">$</span>cluster, sce_clust2<span class="op">$</span>cluster)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_kmeans2 &lt;-<span class="st"> </span>sce_clust2<span class="op">$</span>cluster</span></code></pre></div>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_kmeans2 &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust2<span class="op">$</span>cluster)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1921,7 +1928,7 @@ Show code
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>)</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>sce_clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(graph)<span class="op">$</span>membership</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a><span class="kw">table</span>(sce_clust)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_graph &lt;-<span class="st"> </span>sce_clust</span></code></pre></div>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_graph &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1940,33 +1947,705 @@ Show code
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>)</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a>sce_clust2 &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(graph2)<span class="op">$</span>membership</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a><span class="kw">table</span>(sce_clust, sce_clust2)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_graph2 &lt;-<span class="st"> </span>sce_clust2</span></code></pre></div>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_graph2 &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust2)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
 </div>
-<div id="dimensional-reduction-for-clustering-visualization-tsne-umap" class="section level3">
-<h3>Dimensional reduction for clustering visualization: tSNE, UMAP</h3>
+<div id="dimensional-reduction-for-clustering-visualization" class="section level3">
+<h3>Dimensional reduction for clustering visualization</h3>
 <p><code>PCA</code> is a powerful linear approach to compress large datasets into smaller dimensional spaces. However, it struggles at emphasizing the existence of clusters in complex datasets, when visualized in 2D.</p>
 <p><code>scater</code> provides a handy way to perform more complex data embeddings:</p>
 <pre><code>- tSNE
 - UMAP
-- Multi-Dimensional Scaling (MDS)
 - Diffusion Map
+- Multi-Dimensional Scaling (MDS)
 - Non-negative Matrix Factorization (NMF)</code></pre>
 <ul>
-<li>Explore the different dimensional reduction algorithms, trying different hyperparameters</li>
+<li>Explore the different dimensional reduction algorithms, trying different hyperparameters combinations. Use the <code>scater::plotReducedDim()</code> function to plot cells in any embedding.</li>
 </ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="kw">reducedDims</span>(sce_filtered)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runUMAP</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runDiffusionMap</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runMDS</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runNMF</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true"></a><span class="kw">reducedDims</span>(sce_filtered)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true"></a><span class="kw">require</span>(patchwork)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true"></a>p&lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;pca_manual&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;manual PCA&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;denoised PCA&#39;</span>) <span class="op">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;tSNE&#39;</span>) <span class="op">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;UMAP&#39;</span>) <span class="op">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;DiffusionMap&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;Diffusion&#39;</span>) <span class="op">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;MDS&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;MDS&#39;</span>) <span class="op">+</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;NMF&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;NMF&#39;</span>)</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
 </div>
 <div id="comparing-different-clustering-approaches" class="section level3">
 <h3>Comparing different clustering approaches</h3>
+<p>Leveraging the <code>bluster</code> package, different clustering approaches can be performed using a uniformed syntax, to compare their output.</p>
+<ul>
+<li>Using <code>clusterSweep()</code>, compare the effect of different <code>k</code> neighbor values when performing graph-based clustering.</li>
+</ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span>bluster<span class="op">::</span><span class="kw">clusterSweep</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a>    <span class="kw">reducedDim</span>(sce_filtered, <span class="st">&#39;PCA&#39;</span>), </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a>    <span class="dt">BLUSPARAM =</span> bluster<span class="op">::</span><span class="kw">SNNGraphParam</span>(),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="kw">c</span>(5L, 15L, 25L, 50L), </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true"></a>    <span class="dt">cluster.fun =</span> <span class="kw">c</span>(<span class="st">&quot;louvain&quot;</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a><span class="kw">colnames</span>(clusters<span class="op">$</span>clusters)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a><span class="kw">head</span>(clusters<span class="op">$</span>clusters)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a>clusters<span class="op">$</span>parameters</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a><span class="kw">require</span>(patchwork)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a><span class="kw">require</span>(ggraph)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a>    clustree<span class="op">::</span><span class="kw">clustree</span>(</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a>        clusters<span class="op">$</span>clusters <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">setNames</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(.)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>(),</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a>        <span class="dt">prefix =</span> <span class="st">&#39;X&#39;</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true"></a>        <span class="dt">edge_arrow=</span><span class="ot">FALSE</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true"></a>    ), </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true"></a>    cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.5_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 5&#39;</span>),</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.15_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 15&#39;</span>),</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.25_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 25&#39;</span>),</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.50_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 50&#39;</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true"></a>    ), </span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true"></a>    <span class="dt">nrow =</span> <span class="dv">2</span>, </span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true"></a>    <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="fl">0.3</span>, <span class="fl">0.7</span>)</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true"></a>)</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
+<ul>
+<li>Save the clustering which seems the most consistent into a <code>cluster</code> annotation in the <code>sce_filtered</code> object</li>
+</ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>sce_filtered<span class="op">$</span>cluster &lt;-<span class="st"> </span>clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.5_cluster.fun.louvain&#39;</span>]</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
 </div>
 </div>
 <div id="cell-annotation" class="section level2">
 <h2>3. Cell annotation</h2>
+<div id="find-marker-genes" class="section level3">
+<h3>Find marker genes</h3>
+<p>To interpret clustering results, one needs to identify the genes that drive separation between clusters. These marker genes allow to assign biological meaning to each cluster based on their functional annotation. In the most obvious case, the marker genes for each cluster are <em>a priori</em> associated with particular cell types, allowing us to treat the clustering as a <em>proxy</em> for cell type identity.</p>
+<p>A general strategy is to perform DE tests between pairs of clusters and then combine results into a single ranking of marker genes for each cluster.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a>markers &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">findMarkers</span>(sce_filtered, <span class="dt">groups =</span> sce_filtered<span class="op">$</span>cluster)</span></code></pre></div>
+<ul>
+<li>Find markers strongly expressed in each cluster</li>
+</ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a>markers &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">findMarkers</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a>    sce_filtered, </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a>    <span class="dt">groups =</span> sce_filtered<span class="op">$</span>cluster, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a>    <span class="dt">direction =</span> <span class="st">&quot;up&quot;</span>, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a>    <span class="dt">lfc =</span> <span class="dv">1</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true"></a>markers &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(dat) {</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true"></a>    <span class="kw">rownames</span>(dat[dat<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,])</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true"></a>})</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
+<ul>
+<li>For each cluster, plot average expression of its markers in reduced dimensions</li>
+</ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(genes) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>    <span class="kw">logcounts</span>(sce_filtered[genes, ]) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a><span class="st">        </span><span class="kw">t</span>() <span class="op">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a><span class="st">        </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a><span class="st">        </span><span class="kw">mutate</span>(</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a>            <span class="dt">cellID =</span> sce_filtered<span class="op">$</span>Barcode, </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true"></a>            <span class="dt">x =</span> <span class="kw">reducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>)[,<span class="dv">1</span>], </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true"></a>            <span class="dt">y =</span> <span class="kw">reducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>)[,<span class="dv">2</span>]</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true"></a>        ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true"></a><span class="st">        </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">contains</span>(genes), <span class="dt">names_to =</span> <span class="st">&#39;gene&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;expr&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true"></a><span class="st">        </span><span class="kw">group_by</span>(x, y, cellID) <span class="op">%&gt;%</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true"></a><span class="st">        </span><span class="kw">summarize</span>(<span class="dt">ave_expr =</span> <span class="kw">mean</span>(expr))</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&#39;marker_group&#39;</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, y, <span class="dt">col =</span> ave_expr)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>marker_group) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_color_viridis_c</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
+<ul>
+<li>For each cluster, plot average expression of its markers as a dotplot</li>
+</ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a>genes &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">unlist</span>(markers))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">logcounts</span>(sce_filtered[genes, ]) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true"></a><span class="st">        </span><span class="kw">t</span>() <span class="op">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true"></a><span class="st">        </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true"></a><span class="st">        </span><span class="kw">mutate</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true"></a>            <span class="dt">cluster =</span> sce_filtered<span class="op">$</span>cluster, </span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true"></a>        ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true"></a><span class="st">        </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">contains</span>(genes), <span class="dt">names_to =</span> <span class="st">&#39;gene&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;expr&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true"></a><span class="st">        </span><span class="kw">group_by</span>(cluster, gene) <span class="op">%&gt;%</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true"></a><span class="st">        </span><span class="kw">summarize</span>(<span class="dt">ave_expr =</span> <span class="kw">mean</span>(expr))</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true"></a>ordered_genes &lt;-<span class="st"> </span><span class="kw">pivot_wider</span>(df, <span class="dt">names_from =</span> gene, <span class="dt">values_from =</span> ave_expr) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>cluster) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true"></a><span class="st">    </span><span class="kw">t</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">dist</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">hclust</span>()</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true"></a>    <span class="dt">x =</span> cluster, </span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true"></a>    <span class="dt">y =</span> <span class="kw">factor</span>(gene, <span class="dt">levels =</span> ordered_genes<span class="op">$</span>labels[ordered_genes<span class="op">$</span>order]), </span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true"></a>    <span class="dt">col =</span> ave_expr, </span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true"></a>    <span class="dt">size =</span> ave_expr</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true"></a>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
 </div>
-<div id="cell-annotation-1" class="section level2">
-<h2>5. Cell annotation</h2>
+<div id="automated-cell-annotation" class="section level3">
+<h3>Automated cell annotation</h3>
+<p>Many cell type reference databases are available over the Internet. Today, we will use a reference constructed from <code>Blueprint</code> and <code>ENCODE</code> data (<code>Martens and Stunnenberg 2013</code>; <code>The ENCODE Project Consortium 2012</code>). This reference is available as a <code>SummarizedExperiment</code> containing log-normalized gene expression for manually annotated samples.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a>ref &lt;-<span class="st"> </span>celldex<span class="op">::</span><span class="kw">BlueprintEncodeData</span>()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a>prediction_types &lt;-<span class="st"> </span>SingleR<span class="op">::</span><span class="kw">SingleR</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true"></a>    <span class="dt">test =</span> sce_filtered, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true"></a>    <span class="dt">ref =</span> ref, </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true"></a>    <span class="dt">labels =</span> ref<span class="op">$</span>label.main</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true"></a>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true"></a>sce_filtered<span class="op">$</span>annotation &lt;-<span class="st"> </span>prediction_types<span class="op">$</span>labels</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true"></a><span class="kw">table</span>(sce_filtered<span class="op">$</span>annotation)</span></code></pre></div>
+<ul>
+<li>Using <code>scater</code> and <code>SingleR</code> utilities, check the annotation score for each cell in the scRNAseq. Did the automated annotation work robuslty? How does it compare to our defined clusters? Is automated annotation as sensitive as graph-based clustering?</li>
+</ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true"></a>p &lt;-<span class="st"> </span>SingleR<span class="op">::</span><span class="kw">plotScoreHeatmap</span>(prediction_types)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;annotation&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;Automated annotation&#39;</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true"></a>p &lt;-<span class="st"> </span>pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true"></a>    <span class="kw">log2</span>(<span class="kw">table</span>(<span class="dt">Assigned =</span> sce_filtered<span class="op">$</span>annotation, <span class="dt">Cluster =</span> sce_filtered<span class="op">$</span>cluster)<span class="op">+</span><span class="dv">10</span>), </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true"></a>    <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;darkred&quot;</span>))(<span class="dv">101</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true"></a>)</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
+</div>
+</div>
+<div id="session-info" class="section level2">
+<h2>Session info</h2>
+<pre><code>## ─ Session info ───────────────────────────────────────────────────────────────
+##  setting  value                       
+##  version  R version 4.1.0 (2021-05-18)
+##  os       macOS High Sierra 10.13.6   
+##  system   x86_64, darwin17.0          
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_GB.UTF-8                 
+##  ctype    en_GB.UTF-8                 
+##  tz       Europe/Paris                
+##  date     2021-06-01                  
+## 
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package                * version    date       lib
+##  abind                    1.4-5      2016-07-21 [1]
+##  airway                 * 1.12.0     2021-05-20 [1]
+##  AnnotationDbi          * 1.54.0     2021-05-19 [1]
+##  AnnotationFilter         1.16.0     2021-05-19 [1]
+##  AnnotationHub          * 3.0.0      2021-05-19 [1]
+##  assertthat               0.2.1      2019-03-21 [1]
+##  backports                1.2.1      2020-12-09 [1]
+##  beachmat                 2.8.0      2021-05-19 [1]
+##  beeswarm                 0.3.1      2021-03-07 [1]
+##  Biobase                * 2.52.0     2021-05-19 [1]
+##  BiocFileCache          * 2.0.0      2021-05-19 [1]
+##  BiocGenerics           * 0.38.0     2021-05-19 [1]
+##  BiocIO                   1.2.0      2021-05-19 [1]
+##  BiocManager            * 1.30.15    2021-05-11 [1]
+##  BiocNeighbors            1.10.0     2021-05-19 [1]
+##  BiocParallel             1.26.0     2021-05-19 [1]
+##  BiocSingular             1.8.0      2021-05-19 [1]
+##  BiocVersion              3.13.1     2021-03-09 [1]
+##  biomaRt                  2.48.0     2021-05-19 [1]
+##  Biostrings               2.60.0     2021-05-19 [1]
+##  bit                      4.0.4      2020-08-04 [1]
+##  bit64                    4.0.5      2020-08-30 [1]
+##  bitops                   1.0-7      2021-04-24 [1]
+##  blob                     1.2.1      2020-01-20 [1]
+##  bluster                * 1.2.1      2021-05-27 [1]
+##  bookdown                 0.22       2021-04-22 [1]
+##  broom                    0.7.6      2021-04-05 [1]
+##  bslib                    0.2.5.1    2021-05-18 [1]
+##  cachem                   1.0.5      2021-05-15 [1]
+##  callr                    3.7.0      2021-04-20 [1]
+##  celldex                * 1.2.0      2021-05-20 [1]
+##  cellranger               1.1.0      2016-07-27 [1]
+##  cli                      2.5.0      2021-04-26 [1]
+##  cluster                  2.1.2      2021-04-17 [1]
+##  clustree               * 0.4.3      2020-06-14 [1]
+##  codetools                0.2-18     2020-11-04 [1]
+##  colorspace               2.0-1      2021-05-04 [1]
+##  cowplot                * 1.1.1      2020-12-30 [1]
+##  crayon                   1.4.1      2021-02-08 [1]
+##  curl                     4.3.1      2021-04-30 [1]
+##  data.table               1.14.0     2021-02-21 [1]
+##  DBI                      1.1.1      2021-01-15 [1]
+##  dbplyr                 * 2.1.1      2021-04-06 [1]
+##  DelayedArray           * 0.18.0     2021-05-19 [1]
+##  DelayedMatrixStats       1.14.0     2021-05-19 [1]
+##  deldir                   0.2-10     2021-02-16 [1]
+##  dendextend             * 1.15.1     2021-05-08 [1]
+##  desc                     1.3.0      2021-03-05 [1]
+##  devtools                 2.4.1      2021-05-05 [1]
+##  digest                   0.6.27     2020-10-24 [1]
+##  dplyr                  * 1.0.6      2021-05-05 [1]
+##  dqrng                    0.3.0      2021-05-01 [1]
+##  DropletUtils           * 1.12.0     2021-05-19 [1]
+##  dynamicTreeCut         * 1.63-1     2016-03-11 [1]
+##  edgeR                    3.34.0     2021-05-19 [1]
+##  ellipsis                 0.3.2      2021-04-29 [1]
+##  ensembldb                2.16.0     2021-05-19 [1]
+##  evaluate                 0.14       2019-05-28 [1]
+##  ExperimentHub            2.0.0      2021-05-19 [1]
+##  fansi                    0.4.2      2021-01-15 [1]
+##  farver                   2.1.0      2021-02-28 [1]
+##  fastmap                  1.1.0      2021-01-25 [1]
+##  filelock                 1.0.2      2018-10-05 [1]
+##  fitdistrplus             1.1-5      2021-05-28 [1]
+##  forcats                * 0.5.1      2021-01-27 [1]
+##  fs                       1.5.0      2020-07-31 [1]
+##  future                   1.21.0     2020-12-10 [1]
+##  future.apply             1.7.0      2021-01-04 [1]
+##  generics                 0.1.0      2020-10-31 [1]
+##  GenomeInfoDb           * 1.28.0     2021-05-19 [1]
+##  GenomeInfoDbData         1.2.6      2021-05-31 [1]
+##  GenomicAlignments        1.28.0     2021-05-19 [1]
+##  GenomicFeatures          1.44.0     2021-05-19 [1]
+##  GenomicRanges          * 1.44.0     2021-05-19 [1]
+##  ggbeeswarm               0.6.0      2017-08-07 [1]
+##  ggforce                  0.3.3      2021-03-05 [1]
+##  ggplot2                * 3.3.3      2020-12-30 [1]
+##  ggraph                 * 2.0.5      2021-02-23 [1]
+##  ggrepel                  0.9.1      2021-01-15 [1]
+##  ggridges                 0.5.3      2021-01-08 [1]
+##  globals                  0.14.0     2020-11-22 [1]
+##  glue                     1.4.2      2020-08-27 [1]
+##  goftest                  1.2-2      2019-12-02 [1]
+##  graphlayouts             0.7.1      2020-10-26 [1]
+##  gridExtra                2.3        2017-09-09 [1]
+##  gtable                   0.3.0      2019-03-25 [1]
+##  haven                    2.4.1      2021-04-23 [1]
+##  HDF5Array              * 1.20.0     2021-05-19 [1]
+##  hms                      1.1.0      2021-05-17 [1]
+##  htmltools                0.5.1.1    2021-01-22 [1]
+##  htmlwidgets              1.5.3      2020-12-10 [1]
+##  httpuv                   1.6.1      2021-05-07 [1]
+##  httr                     1.4.2      2020-07-20 [1]
+##  ica                      1.0-2      2018-05-24 [1]
+##  igraph                 * 1.2.6      2020-10-06 [1]
+##  interactiveDisplayBase   1.30.0     2021-05-19 [1]
+##  IRanges                * 2.26.0     2021-05-19 [1]
+##  irlba                    2.3.3      2019-02-05 [1]
+##  jquerylib                0.1.4      2021-04-26 [1]
+##  jsonlite                 1.7.2      2020-12-09 [1]
+##  KEGGREST                 1.32.0     2021-05-19 [1]
+##  KernSmooth               2.23-20    2021-05-03 [1]
+##  knitr                    1.33       2021-04-24 [1]
+##  later                    1.2.0      2021-04-23 [1]
+##  lattice                  0.20-44    2021-05-02 [1]
+##  lazyeval                 0.2.2      2019-03-15 [1]
+##  leiden                   0.3.8      2021-05-24 [1]
+##  lifecycle                1.0.0      2021-02-15 [1]
+##  limma                    3.48.0     2021-05-19 [1]
+##  listenv                  0.8.0      2019-12-05 [1]
+##  lmtest                   0.9-38     2020-09-09 [1]
+##  locfit                   1.5-9.4    2020-03-25 [1]
+##  lubridate                1.7.10     2021-02-26 [1]
+##  magrittr                 2.0.1      2020-11-17 [1]
+##  MASS                     7.3-54     2021-05-03 [1]
+##  Matrix                 * 1.3-3      2021-05-04 [1]
+##  MatrixGenerics         * 1.4.0      2021-05-19 [1]
+##  matrixStats            * 0.58.0     2021-01-29 [1]
+##  memoise                  2.0.0      2021-01-26 [1]
+##  metapod                  1.0.0      2021-05-19 [1]
+##  mgcv                     1.8-35     2021-04-18 [1]
+##  mime                     0.10       2021-02-13 [1]
+##  miniUI                   0.1.1.1    2018-05-18 [1]
+##  modelr                   0.1.8      2020-05-19 [1]
+##  munsell                  0.5.0      2018-06-12 [1]
+##  nlme                     3.1-152    2021-02-04 [1]
+##  parallelly               1.25.0     2021-04-30 [1]
+##  patchwork                1.1.1      2020-12-17 [1]
+##  pbapply                  1.4-3      2020-08-18 [1]
+##  pheatmap               * 1.0.12     2019-01-04 [1]
+##  pillar                   1.6.1      2021-05-16 [1]
+##  pkgbuild                 1.2.0      2020-12-15 [1]
+##  pkgconfig                2.0.3      2019-09-22 [1]
+##  pkgload                  1.2.1      2021-04-06 [1]
+##  plotly                   4.9.3      2021-01-10 [1]
+##  plyr                     1.8.6      2020-03-03 [1]
+##  png                      0.1-7      2013-12-03 [1]
+##  polyclip                 1.10-0     2019-03-14 [1]
+##  prettyunits              1.1.1      2020-01-24 [1]
+##  processx                 3.5.2      2021-04-30 [1]
+##  progress                 1.2.2      2019-05-16 [1]
+##  promises                 1.2.0.1    2021-02-11 [1]
+##  ProtGenerics             1.24.0     2021-05-19 [1]
+##  ps                       1.6.0      2021-02-28 [1]
+##  purrr                  * 0.3.4      2020-04-17 [1]
+##  R.methodsS3              1.8.1      2020-08-26 [1]
+##  R.oo                     1.24.0     2020-08-26 [1]
+##  R.utils                  2.10.1     2020-08-26 [1]
+##  R6                       2.5.0      2020-10-28 [1]
+##  RANN                     2.6.1      2019-01-08 [1]
+##  rappdirs                 0.3.3      2021-01-31 [1]
+##  RColorBrewer             1.1-2      2014-12-07 [1]
+##  Rcpp                     1.0.6      2021-01-15 [1]
+##  RcppAnnoy                0.0.18     2020-12-15 [1]
+##  RCurl                    1.98-1.3   2021-03-16 [1]
+##  readr                  * 1.4.0      2020-10-05 [1]
+##  readxl                   1.3.1      2019-03-13 [1]
+##  remotes                  2.3.0      2021-04-01 [1]
+##  reprex                   2.0.0      2021-04-02 [1]
+##  reshape2                 1.4.4      2020-04-09 [1]
+##  restfulr                 0.0.13     2017-08-06 [1]
+##  reticulate               1.20       2021-05-03 [1]
+##  rhdf5                  * 2.36.0     2021-05-19 [1]
+##  rhdf5filters             1.4.0      2021-05-19 [1]
+##  Rhdf5lib                 1.14.0     2021-05-19 [1]
+##  rjson                    0.2.20     2018-06-08 [1]
+##  rlang                    0.4.11     2021-04-30 [1]
+##  rmarkdown                2.8        2021-05-07 [1]
+##  rmdformats               1.0.2      2021-04-19 [1]
+##  ROCR                     1.0-11     2020-05-02 [1]
+##  rpart                    4.1-15     2019-04-12 [1]
+##  rprojroot                2.0.2      2020-11-15 [1]
+##  Rsamtools                2.8.0      2021-05-19 [1]
+##  RSQLite                  2.2.7      2021-04-22 [1]
+##  rstudioapi               0.13       2020-11-12 [1]
+##  rsvd                     1.0.5      2021-04-16 [1]
+##  rtracklayer              1.52.0     2021-05-19 [1]
+##  Rtsne                    0.15       2018-11-10 [1]
+##  rvest                    1.0.0      2021-03-09 [1]
+##  S4Vectors              * 0.30.0     2021-05-19 [1]
+##  sass                     0.4.0      2021-05-12 [1]
+##  ScaledMatrix             1.0.0      2021-05-19 [1]
+##  scales                   1.1.1      2020-05-11 [1]
+##  scater                 * 1.20.0     2021-05-19 [1]
+##  scattermore              0.7        2020-11-24 [1]
+##  scran                  * 1.20.1     2021-05-24 [1]
+##  scRNAseq               * 2.6.1      2021-05-25 [1]
+##  sctransform              0.3.2      2020-12-16 [1]
+##  scuttle                * 1.2.0      2021-05-19 [1]
+##  sessioninfo              1.1.1      2018-11-05 [1]
+##  Seurat                 * 4.0.1      2021-03-18 [1]
+##  SeuratObject           * 4.0.1      2021-05-08 [1]
+##  shiny                    1.6.0      2021-01-25 [1]
+##  SingleCellExperiment   * 1.14.1     2021-05-21 [1]
+##  SingleR                * 1.6.1      2021-05-20 [1]
+##  sparseMatrixStats        1.4.0      2021-05-19 [1]
+##  spatstat.core            2.1-2      2021-04-18 [1]
+##  spatstat.data            2.1-0      2021-03-21 [1]
+##  spatstat.geom            2.1-0      2021-04-15 [1]
+##  spatstat.sparse          2.0-0      2021-03-16 [1]
+##  spatstat.utils           2.1-0      2021-03-15 [1]
+##  statmod                  1.4.36     2021-05-10 [1]
+##  stringi                  1.6.2      2021-05-17 [1]
+##  stringr                * 1.4.0      2019-02-10 [1]
+##  SummarizedExperiment   * 1.22.0     2021-05-19 [1]
+##  survival                 3.2-11     2021-04-26 [1]
+##  tensor                   1.5        2012-05-05 [1]
+##  TENxPBMCData           * 1.10.0     2021-05-20 [1]
+##  testthat                 3.0.2      2021-02-14 [1]
+##  tibble                 * 3.1.2      2021-05-16 [1]
+##  tidygraph                1.2.0.9000 2021-02-09 [1]
+##  tidyr                  * 1.1.3      2021-03-03 [1]
+##  tidyselect               1.1.1      2021-04-30 [1]
+##  tidyverse              * 1.3.1      2021-04-15 [1]
+##  tweenr                   1.0.2      2021-03-23 [1]
+##  usethis                  2.0.1      2021-02-10 [1]
+##  utf8                     1.2.1      2021-03-12 [1]
+##  uwot                   * 0.1.10     2020-12-15 [1]
+##  vctrs                    0.3.8      2021-04-29 [1]
+##  vipor                    0.4.5      2017-03-22 [1]
+##  viridis                  0.6.1      2021-05-11 [1]
+##  viridisLite              0.4.0      2021-04-13 [1]
+##  withr                    2.4.2      2021-04-18 [1]
+##  xfun                     0.23       2021-05-15 [1]
+##  XML                      3.99-0.6   2021-03-16 [1]
+##  xml2                     1.3.2      2020-04-23 [1]
+##  xtable                   1.8-4      2019-04-21 [1]
+##  XVector                  0.32.0     2021-05-19 [1]
+##  yaml                     2.2.1      2020-02-01 [1]
+##  zlibbioc                 1.38.0     2021-05-19 [1]
+##  zoo                      1.8-9      2021-03-09 [1]
+##  source                              
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.1.0)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.1)                      
+##  Bioconductor                        
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.3)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.3)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.1.0)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  Bioconductor                        
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.1.0)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Github (thomasp85/tidygraph@75c814e)
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
+##  CRAN (R 4.0.2)                      
+## 
+## [1] /Library/Frameworks/R.framework/Versions/4.1/Resources/library</code></pre>
 </div>
 </div>
 

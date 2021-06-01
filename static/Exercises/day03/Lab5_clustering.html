@@ -7,7 +7,7 @@
 
     
     
-    <title>Lab 4: Dimension reduction, clustering and annotation</title>
+    <title>Lab 5: Dimension reduction, clustering and annotation</title>
 
         <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1635,11 +1635,11 @@ font-weight: bold
          
    
         
-      <h1 class="title">Lab 4: Dimension reduction, clustering and annotation</h1>
+      <h1 class="title">Lab 5: Dimension reduction, clustering and annotation</h1>
       
          <!-- readthedown authors -->
    <div id="sidebar">
-    <h2><a href="#content">Lab 4: Dimension reduction, clustering and annotation</a></h2>
+    <h2><a href="#content">Lab 5: Dimension reduction, clustering and annotation</a></h2>
     <div id="toc">
       <ul>
       <li><a href="#dimensional-reduction-for-clustering">1. Dimensional reduction for clustering</a>
@@ -1653,7 +1653,7 @@ font-weight: bold
       <li><a href="#clustering">2. Clustering</a>
       <ul>
       <li><a href="#clustering-algorithms">Clustering algorithms</a></li>
-      <li><a href="#dimensional-reduction-for-clustering-visualization-tsne-umap">Dimensional reduction for clustering visualization: tSNE, UMAP</a></li>
+      <li><a href="#dimensional-reduction-for-clustering-visualization">Dimensional reduction for clustering visualization</a></li>
       <li><a href="#comparing-different-clustering-approaches">Comparing different clustering approaches</a></li>
       </ul></li>
       <li><a href="#cell-annotation">3. Cell annotation</a>
@@ -1952,8 +1952,8 @@ Show code
 </details>
 <p><br></p>
 </div>
-<div id="dimensional-reduction-for-clustering-visualization-tsne-umap" class="section level3">
-<h3>Dimensional reduction for clustering visualization: tSNE, UMAP</h3>
+<div id="dimensional-reduction-for-clustering-visualization" class="section level3">
+<h3>Dimensional reduction for clustering visualization</h3>
 <p><code>PCA</code> is a powerful linear approach to compress large datasets into smaller dimensional spaces. However, it struggles at emphasizing the existence of clusters in complex datasets, when visualized in 2D.</p>
 <p><code>scater</code> provides a handy way to perform more complex data embeddings:</p>
 <pre><code>- tSNE
@@ -2211,6 +2211,7 @@ Show code
 ##  bslib                    0.2.5.1    2021-05-18 [1]
 ##  cachem                   1.0.5      2021-05-15 [1]
 ##  callr                    3.7.0      2021-04-20 [1]
+##  celldex                * 1.2.0      2021-05-20 [1]
 ##  cellranger               1.1.0      2016-07-27 [1]
 ##  cli                      2.5.0      2021-04-26 [1]
 ##  cluster                  2.1.2      2021-04-17 [1]
@@ -2442,6 +2443,7 @@ Show code
 ##  CRAN (R 4.0.2)                      
 ##  CRAN (R 4.0.2)                      
 ##  CRAN (R 4.0.2)                      
+##  Bioconductor                        
 ##  CRAN (R 4.0.2)                      
 ##  CRAN (R 4.0.2)                      
 ##  CRAN (R 4.1.0)                      

@@ -42,7 +42,6 @@ download.file("...") # equivalent of `wget ...` in terminal
 ```
 </p></details><br>
 
-
 ## 2. Connect directly to AWS
 
 A general issue with bioinformatic analyses stems from the fact that nobody works in the same environment: 
@@ -257,8 +256,3 @@ ls -l ~/Share/GSM4486714_AXH009*
 ls -l ~/Share/SRR11575369_1.fastq.gz
 ```
 
-## Session info 
-
-```{r echo = FALSE}
-devtools::session_info() 
-```

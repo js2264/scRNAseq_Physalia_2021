@@ -1,5 +1,5 @@
 ---
-title: "Lab 4: Dimension reduction, clustering and annotation"
+title: "Lab 5: Dimension reduction, clustering and annotation"
 output: 
     rmdformats::readthedown: 
         highlight: tango
@@ -315,7 +315,7 @@ sce_filtered$clusters_graph2 <- factor(sce_clust2)
 ```
 </p></details><br>
 
-### Dimensional reduction for clustering visualization: tSNE, UMAP
+### Dimensional reduction for clustering visualization
 
 `PCA` is a powerful linear approach to compress large datasets into smaller dimensional spaces. However, 
 it struggles at emphasizing the existence of clusters in complex datasets, when visualized in 2D. 
