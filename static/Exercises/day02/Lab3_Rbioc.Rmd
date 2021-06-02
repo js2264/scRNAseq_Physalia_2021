@@ -242,7 +242,7 @@ Notably, several packages are increasingly becoming central for single-cell anal
 ![](.img/2021-05-31-09-38-24.png)
 
 ```{r eval = FALSE}
-sce <- readRDS("~/Downloads/nestorowa.rds") # Adapted from A single-cell resolution map of mouse hematopoietic stem and progenitor cell differentiation, Nestorowa et al., Blood 2016, doi: 10.1182/blood-2016-05-716480
+source('bin/prepare_Nestorowa.R') # Adapted from Nestorowa et al., Blood 2016 (doi: 10.1182/blood-2016-05-716480)
 sce
 class(sce)
 ```
@@ -278,12 +278,11 @@ head(sce$sizeFactor)
 ```
 </p></details><br>
 
-- Are there any reduced dimensionality representation of the data stored in the `sce` object? Can we run a `PCA` using normalized counts?
+- Are there any reduced dimensionality representation of the data stored in the `sce` object? How can we run a `PCA` using normalized counts?
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 reducedDims(sce)
-#
 pca <- prcomp(t(logcounts(sce)))
 names(pca)
 dim(pca$x)
@@ -316,8 +315,14 @@ However, it rapidly evolved in a much larger project, and now operates along wit
 It also has a [very extended support](https://github.com/satijalab/seurat/discussions) from the lab group. 
 All in all, is provides a (somewhat) simple workflow to start investigating scRNAseq data. 
 
+It is important to chose one standard that you feel comfortable with yourself. Which standard provides the most 
+intuitive approach for you? Do you prefer a unique, "plug-n-play" workflow (`Seurat`-style), or a modular approach (`Bioconductor`-style)? 
+Which documentation is easier to read for you, a central full-featured website with extensive examples (`Seurat`-style), 
+or "programmatic"-style vignettes (`Bioconductor`-style)? 
+
 This course will sometimes use `Seurat`-based methods, and sometimes `Bioconductor`-based methods. 
-In the absence of coordination of data structures, the next best solution is to write functions to coerce an object from a certain class to another class (i.e. `Seurat` to `SingleCellExperiment`, or vice-versa).
+In the absence of coordination of data structures, the next best solution is to write functions to 
+coerce an object from a certain class to another class (i.e. `Seurat` to `SingleCellExperiment`, or vice-versa).
 Luckily, this is quite straightforward in `R` for these 2 data classes: 
 
 ```{r eval = FALSE}
@@ -350,7 +355,7 @@ nrow(sce_seurat)
 # cells and features access
 Seurat::Cells(sce_seurat)
 head(rownames(sce_seurat))
-# cell metadata access
+# cell data access
 head(sce_seurat[[]])
 head(sce_seurat$label)
 # Counts access
@@ -361,15 +366,6 @@ Embeddings(object = sce_seurat, reduction = "pca")
 Seurat::Embeddings(object = sce_seurat, 'umap')[1:10,]
 ```
 </p></details><br>
-
-**Side note (personal point of view!):** 
-
-Although `Seurat` has initially attracted a large crowd of enthusiastic scRNAseq-ers, and is currently surfing on the wave of its popularity. 
-That being said, it currently introduces "standards" that are different from those introduced by `Bioconductor`, and `Seurat` is actively kept **away** from the `Bioconductor` ecosystem and from its **inter-operabilty** and **non-redundant** standards.  
-In my humble opinion, I find that this approach is questionable: it impedes standardization of analysis approaches and limits the impact of newly developed methods which have to rely on one type of standards or the other. 
-I also find it non-ideal to rely on analysis workflows thought and developed by a single lab, rather than by an entire consortium who collectively develop, review, and maintain 2000+ packages and host international conferences to improve their ecosystem in a coherent manner with long-term perspectives.
-
-![](.img/2021-05-31-11-29-35.png)
 
 ## 4. Reading scRNAseq data 
 
@@ -420,6 +416,13 @@ p <- p1 + p2
 p
 ```
 </p></details><br>
+
+## 5. Bonus 
+
+To compare the two different approaches, try preparing both a 
+`SingleCellExperiment` or a `Seurat` object from scratch, using the matrix files 
+generated in the previous lab. Read the documentation of the two related packages to 
+understand how to do this. 
 
 ## Session info 
 

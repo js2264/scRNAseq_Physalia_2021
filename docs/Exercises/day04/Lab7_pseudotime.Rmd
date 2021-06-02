@@ -169,7 +169,6 @@ dataset <- add_grouping(
 )
 
 ## --- Add reduced dimension embedding
-
 dataset <- add_dimred(
     dataset,
     reducedDim(sce, 'PCA')
@@ -374,6 +373,11 @@ sce_fit <- tradeSeq::fitGAM(
 
 > Check differentially expressed genes
 
+Several tests to check for DE have been integrated into `tradeSeq`. 
+
+- Try some out. Which one(s) can you use to identify genes getting activated early on during differentiation? And later on? 
+
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 sce_test <- tradeSeq::associationTest(
     sce_fit,
@@ -410,7 +414,9 @@ p <- cowplot::plot_grid(
     })
 )
 ```
+</p></details><br>
 
+<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 sce_test <- tradeSeq::startVsEndTest(
     sce_fit,
@@ -448,6 +454,11 @@ p <- cowplot::plot_grid(
     })
 )
 ```
+</p></details><br>
+
+## References 
+
+This exercise was adapted from Chapt. 18 of [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/). 
 
 ## Session info 
 

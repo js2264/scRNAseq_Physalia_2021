@@ -514,6 +514,15 @@ p <- pheatmap::pheatmap(
 ```
 </p></details><br>
 
+## 4. Bonus 
+
+Fill in the analysis template in `bin/prepare_Ernst.R` to execute the different 
+processing/analysis steps we covered in this exercise. 
+
+## References 
+
+This exercise was adapted from Chapts. 7-12 of [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/). 
+
 ## Session info 
 
 ```{r echo = FALSE}

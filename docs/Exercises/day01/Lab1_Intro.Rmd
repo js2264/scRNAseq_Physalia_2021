@@ -256,3 +256,10 @@ ls -l ~/Share/GSM4486714_AXH009*
 ls -l ~/Share/SRR11575369_1.fastq.gz
 ```
 
+## 5. Bonus 
+
+For those of you who are already familiar with the basics, you can fast-forward 
+through this lab and start working on scRNAseq data directly. The script in 
+`bin/prepare_Ernst.R` is a template to process a publicly available scRNAseq dataset. 
+You can start exploring it to see if you understsand the different chunks of code and 
+their importance. All the content from this template will eventually be covered in the next labs. 

@@ -1654,6 +1654,7 @@ font-weight: bold
       <li><a href="#ordering-trajectory-with-rna-velocity">Ordering trajectory with RNA velocity</a></li>
       </ul></li>
       <li><a href="#differential-expression-along-differentiation-trajectory">3. Differential expression along differentiation trajectory</a></li>
+      <li><a href="#references">References</a></li>
       <li><a href="#session-info">Session info</a></li>
       </ul>
     </div>
@@ -1819,18 +1820,17 @@ Show code
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>)</span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a></span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a><span class="co">## --- Add reduced dimension embedding</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a>dataset &lt;-<span class="st"> </span><span class="kw">add_dimred</span>(</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>    dataset,</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>    <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>)</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a><span class="co">## --- TI</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a>modelFUN &lt;-<span class="st"> </span><span class="kw">ti_paga</span>()</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a>model &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a>    dataset, </span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a>    modelFUN</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true"></a>)</span></code></pre></div>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a>dataset &lt;-<span class="st"> </span><span class="kw">add_dimred</span>(</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a>    dataset,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>    <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a><span class="co">## --- TI</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a>modelFUN &lt;-<span class="st"> </span><span class="kw">ti_paga</span>()</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a>model &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a>    dataset, </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a>    modelFUN</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a>)</span></code></pre></div>
 <p>To provide such unified framework, <code>dynverse</code> needs <code>Docker</code> or <code>Singularity</code> to be installed and set up. It is rather challenging to have these tools properly working on a AWS machine for non-sudo users, so we will let you further explore this package on your own on a local machine running <code>Docker</code>/<code>Singularity</code>, should you want it.</p>
 <p>More info are available from <a href="https://dynverse.org/users/">the <code>dynverse</code> official website</a>.</p>
 </div>
@@ -2037,6 +2037,15 @@ Show code
 <blockquote>
 <p>Check differentially expressed genes</p>
 </blockquote>
+<p>Several tests to check for DE have been integrated into <code>tradeSeq</code>.</p>
+<ul>
+<li>Try some out. Which one(s) can you use to identify genes getting activated early on during differentiation? And later on?</li>
+</ul>
+<details>
+<summary>
+Show code
+</summary>
+<p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>sce_test &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">associationTest</span>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>    sce_fit,</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>    <span class="dt">l2fc =</span> <span class="dv">1</span></span>
@@ -2071,6 +2080,14 @@ Show code
 <span id="cb14-32"><a href="#cb14-32" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
 <span id="cb14-33"><a href="#cb14-33" aria-hidden="true"></a>    })</span>
 <span id="cb14-34"><a href="#cb14-34" aria-hidden="true"></a>)</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
+<details>
+<summary>
+Show code
+</summary>
+<p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>sce_test &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">startVsEndTest</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>    sce_fit,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>    <span class="dt">l2fc =</span> <span class="dv">1</span>, </span>
@@ -2106,6 +2123,13 @@ Show code
 <span id="cb15-33"><a href="#cb15-33" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
 <span id="cb15-34"><a href="#cb15-34" aria-hidden="true"></a>    })</span>
 <span id="cb15-35"><a href="#cb15-35" aria-hidden="true"></a>)</span></code></pre></div>
+</p>
+</details>
+<p><br></p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>This exercise was adapted from Chapt. 18 of <a href="https://bioconductor.org/books/release/OSCA/">Orchestrating Single-Cell Analysis with Bioconductor</a>.</p>
 </div>
 <div id="session-info" class="section level2">
 <h2>Session info</h2>
@@ -2119,7 +2143,7 @@ Show code
 ##  collate  en_GB.UTF-8                 
 ##  ctype    en_GB.UTF-8                 
 ##  tz       Europe/Paris                
-##  date     2021-06-01                  
+##  date     2021-06-02                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package                * version  date       lib source        
