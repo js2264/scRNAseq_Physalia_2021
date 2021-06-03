@@ -12,21 +12,21 @@
     <title>2. Program :: Single-cell RNA-seq analysis with R/Bioconductor</title>
 
     
-    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/theme.css?1622710658" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1622710658" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme.css?1622713198" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1622713198" rel="stylesheet">
     
-    <link href="/scRNAseq_Physalia_2021/css/theme-red.css?1622710658" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme-red.css?1622713198" rel="stylesheet">
     
     
 
-    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1622710658"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1622713198"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -394,85 +394,6 @@
         <section id="body">
         <div id="overlay"></div>
         <div class="padding highlightable">
-              
-              <div>
-                <div id="top-bar">
-                
-                  
-                  
-                  
-                  <div id="top-github-link">
-                    <a class="github-link" title='Edit this page' href="https://github.com/js2264/scRNAseq_Physalia_2021/blob/master/content/Introduction/02_Program.md" target="blank">
-                      <i class="fas fa-code-branch"></i>
-                      <span id="top-github-link-text">Edit this page</span>
-                    </a>
-                  </div>
-                  
-                
-                
-                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
-                    <span id="sidebar-toggle-span">
-                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
-                          <i class="fas fa-bars"></i>
-                        </a>
-                    </span>
-                  
-                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
-                  
-                  <span class="links">
-                 
-                 
-                   2. Program
-                 
-                  </span>
-                </div>
-                
-                    <div class="progress">
-    <div class="wrapper">
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#monday--classes-from-1400-to-2000-paris-time">Monday – Classes from 14:00 to 20:00 (Paris time)</a>
-      <ul>
-        <li><a href="#lecture-1--scrna-seq-experimental-design-orr">Lecture 1 – scRNA-Seq experimental design [Orr]</a></li>
-        <li><a href="#lab-1--familiarizing-yourself-with-the-course-aws-instance-jacques">Lab 1 – Familiarizing yourself with the course AWS instance [Jacques]</a></li>
-        <li><a href="#lecture-2---intro-to-data-processing-from-bcl-file-to-count-matrix-jacques">Lecture 2 - Intro to Data processing: from bcl file to count matrix [Jacques]</a></li>
-        <li><a href="#lab-2--processing-raw-scrna-seq-data-orr">Lab 2 – Processing raw scRNA-Seq data [Orr]</a></li>
-      </ul>
-    </li>
-    <li><a href="#tuesday--classes-from-1400-to-2000-paris-time">Tuesday – Classes from 14:00 to 20:00 (Paris time)</a>
-      <ul>
-        <li><a href="#flash-talks-everybody">Flash talks [Everybody]</a></li>
-        <li><a href="#lab-3---introduction-to-rbioconductor-jacques">Lab 3 - Introduction to R/Bioconductor [Jacques]</a></li>
-        <li><a href="#lecture-3---expression-qc-normalisation-and-gene-level-batch-correction-orr">Lecture 3 - Expression QC, normalisation and gene-level batch correction [Orr]</a></li>
-        <li><a href="#lab-4--data-wrangling-for-scrnaseq-data-orr">Lab 4 – Data wrangling for scRNAseq data [Orr]</a></li>
-      </ul>
-    </li>
-    <li><a href="#wednesday--classes-from-1400-to-2000-paris-time">Wednesday – Classes from 14:00 to 20:00 (Paris time)</a>
-      <ul>
-        <li><a href="#lecture-4---identifying-cell-populations-jacques">Lecture 4 - Identifying cell populations [Jacques]</a></li>
-        <li><a href="#lab-5--feature-selection--clustering-analyses-jacques">Lab 5 – Feature selection &amp; Clustering analyses [Jacques]</a></li>
-        <li><a href="#lecture-5---batch-effects-correction-orr">Lecture 5 - Batch effects correction [Orr]</a></li>
-        <li><a href="#lab-6---correcting-batch-effects-orr">Lab 6 - Correcting batch effects [Orr]</a></li>
-      </ul>
-    </li>
-    <li><a href="#thursday--classes-from-1400-to-2000-paris-time">Thursday – Classes from 14:00 to 20:00 (Paris time)</a>
-      <ul>
-        <li><a href="#lecture-6---trajectories-and-pseudotimes-jacques">Lecture 6 - Trajectories and pseudotimes [Jacques]</a></li>
-        <li><a href="#lab-7---pseudotime-analyses-jacques">Lab 7 - Pseudotime analyses [Jacques]</a></li>
-        <li><a href="#lecture-7---single-cell-multi-omic-technologies-orr">Lecture 7 - Single-cell multi-omic technologies [Orr]</a></li>
-        <li><a href="#lab-8---multi-omics-analysis-of-single-cell-transcriptomics-and-proteomics-orr">Lab 8 - multi-Omics: analysis of single-cell transcriptomics and proteomics [Orr]</a></li>
-      </ul>
-    </li>
-    <li><a href="#friday--classes-from-1400-to-2000-paris-time">Friday – Classes from 14:00 to 20:00 (Paris time)</a></li>
-  </ul>
-</nav>
-    </div>
-</div>
-
-                
-              </div>
-            </div>
-            
         <div id="head-tags">
         
         </div>
@@ -893,19 +814,19 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1622710658"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1622710658"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1622710658"></script>
-    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1622710658"></script>
-    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1622710658"></script>
-    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1622710658"></script>
+    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1622713198"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1622713198"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1622713198"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1622713198"></script>
+    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1622713198"></script>
+    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1622713198"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1622710658"></script>
-    <script src="/scRNAseq_Physalia_2021/js/learn.js?1622710658"></script>
-    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1622710658"></script>
+    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1622713198"></script>
+    <script src="/scRNAseq_Physalia_2021/js/learn.js?1622713198"></script>
+    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1622713198"></script>
     
         
-            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1622710658"></script>
+            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1622713198"></script>
         
         <script>
             mermaid.initialize({ startOnLoad: true });
