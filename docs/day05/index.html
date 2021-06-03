@@ -12,21 +12,21 @@
     <title>5. Day 05 :: Single-cell RNA-seq analysis with R/Bioconductor</title>
 
     
-    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/theme.css?1622708004" rel="stylesheet">
-    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1622708004" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/nucleus.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/fontawesome-all.min.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hybrid.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/featherlight.min.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/perfect-scrollbar.min.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/auto-complete.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/atom-one-dark-reasonable.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme.css?1622709304" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/hugo-theme.css?1622709304" rel="stylesheet">
     
-    <link href="/scRNAseq_Physalia_2021/css/theme-blue.css?1622708004" rel="stylesheet">
+    <link href="/scRNAseq_Physalia_2021/css/theme-blue.css?1622709304" rel="stylesheet">
     
     
 
-    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1622708004"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery-3.3.1.min.js?1622709304"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -488,8 +488,25 @@
 <blockquote>
 <p>Differentiating multiciliated cells:</p>
 </blockquote>
+<p>This Smart-seq2 dataset contains both malignant and non-malignant cells from multiple tumors. Cells exhibit signatures of astrocytoma, oligodendroglioma, stemness and proliferation.</p>
+<p><img src="/scRNAseq_Physalia_2021/
+img/tumors.png" alt="">
+(<a href="https://doi.org/10.1126/science.aai8478" target="_blank">Venteicher, Tirosh et al., Science 2017</a>
+)</p>
+<p>Here are few suggestions to analyse these cells:</p>
+<ul>
+<li>Decide whether you want to work on a single tumor at a time, or a few tumors together</li>
+<li>QC and cell filtering</li>
+<li>PCA and investigation of the meaning of PC1</li>
+<li>Clustering of malignant cells</li>
+<li>Subclustering and programs</li>
+</ul>
+<blockquote>
+<p>Differentiating multiciliated cells:</p>
+</blockquote>
 <p>This 10X genomics scRNAseq dataset has been obtained from cells dissected from mouse brain lateral ventricles and forced to differentiate <em>in vitro</em> into multiciliated cells (MCCs, specialized cells synchronoulsy beating to ensure proper flow of the cerebrospinal fluids). The interest of this dataset is that it contains progenitors of the MCCs (both cycling and post-mitotic commited progenitors), as well as <strong>post-mitotic</strong> differentiating cells and terminally differentiated MCCs. Although the differentiation happens after the last mitosis of the progenitors, differentiating cells co-opt the cell cycle machinery to amplify their centrioles.</p>
-<p><img src=".img/2021-06-03-09-49-34.png" alt="">
+<p><img src="/scRNAseq_Physalia_2021/
+img/mcc.png" alt="">
 (<a href="https://doi.org/10.1242/dev.094102" target="_blank">Tan et al., Developement 2013</a>
 )</p>
 <p>Here are few suggestions to analyse these cells:</p>
@@ -514,7 +531,10 @@
 <li>How</li>
 </ul>
 <p>The aim for these presentations is to outline the question(s) you raised, the approach you used,
-and the general workflow. The biological &ldquo;impact&rdquo; of the study is not the primary goal:
+and the general workflow.</p>
+<p>Focus on presenting the dataset (nature, quality of the data), its composition (clusters, cell types),
+and if you had time to investigate it, the lineage(s) and anything else you thought of.</p>
+<p>The biological &ldquo;impact&rdquo; of the study is not the primary goal:
 don&rsquo;t forget this is a half-day project, whereas scRNAseq biocomputational investigation
 typically takes months to reach a publishable level, so don&rsquo;t focus too much on this!</p>
 <hr>
@@ -806,19 +826,19 @@ This is the end of a week-long workshop, now is time to relax!</p>
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1622708004"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1622708004"></script>
-    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1622708004"></script>
-    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1622708004"></script>
-    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1622708004"></script>
-    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1622708004"></script>
+    <script src="/scRNAseq_Physalia_2021/js/clipboard.min.js?1622709304"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.min.js?1622709304"></script>
+    <script src="/scRNAseq_Physalia_2021/js/perfect-scrollbar.jquery.min.js?1622709304"></script>
+    <script src="/scRNAseq_Physalia_2021/js/jquery.sticky.js?1622709304"></script>
+    <script src="/scRNAseq_Physalia_2021/js/featherlight.min.js?1622709304"></script>
+    <script src="/scRNAseq_Physalia_2021/js/highlight.pack.js?1622709304"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1622708004"></script>
-    <script src="/scRNAseq_Physalia_2021/js/learn.js?1622708004"></script>
-    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1622708004"></script>
+    <script src="/scRNAseq_Physalia_2021/js/modernizr.custom-3.6.0.js?1622709304"></script>
+    <script src="/scRNAseq_Physalia_2021/js/learn.js?1622709304"></script>
+    <script src="/scRNAseq_Physalia_2021/js/hugo-learn.js?1622709304"></script>
     
         
-            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1622708004"></script>
+            <script src="/scRNAseq_Physalia_2021/mermaid/mermaid.js?1622709304"></script>
         
         <script>
             mermaid.initialize({ startOnLoad: true });

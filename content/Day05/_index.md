@@ -22,9 +22,24 @@ The rest of the day will be dedicated to group projects. In small groups, you wi
 
 > Differentiating multiciliated cells: 
 
+This Smart-seq2 dataset contains both malignant and non-malignant cells from multiple tumors. Cells exhibit signatures of astrocytoma, oligodendroglioma, stemness and proliferation. 
+
+![](/{{<myPackageUrl>}}img/tumors.png)
+([Venteicher, Tirosh et al., Science 2017](https://doi.org/10.1126/science.aai8478))
+
+Here are few suggestions to analyse these cells: 
+
+- Decide whether you want to work on a single tumor at a time, or a few tumors together
+- QC and cell filtering 
+- PCA and investigation of the meaning of PC1
+- Clustering of malignant cells
+- Subclustering and programs
+
+> Differentiating multiciliated cells: 
+
 This 10X genomics scRNAseq dataset has been obtained from cells dissected from mouse brain lateral ventricles and forced to differentiate *in vitro* into multiciliated cells (MCCs, specialized cells synchronoulsy beating to ensure proper flow of the cerebrospinal fluids). The interest of this dataset is that it contains progenitors of the MCCs (both cycling and post-mitotic commited progenitors), as well as **post-mitotic** differentiating cells and terminally differentiated MCCs. Although the differentiation happens after the last mitosis of the progenitors, differentiating cells co-opt the cell cycle machinery to amplify their centrioles. 
 
-![](.img/2021-06-03-09-49-34.png)
+![](/{{<myPackageUrl>}}img/mcc.png)
 ([Tan et al., Developement 2013](https://doi.org/10.1242/dev.094102))
 
 Here are few suggestions to analyse these cells: 
@@ -53,7 +68,12 @@ Focus on the important points:
 - How
 
 The aim for these presentations is to outline the question(s) you raised, the approach you used, 
-and the general workflow. The biological "impact" of the study is not the primary goal: 
+and the general workflow. 
+
+Focus on presenting the dataset (nature, quality of the data), its composition (clusters, cell types), 
+and if you had time to investigate it, the lineage(s) and anything else you thought of. 
+
+The biological "impact" of the study is not the primary goal: 
 don't forget this is a half-day project, whereas scRNAseq biocomputational investigation 
 typically takes months to reach a publishable level, so don't focus too much on this!
 
