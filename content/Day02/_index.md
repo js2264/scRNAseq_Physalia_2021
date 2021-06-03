@@ -4,7 +4,7 @@ day: "Day 02"
 presentation1: " "
 presentation2: " "
 practical1: "day02/Lab3_Rbioc"
-practical2: " "
+practical2: "day02/Lab4_data_wrangling_scRNAseq"
 ---
 
 ---
@@ -26,8 +26,8 @@ practical2: " "
 
     > Installing packages for R, data types, I/O
 
--  **\[XX min\]** ..... 
+-  **\[1h 15\]** Lab 4 - scRNAseq data wrangling
     [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.Rmd)]
 
-    > .......
+    > Digging into data structures, exploratory data analysis, data filtering
 

@@ -456,7 +456,7 @@ p <- cowplot::plot_grid(
 ```
 </p></details><br>
 
-## References 
+## Acknowledgements 
 
 This exercise was adapted from Chapt. 18 of [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/). 
 

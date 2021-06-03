@@ -4,7 +4,7 @@ day: "Day 04"
 presentation1: " "
 presentation2: " "
 practical1: "day04/Lab7_pseudotime"
-practical2: " "
+practical2: "day04/Lab8_citeseq"
 ---
 
 ---
@@ -26,9 +26,8 @@ practical2: " "
 
     > Trajectory inference, pseudotime, DE along differentiation path, 
     
-
-- **\[XX min\]** ..... 
+-  **\[1h 15\]** Lab 8 - Multi-omics integration with CITE-seq
     [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.Rmd)]
 
-    > .......
+    > Cluster cells based on different quantitative assays, integrate multiple assays into a single workflow, multi-modal differential expression analysis
 

@@ -516,10 +516,11 @@ p <- pheatmap::pheatmap(
 
 ## 4. Bonus 
 
-Fill in the analysis template in `bin/prepare_Ernst.R` to execute the different 
-processing/analysis steps we covered in this exercise. 
+Try to fill in the analysis template in `bin/prepare_Ernst.R` to execute the different 
+processing/analysis steps we covered in the previous exercises and this one. If you prefer 
+using `Seurat`, don't hesitate to modify the base template! 
 
-## References 
+## Acknowledgements 
 
 This exercise was adapted from Chapts. 7-12 of [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/). 
 

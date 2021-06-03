@@ -26,7 +26,7 @@ practical2: " "
 
     > Logging in AWS, opening RStudio, copying files from/to remote server, accessing scRNAseq data portals
 
--  **\[XX min\]** ..... 
+-  **\[1h 15\]** Lab 2 – Processing raw scRNA-Seq data
     [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.Rmd)]
 
-    > .......
+    > Different source outputs, using Cellranger, QC steps

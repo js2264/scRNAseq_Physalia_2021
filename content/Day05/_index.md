@@ -1,42 +1,78 @@
 ---
 title: "5. Day 05"
 day: "Day 05"
-presentation1: " "
-presentation2: " "
-presentation3: " "
-practical1: " "
-practical2: " "
-practical3: " "
 ---
 
----
+## Journal club (1h)    
 
-## Presentations for {{< param "day" >}}
+We will discuss in group(s) about two method papers published in 2020. 
 
-- **\[XX min\]** ..... 
-[[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation1" >}})
+> Schwabe et al.: 
+*The transcriptome dynamics of single cells during the cell cycle*, **Molecular Systems Biology 2020** (DOI: [10.15252/msb.20209946](https://doi.org/10.15252/msb.20209946))
 
-- **\[XX min\]** ..... 
-[[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation2" >}})
+> XXX
 
-- **\[XX min\]** ..... 
-[[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation3" >}})
+Read them ahead and identify one or two points that you would wish to discuss with the group.
 
 ---
 
-## Exercises for {{< param "day" >}}
+## Group projects 
 
-- **\[XX min\]** ..... 
-    [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical1" >}}.Rmd)]
+The rest of the day will be dedicated to group projects. In small groups, you will perform analysis of a real scRNAseq dataset. Here are the following datasets you can choose to work with. 
 
-    > .......
+> Differentiating multiciliated cells: 
 
-- **\[XX min\]** ..... 
-    [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical2" >}}.Rmd)]
+This 10X genomics scRNAseq dataset has been obtained from cells dissected from mouse brain lateral ventricles and forced to differentiate *in vitro* into multiciliated cells (MCCs, specialized cells synchronoulsy beating to ensure proper flow of the cerebrospinal fluids). The interest of this dataset is that it contains progenitors of the MCCs (both cycling and post-mitotic commited progenitors), as well as **post-mitotic** differentiating cells and terminally differentiated MCCs. Although the differentiation happens after the last mitosis of the progenitors, differentiating cells co-opt the cell cycle machinery to amplify their centrioles. 
 
-    > .......
+![](.img/2021-06-03-09-49-34.png)
+([Tan et al., Developement 2013](https://doi.org/10.1242/dev.094102))
 
-- **\[XX min\]** ..... 
-    [[HTML](/{{<myPackageUrl>}}Exercises/{{< param "practical3" >}}.html) | [Rmd (save to open in RStudio)](/{{<myPackageUrl>}}Exercises/{{< param "practical3" >}}.Rmd)]
+Here are few suggestions to analyse these cells: 
 
-    > .......
+- Cell filtering
+- HVG selection
+- Clustering 
+- Automated cell type annotation 
+- Cell cycle phase annotation 
+- Patterns of module expression 
+
+---
+
+## Group presentations
+
+During the last hour or so, each group will give a very brief presentation of their work. 
+
+Each presentation should be ~5-6 slides max, and should definitely take less than 10' max. 
+
+Focus on the important points: 
+
+- What
+- Why
+- Where
+- When
+- How
+
+The aim for these presentations is to outline the question(s) you raised, the approach you used, 
+and the general workflow. The biological "impact" of the study is not the primary goal: 
+don't forget this is a half-day project, whereas scRNAseq biocomputational investigation 
+typically takes months to reach a publishable level, so don't focus too much on this!
+
+---
+
+## Happy hour time 
+
+For those who want it, once the course is over, we will be having a more informal 
+hang out time, so that everybody can chat together and have a nice time. 
+This is the end of a week-long workshop, now is time to relax!
+
+What online workshops cannot provide (sadly): 
+
+- Snacks 
+- Drinks 
+- Couches 
+
+What we will **definitely** provide: 
+
+- Informal feedbacks
+- Friendly discussions
+- Good vibes

@@ -422,7 +422,8 @@ p
 To compare the two different approaches, try preparing both a 
 `SingleCellExperiment` or a `Seurat` object from scratch, using the matrix files 
 generated in the previous lab. Read the documentation of the two related packages to 
-understand how to do this. 
+understand how to do this.  
+This will be extensively covered in the next lab for everybody. 
 
 ## Session info 
 

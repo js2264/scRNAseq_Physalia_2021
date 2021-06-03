@@ -2,7 +2,19 @@
 title: " Single-cell RNA-seq analysis with R/Bioconductor"
 ---
 
-This repo contains the instructions related to the 2021 Physalia course entitled "Single-cell RNA-seq analysis with R/Bioconductor". 
+## Course content: 
+
+The workshop content is available [at this adress: https://github.com/js2264/scRNAseq_Physalia_2021](https://github.com/js2264/scRNAseq_Physalia_2021). 
+
+You can clone it locally with `git`: 
+
+```sh
+git clone https://github.com/js2264/scRNAseq_Physalia_2021.git
+```
+
+## To log in RStudio server: 
+
+[Simply go to the following web page](http://54.188.62.211:8787/): `http://54.188.62.211:8787/`
 
 ## IP for today (2021-01-14): 
 
@@ -10,23 +22,17 @@ This repo contains the instructions related to the 2021 Physalia course entitled
 IP="54.188.62.211"
 ```
 
-## To log in RStudio server: 
-
-[Simply go to the following web page](http://54.188.62.211:8787/): `http://54.188.62.211:8787/`
-
-Username and password are both your user ID (e.g. `user24`).
-
 ## To log in your AWS session: 
 
 ```sh
-KEY="c1.pem"
-chmod 600 ${KEY}
-USER="user1"
+KEY="path/to/key.pem"
+chmod 600 "${KEY}"
+USER="myuserID"
 IP="54.188.62.211"
-ssh -i ${KEY} ${USER}@${IP}
+ssh -i "${KEY}" "${USER}"@"${IP}"
 ```
 
-More information is available [here](/{{<myPackageUrl>}}how_to_load_in_aws/#connect-to-pre-configured-aws-machine) if needed. 
+More information is available [here](/{{<myPackageUrl>}}how_to_log_in_aws/#connect-to-pre-configured-aws-machine) if needed. 
 
 ## Shared Google Drive folder
 

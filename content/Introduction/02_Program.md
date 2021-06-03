@@ -82,7 +82,7 @@ Classes are from:
 ### Lecture 4 - Identifying cell populations [Jacques] 
   - Feature selection
   - Dimensionality reduction
-  - Graph-based clustering 
+  - Graph-based clustering and other cluster methods
   - Assigning cluster identity
   - Differential expression tests
 
@@ -109,14 +109,16 @@ Classes are from:
   - Differential expression through pseudotime
 
 ### Lab 7 - Pseudotime analyses [Jacques] 
-  - Review concepts from papers
+  - Infering trajectory in sperm cell lineage
+  - Orientating a trajectory with RNA veloctiy
   - Comparison of pseudotime methods
+  - DE analysis along a trajectory
 
 ### Lecture 7 - Single-cell multi-omic technologies [Orr] 
   - Introduction to other omic data types
   - Integrating scRNA-seq with other single-cell modalities (CITE, Perturb, ATAC, methylation…)
 
-### Lab 8 - multi-Omics: analysis of spatial single-cell transcriptomics [Orr] 
+### Lab 8 - multi-Omics: analysis of single-cell transcriptomics and proteomics [Orr] 
   - GO over-representation analyses
   - GSEA analyses
   - Finding regulatory elements with scATAC-seq and CICERO: https://www.bioconductor.org/packages/devel/bioc/vignettes/cicero/inst/doc/website.html
@@ -125,7 +127,7 @@ Classes are from:
 
 Friday will be divided in three parts: 
 
-- Morning (1h): "Journal club": discussion of a method paper
+- Morning (1h): "Journal club": discussion of method papers
 - Morning (1h + 1h30): Group projects: analysing scRNA-seq data by yourself, from A to Z
 - Afternoon (1h): Group presentations (10' each group, max 5 slides: what/why/where/when/how, conclusions)
 
