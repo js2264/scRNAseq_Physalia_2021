@@ -3,7 +3,7 @@ title: "3. Day 03"
 day: "Day 03"
 presentation1: " "
 presentation2: " "
-practical1: "day03/Lab5_clustering_"
+practical1: "day03/Lab5_clustering"
 practical2: "day03/Lab6_batch_correction"
 ---
 

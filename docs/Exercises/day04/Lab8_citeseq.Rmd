@@ -1,5 +1,5 @@
 ---
-title: "citeseq"
+title: "Lab 8 - Single-cell multi-omics with CITE-seq"
 output: 
     rmdformats::readthedown: 
         highlight: tango
@@ -9,7 +9,7 @@ output:
         css: ../../../custom.css
 ---
 
-```{r}
+```{r include=FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 

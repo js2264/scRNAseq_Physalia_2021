@@ -20,7 +20,7 @@ Read them ahead and identify one or two points that you would wish to discuss wi
 
 The rest of the day will be dedicated to group projects. In small groups, you will perform analysis of a real scRNAseq dataset. Here are the following datasets you can choose to work with. 
 
-> Differentiating multiciliated cells: 
+### Differentiating multiciliated cells: 
 
 This Smart-seq2 dataset contains both malignant and non-malignant cells from multiple tumors. Cells exhibit signatures of astrocytoma, oligodendroglioma, stemness and proliferation. 
 
@@ -35,7 +35,7 @@ Here are few suggestions to analyse these cells:
 - Clustering of malignant cells
 - Subclustering and programs
 
-> Differentiating multiciliated cells: 
+### Differentiating multiciliated cells: 
 
 This 10X genomics scRNAseq dataset has been obtained from cells dissected from mouse brain lateral ventricles and forced to differentiate *in vitro* into multiciliated cells (MCCs, specialized cells synchronoulsy beating to ensure proper flow of the cerebrospinal fluids). The interest of this dataset is that it contains progenitors of the MCCs (both cycling and post-mitotic commited progenitors), as well as **post-mitotic** differentiating cells and terminally differentiated MCCs. Although the differentiation happens after the last mitosis of the progenitors, differentiating cells co-opt the cell cycle machinery to amplify their centrioles. 
 

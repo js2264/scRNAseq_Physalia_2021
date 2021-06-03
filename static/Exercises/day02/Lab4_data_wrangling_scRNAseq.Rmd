@@ -1,5 +1,5 @@
 ---
-title: "07-Lab 4 - Single-cell Toolkit Lab (10X Non-Small Cell Lung Cancer)"
+title: "Lab 4 - Single-cell RNA-seq data wrangling"
 output: 
     rmdformats::readthedown: 
         highlight: tango
@@ -9,11 +9,9 @@ output:
         css: ../../../custom.css
 ---
 
-```{r, setup, include=FALSE, echo = FALSE, }
+```{r include=FALSE, echo = FALSE}
 knitr::opts_chunk$set(eval = FALSE)
 ```
-
-# Data Wrangling scRNAseq
 
 ## Goal
 

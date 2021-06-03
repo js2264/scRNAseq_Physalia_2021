@@ -7,7 +7,7 @@
 
     
     
-    <title>07-Lab 4 - Single-cell Toolkit Lab (10X Non-Small Cell Lung Cancer)</title>
+    <title>Lab 4 - Single-cell RNA-seq data wrangling</title>
 
         <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1635,14 +1635,12 @@ font-weight: bold
          
    
         
-      <h1 class="title">07-Lab 4 - Single-cell Toolkit Lab (10X Non-Small Cell Lung Cancer)</h1>
+      <h1 class="title">Lab 4 - Single-cell RNA-seq data wrangling</h1>
       
          <!-- readthedown authors -->
    <div id="sidebar">
-    <h2><a href="#content">07-Lab 4 - Single-cell Toolkit Lab (10X Non-Small Cell Lung Cancer)</a></h2>
+    <h2><a href="#content">Lab 4 - Single-cell RNA-seq data wrangling</a></h2>
     <div id="toc">
-      <ul>
-      <li><a href="#data-wrangling-scrnaseq">Data Wrangling scRNAseq</a>
       <ul>
       <li><a href="#goal">Goal</a></li>
       <li><a href="#introduction">Introduction</a>
@@ -1669,7 +1667,6 @@ font-weight: bold
       </ul></li>
       <li><a href="#detection-of-variable-genes-across-the-single-cells">Detection of variable genes across the single cells</a></li>
       <li><a href="#gene-set-expression-across-cells">Gene set expression across cells</a></li>
-      </ul></li>
       </ul>
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
@@ -1682,8 +1679,6 @@ font-weight: bold
    
 <!-- Don't indent these lines or it will mess pre blocks indentation --> 
 <div id="main">
-<div id="data-wrangling-scrnaseq" class="section level1">
-<h1>Data Wrangling scRNAseq</h1>
 <div id="goal" class="section level2">
 <h2>Goal</h2>
 <ul>
@@ -1960,7 +1955,6 @@ font-weight: bold
 <span id="cb28-104"><a href="#cb28-104" aria-hidden="true"></a></span>
 <span id="cb28-105"><a href="#cb28-105" aria-hidden="true"></a><span class="co"># correlation: cell cycle scoores and number of genes, eval = FALSE} </span></span>
 <span id="cb28-106"><a href="#cb28-106" aria-hidden="true"></a><span class="kw">FeatureScatter</span>(seurat, <span class="dt">feature1 =</span> <span class="st">&quot;S.Score&quot;</span>, <span class="st">&quot;nFeature_RNA&quot;</span>)</span></code></pre></div>
-</div>
 </div>
 </div>
 
