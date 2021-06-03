@@ -14,13 +14,13 @@ defaultContentLanguageInSubdir= true
   description = "Single-cell RNA-seq analysis with R/Bioconductor"
   author = "Jacques Serizay"
   showVisitedLinks = false
-  disableBreadcrumb = false
-  disableNextPrev = false
+  disableBreadcrumb = true
+  disableNextPrev = true
   disableLandingPageButton = true
   disableMermaid = false
   customMermaidURL = "https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"
   titleSeparator = "::"
-  themeVariant = "blue"
+  themeVariant = "red"
   ordersectionsby = "title"
   disableSearch = true
 

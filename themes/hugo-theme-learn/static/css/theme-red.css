@@ -1,30 +1,30 @@
 
 :root{
 
-    --MAIN-TEXT-color:#2b2b2b; /* Color of text by default */
-    --MAIN-TITLES-TEXT-color: #5e5e5e; /* Color of titles h2-h3-h4-h5 */
-    --MAIN-LINK-color:#f31c1c; /* Color of links */
-    --MAIN-LINK-HOVER-color:#d01616; /* Color of hovered links */
-    --MAIN-ANCHOR-color: #5E5E5E; /* color of anchors on titles */
+    --MAIN-TEXT-color:#111111; /* Color of text by default */
+    --MAIN-TITLES-TEXT-color: #2c2c2c; /* Color of titles h2-h3-h4-h5 */
+    --MAIN-LINK-color:#C7254E; /* Color of links */
+    --MAIN-LINK-HOVER-color:#C7254E; /* Color of hovered links */
+    --MAIN-ANCHOR-color: #c7254d33; /* color of anchors on titles */
 
     --MENU-HOME-LINK-color: #ccc; /* Color of the home button text */
     --MENU-HOME-LINK-HOVER-color: #e6e6e6; /* Color of the hovered home button text */
 
-    --MENU-HEADER-BG-color:#312525; /* Background color of menu header */
-    --MENU-HEADER-BORDER-color:#312525; /*Color of menu header border */
+    --MENU-HEADER-BG-color:#9F2042; /* Background color of menu header */
+    --MENU-HEADER-BORDER-color:#9F2042; /*Color of menu header border */
 
     --MENU-SEARCH-BG-color:#b90000; /* Search field background color (by default borders + icons) */
     --MENU-SEARCH-BOX-color: #ef2020; /* Override search field border color */
     --MENU-SEARCH-BOX-ICONS-color: #fda1a1; /* Override search field icons color */
 
-    --MENU-SECTIONS-ACTIVE-BG-color:#5f3636; /* Background color of the active section and its childs */
-    --MENU-SECTIONS-BG-color:#312525; /* Background color of other sections */
+    --MENU-SECTIONS-ACTIVE-BG-color:#20272b; /* Background color of the active section and its childs */
+    --MENU-SECTIONS-BG-color:#211103; /* Background color of other sections */
     --MENU-SECTIONS-LINK-color: #ccc; /* Color of links in menu */
     --MENU-SECTIONS-LINK-HOVER-color: #e6e6e6;  /* Color of links in menu, when hovered */
     --MENU-SECTION-ACTIVE-CATEGORY-color: #777; /* Color of active category text */
     --MENU-SECTION-ACTIVE-CATEGORY-BG-color: #fff; /* Color of background for the active category (only) */
 
-    --MENU-VISITED-color: #ff3333; /* Color of 'page visited' icons in menu */
+    --MENU-VISITED-color: #C7254E; /* Color of 'page visited' icons in menu */
     --MENU-SECTION-HR-color: #2b2020; /* Color of <hr> separator in menu */
 
 }
