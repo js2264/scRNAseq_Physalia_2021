@@ -35,13 +35,13 @@ We will prepare scRNAseq data corresponding to differentiating sperm cells, gene
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-source("bin/prepare_Hermann.R")
+source("~/Share/bin/prepare_Hermann.R")
 ```
 </p></details><br>
 
 ### Visualization of clustered and embedded data
 
-- Is the resulting object comparable to the published set? What changed? Which information was provided by the authors and retained? Comment on the `DiffusionMap` embedding vs `PCA`. 
+- Is the resulting object comparable to the published set (check their published paper to see how their embedding looks like)? What changed? Which information was provided by the authors and retained? Comment on the `DiffusionMap` embedding vs `PCA`. 
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
@@ -287,6 +287,7 @@ allowing us to assign directionality to any trajectory or even individual cells.
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
+assays(sce)
 velo_out <- velociraptor::scvelo(
     sce, 
     assay.X = "spliced", 
@@ -318,7 +319,6 @@ p <- tibble(
     ggplot(aes(x = slingshot, y = velocity, col = cluster)) + 
     geom_point() + 
     theme_minimal()
-
 ```
 </p></details><br>
 

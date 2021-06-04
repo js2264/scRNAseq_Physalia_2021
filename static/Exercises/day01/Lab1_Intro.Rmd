@@ -31,7 +31,7 @@ All the rest (history panel, environment panel, directory explorer panel, editor
 > Some useful commands in `R`:
 
 Within the `R` console, you can safely use `R`-dedicated commands.
-Can you guess the most common ones? The semantics are a different from the `terminal` commands you may be used to...
+Do you know the most common ones? The semantics are a different from the `terminal` commands you may be used to...
 
 <details><summary style="color: #ff7f00; font-weight: bold">Show code</summary><p>
 ```{r eval = FALSE}
@@ -168,8 +168,14 @@ wget https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz
 - List all files in a folder
 
 ```{sh eval = FALSE}
-ls -l ~/data
-ls --color -Flh ~/data
+ls -l ~/Share/
+ls --color -Flh ~/Share/
+```
+
+- Activate `conda` environment which unlocks the use of specific softwares such as `ffq`: 
+
+```{sh eval = FALSE}
+conda activate scRNAseq2021
 ```
 
 ## 4. Single-cell RNA-seq datasets
@@ -182,7 +188,7 @@ I mean, who isn't interested in [this mind-blowing achievement from 10X Genomics
 [Human Cell Atlas](https://data.humancellatlas.org/explore/projects) is probably a good place to start digging, if you are interested in mammal-related studies. 
 For instance, let's say I want to check 
 
-> Download reads from `Leir ... Harris, Life Sci Alliance 2020` study
+> Download reads from `Leir ... Harris, Life Sci Alliance 2020` study (DOI: 10.26508/lsa.202000744)
 
 Here is the study:  
 [An atlas of human proximal epididymis reveals cell-specific functions and distinct roles for CFTR](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7471510/)
@@ -198,7 +204,7 @@ ffq -t GSE GSE148963 > GSE148963_ffq.json
 cat GSE148963_ffq.json
 ```
 
-Can you find the links to raw data? You should use a `grep` command!
+Can you find the links to raw data? You should use a `grep` command: `grep` returns the lines which match a given pattern (e.g. a link...)!
 
 ```{sh eval = FALSE}
 grep 'ftp://' GSE148963_ffq.json

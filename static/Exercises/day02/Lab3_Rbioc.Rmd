@@ -41,7 +41,7 @@ Each of these three packages is available from a different source.
 ```{r eval = FALSE}
 install.packages('mgcv')
 BiocManager::install('HCAData')
-devtools::install_github('danielschw188/revelio')
+remotes::install_github('danielschw188/revelio')
 ```
 </p></details><br>
 
@@ -120,7 +120,7 @@ In this case, the first argument is always the output of the previous function a
 Because `tidyverse` functions generally return a modified version of the input, pipping works remarkably well in such context. 
 
 ```{r eval = FALSE}
-read_tsv('~/Downloads/GSM4486714_AXH009_genes.tsv', col_names = c('ID', 'Symbol')) %>% 
+read_tsv('~/Share/GSM4486714_AXH009_genes.tsv', col_names = c('ID', 'Symbol')) %>% 
     mutate(chr = sample(1:22, n(), replace = TRUE)) %>% 
     filter(chr == 2, grepl('^CCDC.*', Symbol)) %>% 
     select(ID) %>% 
@@ -172,6 +172,7 @@ colData(airway)
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 untreated_LRG <- airway[grepl('^LRG_', rownames(airway)), airway$dex == 'untrt']
+untreated_LRG
 ```
 </p></details><br>
 
@@ -183,7 +184,7 @@ They can be built from scratch using `tibbles` converted with `makeGRangesFromDa
 
 ```{r eval = FALSE}
 library(GenomicRanges)
-gr <- read_tsv('~/Downloads/GSM4486714_AXH009_genes.tsv', col_names = c('ID', 'Symbol')) %>% 
+gr <- read_tsv('~/Share/GSM4486714_AXH009_genes.tsv', col_names = c('ID', 'Symbol')) %>% 
     mutate(
         chr = sample(1:22, n(), replace = TRUE), 
         start = sample(1:1000, n(), replace = TRUE),
@@ -210,10 +211,33 @@ gr %>%
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 library(rtracklayer)
-genes2 <- import('~/Downloads/GRCm39_genes.bed')
+genes2 <- import('~/Share/GRCm39_genes.bed')
 genes2
 genes3 <- import('~/Share/GRCm39_genes.gff3')
 genes3
+```
+</p></details><br>
+
+- How would you have proceeded without `rtracklayer`? Check the `start` coordinates: what do you see? Comment on the interest of using `Bioconductor`. 
+
+<details><summary>Show code</summary><p>
+```{r eval = FALSE}
+library(rtracklayer)
+genes2_manual <- read_tsv('~/Share/GRCm39_genes.bed', col_names = FALSE) %>% 
+    drop_na() %>%
+    purrr::set_names(c('chr', 'start', 'stop', 'id', 'score', 'strand')) %>% 
+    makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+genes2_manual
+head(start(genes2))
+head(start(genes2_manual))
+genes3_manual <- read_tsv('~/Share/GRCm39_genes.gff3', col_names = FALSE, comment = '#') %>% 
+    drop_na() %>%
+    purrr::set_names(c('chr', 'source', 'type', 'start', 'stop', 'score', 'strand', 'empty', 'info')) %>% 
+    makeGRangesFromDataFrame(keep.extra.columns = TRUE)
+genes3_manual
+head(start(genes2))
+head(start(genes2_manual))
+
 ```
 </p></details><br>
 
@@ -242,7 +266,7 @@ Notably, several packages are increasingly becoming central for single-cell anal
 ![](.img/2021-05-31-09-38-24.png)
 
 ```{r eval = FALSE}
-source('bin/prepare_Nestorowa.R') # Adapted from Nestorowa et al., Blood 2016 (doi: 10.1182/blood-2016-05-716480)
+source('~/Share/bin/prepare_Nestorowa.R') # Adapted from Nestorowa et al., Blood 2016 (doi: 10.1182/blood-2016-05-716480)
 sce
 class(sce)
 ```
@@ -296,6 +320,7 @@ reducedDim(sce, "pca") <- pca$x
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 umap <- uwot::umap(reducedDim(sce, "pca"))
+colnames(umap) <- c('UMAP1', 'UMAP2')
 reducedDim(sce, "umap") <- umap
 library(patchwork)
 p1 <- scater::plotReducedDim(sce, 'pca', colour_by = 'label', text_by = 'label') + ggtitle('PCA')
@@ -353,7 +378,7 @@ colnames(sce_seurat)
 ncol(sce_seurat)
 nrow(sce_seurat)
 # cells and features access
-Seurat::Cells(sce_seurat)
+head(Seurat::Cells(sce_seurat))
 head(rownames(sce_seurat))
 # cell data access
 head(sce_seurat[[]])
@@ -362,8 +387,8 @@ head(sce_seurat$label)
 Seurat::GetAssayData(object = sce_seurat, slot = "counts")[1:10, 1:10]
 Seurat::GetAssayData(object = sce_seurat, slot = "data")[1:10, 1:10]
 # Embeddings 
-Embeddings(object = sce_seurat, reduction = "pca")
-Seurat::Embeddings(object = sce_seurat, 'umap')[1:10,]
+head(Seurat::Embeddings(object = sce_seurat, reduction = "pca"))
+head(Seurat::Embeddings(object = sce_seurat, 'umap')[1:10,])
 ```
 </p></details><br>
 
@@ -374,7 +399,7 @@ Seurat::Embeddings(object = sce_seurat, 'umap')[1:10,]
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 library(SingleCellExperiment)
-sce <- DropletUtils::read10xCounts('~/Downloads/GSM4486714_AXH009_', type = 'prefix')
+sce <- DropletUtils::read10xCounts('~/Share/GSM4486714_AXH009_', type = 'prefix')
 sce
 colData(sce)
 rowData(sce)
@@ -425,8 +450,4 @@ generated in the previous lab. Read the documentation of the two related package
 understand how to do this.  
 This will be extensively covered in the next lab for everybody. 
 
-## Session info 
-
-```{r echo = FALSE}
-devtools::session_info() 
-```
+## Ses

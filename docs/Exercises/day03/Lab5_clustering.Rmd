@@ -62,7 +62,7 @@ This is easily obtained using `Bioconductor` framework. Check the `AnnotationDbi
 ah <- AnnotationHub::AnnotationHub()
 AnnotationHub::query(ah, 'Ensembl 102 EnsDb for Homo sapiens')
 ens.hs.102 <- AnnotationHub::query(ah, 'Ensembl 102 EnsDb for Homo sapiens')[[1]]
-rowData(sce)$ID <- scuttle::uniquifyFeatureNames(rowData(sce)$Symbol_TENx, rowData(sce)$ENSEMBL_ID)
+rowData(sce)$ID <- scuttle::uniquifyFeatureNames(rowData(sce)$ENSEMBL_ID, rowData(sce)$Symbol_TENx)
 rownames(sce) <- rowData(sce)$ID
 rowData(sce)$chr <- AnnotationDbi::mapIds(ens.hs.102, keys = rowData(sce)$ENSEMBL_ID, keytype = "GENEID", column = "SEQNAME")
 rowData(sce)$gene_biotype <- AnnotationDbi::mapIds(ens.hs.102, keys = rowData(sce)$ENSEMBL_ID, keytype = "GENEID", column = "GENEBIOTYPE")
@@ -185,7 +185,7 @@ head(pca$x[, 1:50])
 reducedDim(sce_filtered, 'pca_manual') <- pca$x[, 1:50]
 ```
 
-- Try to leverage `scater` package to compute `PCA` embedding of the filtered data by taking into account the technical variability, and compare it to your manually computed PCA. Comment on the changes
+- Try to leverage `scater` package to compute `PCA` embedding of the filtered data by taking into account the technical variability, and compare it to your manually computed PCA. Comment on the changes. 
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
@@ -200,6 +200,14 @@ p1 <- scater::plotReducedDim(sce_filtered, 'PCA', colour_by = 'sizeFactor') + gg
 p2 <- scater::plotReducedDim(sce_filtered, 'pca_manual', colour_by = 'sizeFactor') + ggtitle('Manual PCA')
 p <- p1 + p2
 p
+```
+</p></details><br>
+
+- Check the possible arguments for `runPCA`: how does this approach facilitate analysis of large-scale scRNAseq dataset, compared to a more "manual" approach?
+
+<details><summary>Show code</summary><p>
+```{r eval = FALSE}
+?scater::runPCA()
 ```
 </p></details><br>
 
@@ -393,6 +401,7 @@ p <- cowplot::plot_grid(
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 sce_filtered$cluster <- clusters$clusters[, 'k.5_cluster.fun.louvain']
+table(sce_filtered$cluster)
 ```
 </p></details><br>
 
@@ -499,6 +508,7 @@ prediction_types <- SingleR::SingleR(
 )
 sce_filtered$annotation <- prediction_types$labels
 table(sce_filtered$annotation)
+table(sce_filtered$annotation, sce_filtered$cluster)
 ```
 
 - Using `scater` and `SingleR` utilities, check the annotation score for each cell in the scRNAseq. Did the automated annotation work robuslty? How does it compare to our defined clusters? Is automated annotation as sensitive as graph-based clustering?

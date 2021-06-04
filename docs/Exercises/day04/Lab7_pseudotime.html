@@ -1681,7 +1681,7 @@ font-weight: bold
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">source</span>(<span class="st">&quot;bin/prepare_Hermann.R&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">source</span>(<span class="st">&quot;~/Share/bin/prepare_Hermann.R&quot;</span>)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1689,7 +1689,7 @@ Show code
 <div id="visualization-of-clustered-and-embedded-data" class="section level3">
 <h3>Visualization of clustered and embedded data</h3>
 <ul>
-<li>Is the resulting object comparable to the published set? What changed? Which information was provided by the authors and retained? Comment on the <code>DiffusionMap</code> embedding vs <code>PCA</code>.</li>
+<li>Is the resulting object comparable to the published set (check their published paper to see how their embedding looks like)? What changed? Which information was provided by the authors and retained? Comment on the <code>DiffusionMap</code> embedding vs <code>PCA</code>.</li>
 </ul>
 <details>
 <summary>
@@ -1940,21 +1940,22 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>velo_out &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">scvelo</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>    sce, </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>    <span class="dt">assay.X =</span> <span class="st">&quot;spliced&quot;</span>, </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&quot;PCA&quot;</span>, </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>    <span class="dt">mode =</span> <span class="st">&#39;dynamic&#39;</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>embedded_velo &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">embedVelocity</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>), velo_out)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>grid.df &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">gridVectors</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>), embedded_velo, <span class="dt">resolution =</span> <span class="dv">30</span>)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;AnnotatedClusters&quot;</span>, <span class="dt">point_alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_segment</span>(</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a>        <span class="dt">data =</span> grid.df, </span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>        <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> start.PC1, <span class="dt">y =</span> start.PC2, <span class="dt">xend =</span> end.PC1, <span class="dt">yend =</span> end.PC2), </span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a>        <span class="dt">arrow =</span> <span class="kw">arrow</span>(<span class="dt">length =</span> <span class="kw">unit</span>(<span class="fl">0.05</span>, <span class="st">&quot;inches&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;closed&quot;</span>)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a>    )</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="kw">assays</span>(sce)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>velo_out &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">scvelo</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>    sce, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>    <span class="dt">assay.X =</span> <span class="st">&quot;spliced&quot;</span>, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&quot;PCA&quot;</span>, </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>    <span class="dt">mode =</span> <span class="st">&#39;dynamic&#39;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>embedded_velo &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">embedVelocity</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>), velo_out)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>grid.df &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">gridVectors</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>), embedded_velo, <span class="dt">resolution =</span> <span class="dv">30</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;AnnotatedClusters&quot;</span>, <span class="dt">point_alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_segment</span>(</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>        <span class="dt">data =</span> grid.df, </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a>        <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> start.PC1, <span class="dt">y =</span> start.PC2, <span class="dt">xend =</span> end.PC1, <span class="dt">yend =</span> end.PC2), </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a>        <span class="dt">arrow =</span> <span class="kw">arrow</span>(<span class="dt">length =</span> <span class="kw">unit</span>(<span class="fl">0.05</span>, <span class="st">&quot;inches&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;closed&quot;</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true"></a>    )</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2143,7 +2144,7 @@ Show code
 ##  collate  en_GB.UTF-8                 
 ##  ctype    en_GB.UTF-8                 
 ##  tz       Europe/Paris                
-##  date     2021-06-03                  
+##  date     2021-06-04                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package                * version  date       lib source        

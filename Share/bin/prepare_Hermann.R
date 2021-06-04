@@ -2,7 +2,6 @@
 
 require(SingleCellExperiment)
 require(tidyverse)
-require(patchwork)
 
 ### Import cells
 

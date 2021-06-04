@@ -1670,7 +1670,7 @@ font-weight: bold
 <blockquote>
 <p>Some useful commands in <code>R</code>:</p>
 </blockquote>
-<p>Within the <code>R</code> console, you can safely use <code>R</code>-dedicated commands. Can you guess the most common ones? The semantics are a different from the <code>terminal</code> commands you may be used to…</p>
+<p>Within the <code>R</code> console, you can safely use <code>R</code>-dedicated commands. Do you know the most common ones? The semantics are a different from the <code>terminal</code> commands you may be used to…</p>
 <details>
 <summary style="color: #ff7f00; font-weight: bold">
 Show code
@@ -1780,8 +1780,12 @@ Show code
 <ul>
 <li>List all files in a folder</li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="fu">ls</span> -l ~/data</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="fu">ls</span> --color -Flh ~/data</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="fu">ls</span> -l ~/Share/</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="fu">ls</span> --color -Flh ~/Share/</span></code></pre></div>
+<ul>
+<li>Activate <code>conda</code> environment which unlocks the use of specific softwares such as <code>ffq</code>:</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="ex">conda</span> activate scRNAseq2021</span></code></pre></div>
 </div>
 <div id="single-cell-rna-seq-datasets" class="section level2">
 <h2>4. Single-cell RNA-seq datasets</h2>
@@ -1789,29 +1793,29 @@ Show code
 <p>Ok, <strong>“your”</strong> data is (most likely) yet to be sequenced! Or maybe you’re interested in digging already existing databases! I mean, who isn’t interested in <a href="https://www.10xgenomics.com/blog/our-13-million-single-cell-dataset-is-ready-to-download">this mind-blowing achievement from 10X Genomics</a>??</p>
 <p><a href="https://data.humancellatlas.org/explore/projects">Human Cell Atlas</a> is probably a good place to start digging, if you are interested in mammal-related studies. For instance, let’s say I want to check</p>
 <blockquote>
-<p>Download reads from <code>Leir ... Harris, Life Sci Alliance 2020</code> study</p>
+<p>Download reads from <code>Leir ... Harris, Life Sci Alliance 2020</code> study (DOI: 10.26508/lsa.202000744)</p>
 </blockquote>
 <p>Here is the study:<br />
 <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7471510/">An atlas of human proximal epididymis reveals cell-specific functions and distinct roles for CFTR</a></p>
 <p>Can you find the raw data from this paper? Tip: try the <a href="https://github.com/pachterlab/ffq">brand new <code>ffq</code> tool</a>!</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="ex">ffq</span> --help</span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="ex">ffq</span> -t GSE GSE148963 <span class="op">&gt;</span> GSE148963_ffq.json</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a><span class="fu">cat</span> GSE148963_ffq.json</span></code></pre></div>
-<p>Can you find the links to raw data? You should use a <code>grep</code> command!</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="ex">ffq</span> --help</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="ex">ffq</span> -t GSE GSE148963 <span class="op">&gt;</span> GSE148963_ffq.json</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a><span class="fu">cat</span> GSE148963_ffq.json</span></code></pre></div>
+<p>Can you find the links to raw data? You should use a <code>grep</code> command: <code>grep</code> returns the lines which match a given pattern (e.g. a link…)!</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json</span></code></pre></div>
 <p>And with a bit of magick…</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,.*ftp:,ftp:,&#39;</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,&quot;.*,,&#39;</span> <span class="op">&gt;</span> GSE148963_fastqlist.txt</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a><span class="co">#wget -i GSE148963_fastqlist.txt ## Do not run, it would take too long...</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="fu">grep</span> <span class="st">&#39;ftp://&#39;</span> GSE148963_ffq.json <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,.*ftp:,ftp:,&#39;</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">&#39;s,&quot;.*,,&#39;</span> <span class="op">&gt;</span> GSE148963_fastqlist.txt</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a><span class="co">#wget -i GSE148963_fastqlist.txt ## Do not run, it would take too long...</span></span></code></pre></div>
 <blockquote>
 <p>Check the content of the reads</p>
 </blockquote>
 <p>A subset of the reads has been downloaded and put in the <code>~/Share/</code> folder. Have a look at it!</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="fu">zcat</span> ~/Share/SRR11575369_1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> -n 12</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="fu">zcat</span> ~/Share/SRR11575369_1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> -n 12</span></code></pre></div>
 <p>Try and understand the structure of the <code>fastq.gz</code> file. What is the meaning of each line?</p>
 <p>How many reads are there in the <code>fastq.gz</code> file? And how long are they? Can you get a summary of what is in this file? All of these questions can be quickly answered using the <a href="https://bioinf.shenwei.me/seqkit/usage/"><code>seqkit</code></a> tool:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="ex">seqkit</span> --help</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a><span class="ex">seqkit</span> stats --help</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a><span class="ex">seqkit</span> stat ~/Share/SRR11575369_1.fastq.gz</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="ex">seqkit</span> --help</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a><span class="ex">seqkit</span> stats --help</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a><span class="ex">seqkit</span> stat ~/Share/SRR11575369_1.fastq.gz</span></code></pre></div>
 <blockquote>
 <p>Download processed count matrices directly from the HCA portal</p>
 </blockquote>
@@ -1822,15 +1826,15 @@ Show code
 </ul>
 <p>In this case, we have downloaded some of the processed files available in GEO, from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE148963">the following webpage</a>.</p>
 <p>Check the content of the count matrix and the additional files. Can you understand what they contain? How are they structured?</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="fu">wc</span> -l ~/Share/GSM4486714_AXH009*</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a><span class="fu">head</span> ~/Share/GSM4486714_AXH009*</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a><span class="fu">wc</span> -l ~/Share/GSM4486714_AXH009*</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a><span class="fu">head</span> ~/Share/GSM4486714_AXH009*</span></code></pre></div>
 <ul>
 <li>How many cells were sequenced? How many genes were counted?</li>
 <li>Is it easy to interpret the count matrix? Why is it in such format?</li>
 <li>Comment on the file sizes between processed count matrix files and raw reads.</li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a><span class="fu">ls</span> -l ~/Share/GSM4486714_AXH009*</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a><span class="fu">ls</span> -l ~/Share/SRR11575369_1.fastq.gz</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a><span class="fu">ls</span> -l ~/Share/GSM4486714_AXH009*</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a><span class="fu">ls</span> -l ~/Share/SRR11575369_1.fastq.gz</span></code></pre></div>
 </div>
 <div id="bonus" class="section level2">
 <h2>5. Bonus</h2>
