@@ -19,10 +19,10 @@ Classes are from:
 
 ### Lab 1 – Familiarizing yourself with the course AWS instance [Jacques] 
 
+  - Using RStudio
   - Logging in AWS
   - Shell and Unix commands to navigate directories, create folders, open files
   - Raw file formats
-  - Using RStudio
   - Get data from 10x website, single cell portal, from GEO (fastqs, counts)
 
 ### Lecture 2 - Intro to Data processing: from bcl file to count matrix [Jacques] 
@@ -47,7 +47,7 @@ Classes are from:
 ### Lab 3 - Introduction to R/Bioconductor [Jacques] 
   - Installing packages with CRAN and Bioconductor
   - Data types, data manipulation, slicing
-  - I/O
+  - I/O for scRNAseq analysis in R
 
 ### Lecture 3 - Expression QC, normalisation and gene-level batch correction [Orr] 
   - What CellRanger does for quality filtering

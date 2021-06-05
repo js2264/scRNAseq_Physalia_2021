@@ -7,12 +7,17 @@ practical1: "day02/Lab3_Rbioc"
 practical2: "day02/Lab4_data_wrangling_scRNAseq"
 ---
 
+--- 
+
+## Flash talks (1h)
+
+Each one of us will very quickly present a question that they are interested in which could benefit from single-cell RNA-seq.
+It can be an area you are currently investigating, something you are broadly interested in and wish to explore in the near future, or 
+an idea for future projects. 
+
 ---
 
 ## Presentations for {{< param "day" >}}
-
-- **\[XX min\]** ..... 
-[[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation1" >}})
 
 - **\[XX min\]** ..... 
 [[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation2" >}})

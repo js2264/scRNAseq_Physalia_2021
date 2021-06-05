@@ -2,7 +2,7 @@
 title: "1. Day 01"
 day: "Day 01"
 presentation1: " "
-presentation2: " "
+presentation2: "day01/Lecture2_Bcl2matrix.pdf"
 practical1: "day01/Lab1_Intro"
 practical2: " "
 ---
@@ -14,7 +14,7 @@ practical2: " "
 - **\[XX min\]** ..... 
 [[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation1" >}})
 
-- **\[XX min\]** ..... 
+- **\[1h 15\]** from bcl to bam files to count matrix 
 [[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation2" >}})
 
 ---
