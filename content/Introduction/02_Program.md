@@ -11,15 +11,6 @@ Classes are from:
 
 ## Monday – Classes from 14:00 to 20:00 (Paris time)
 
-1. 30-sec presentation
-
-2. Shared Google doc: 
-  - We're a team! Present yourself! 
-  - Course notes
-  - Ideas/questions/challenges/feedbacks...
-
-3. Overview of the course
-
 ### Lecture 1 – scRNA-Seq experimental design [Orr] 
 
   - General introduction: cell atlas overviews

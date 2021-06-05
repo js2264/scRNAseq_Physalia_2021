@@ -63,7 +63,7 @@ A nice breakdown (from 2019, so already very outdated!) is available from `Saele
 
 ![](.img/2021-06-01-11-29-36.png)
 
-> Slingshot 
+#### Slingshot 
 
 `Slingshot` is perhaps one of the most widely used algorithms for users who want to focus on `R`-based approaches. 
 
@@ -143,7 +143,7 @@ p <- tibble(
 ```
 </p></details><br>
 
-> Dynverse 
+#### Dynverse 
 
 More TI algorithms can now be explored within `R`, even those relying on `Python` scripts, thanks to the `dynverse` package. 
 
@@ -195,7 +195,7 @@ where cells with larger values are consider to be “after” their counterparts
 In trajectories describing time-dependent processes like differentiation, a cell’s pseudotime value 
 is generally used as a proxy for its relative age. 
 
-> Pseudotime inference
+#### Pseudotime inference
 
 - Extract the pseudotime values automatically computed by `slingshot`. Check the distribution of pseudotime values across the different cell clusters. What do you observe? Where you expecting this? 
 
@@ -222,7 +222,7 @@ sce$pseudotime <- (-1 * slingshot::slingPseudotime(sce_slingshot)[, 'Lineage1'])
 ```
 </p></details><br>
 
-> Model pseudotime-dependent gene expression
+#### Model pseudotime-dependent gene expression
 
 Using pseudotime / cell, one can model gene expression along the differentiation process. This alleviates the need to 
 study gene expression **per cell**, and allows one to focus on process-related effects (e.g. gene expression during a developmental trajectory). 
@@ -348,7 +348,7 @@ p <- scater::plotReducedDim(sce2, 'PCA', colour_by = "pseudotime_velocity", poin
 
 ## 3. Differential expression along differentiation trajectory
 
-> Fit gene expression 
+### Model gene expression 
 
 Gene expression can be modelled as a function of pseudotime using GAM. 
 This can be done manually using the `mgcv` package (see hereabove), but for scRNAseq, 
@@ -371,7 +371,7 @@ sce_fit <- tradeSeq::fitGAM(
 ```
 </p></details><br>
 
-> Check differentially expressed genes
+### Check differentially expressed genes
 
 Several tests to check for DE have been integrated into `tradeSeq`. 
 

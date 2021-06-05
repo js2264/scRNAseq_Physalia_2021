@@ -450,4 +450,8 @@ generated in the previous lab. Read the documentation of the two related package
 understand how to do this.  
 This will be extensively covered in the next lab for everybody. 
 
-## Ses
+## Session info 
+
+```{r echo = FALSE}
+devtools::session_info()
+```

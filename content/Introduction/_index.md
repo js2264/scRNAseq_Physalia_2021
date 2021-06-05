@@ -34,6 +34,3 @@ ssh -i "${KEY}" "${USER}"@"${IP}"
 
 More information is available [here](/{{<myPackageUrl>}}how_to_log_in_aws/#connect-to-pre-configured-aws-machine) if needed. 
 
-## Shared Google Drive folder
-
-[Here is a link to our shared Google Drive folder](https://drive.google.com/drive/folders/1AhShrHbS4bK_ta7gKqcXGLGgAEXmc9lJ?usp=sharing)  
