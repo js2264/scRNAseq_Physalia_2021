@@ -5,14 +5,12 @@ day: "Day 05"
 
 ## Journal club (1h)    
 
-We will discuss in group(s) about two method papers published in 2020. 
+We will discuss in group(s) about the following method paper published in 2020. 
 
 > Schwabe et al.: 
 *The transcriptome dynamics of single cells during the cell cycle*, **Molecular Systems Biology 2020** (DOI: [10.15252/msb.20209946](https://doi.org/10.15252/msb.20209946))
 
-> XXX
-
-Read them ahead and identify one or two points that you would wish to discuss with the group.
+Read it ahead and identify one or two points that you would wish to discuss with the group.
 
 ---
 

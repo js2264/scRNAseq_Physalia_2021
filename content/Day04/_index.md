@@ -1,8 +1,8 @@
 ---
 title: "4. Day 04"
 day: "Day 04"
-presentation1: " "
-presentation2: " "
+presentation1: "day04/Lecture6_pseudotime.pdf"
+presentation2: "day04/Lecture7_multiomics.pdf"
 practical1: "day04/Lab7_pseudotime"
 practical2: "day04/Lab8_citeseq"
 ---
@@ -11,10 +11,10 @@ practical2: "day04/Lab8_citeseq"
 
 ## Presentations for {{< param "day" >}}
 
-- **\[XX min\]** ..... 
+- **\[1h 15\]** Lecture 6 - Trajectories and pseudotimes
 [[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation1" >}})
 
-- **\[XX min\]** ..... 
+- **\[1h 15\]** Lecture 7 - Single-cell multi-omics
 [[PDF]](/{{<myPackageUrl>}}Presentations/{{< param "presentation2" >}})
 
 ---

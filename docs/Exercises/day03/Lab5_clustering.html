@@ -1757,8 +1757,8 @@ Show code
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>sce_filtered_variance &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">modelGeneVar</span>(sce_filtered)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>HVGs &lt;-<span class="st"> </span>sce_filtered_variance <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">as_tibble</span>(<span class="dt">rownames =</span> <span class="st">&quot;gene&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="st">    </span><span class="kw">filter</span>(bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="st">    </span><span class="kw">slice_max</span>(bio, <span class="dt">n =</span> <span class="dv">500</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="st">    </span><span class="kw">slice_max</span>(bio, <span class="dt">n =</span> <span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a><span class="st">    </span><span class="kw">pull</span>(gene)</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce_filtered) <span class="op">%in%</span><span class="st"> </span>HVGs</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">rowData</span>(sce_filtered))</span>
@@ -1766,15 +1766,17 @@ Show code
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a></span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a><span class="co">## --- Visualizing the mean-variance fit</span></span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="dt">mean =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>mean, </span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>    <span class="dt">var =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>var, </span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    <span class="dt">trend =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>    <span class="dt">HVG =</span> <span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>)</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a><span class="kw">ggplot</span>(df) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> var, <span class="dt">col =</span> HVG)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend)) <span class="op">+</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="dt">nonorm =</span> <span class="kw">rowMeans</span>(<span class="kw">counts</span>(sce_filtered)),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>    <span class="dt">mean =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>mean, </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    <span class="dt">var =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>var, </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>    <span class="dt">trend =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>    <span class="dt">HVG =</span> <span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a><span class="kw">ggplot</span>(df) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> var, <span class="dt">col =</span> HVG), <span class="dt">alpha =</span> <span class="fl">0.4</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend), <span class="dt">col =</span> <span class="st">&#39;darkred&#39;</span>) <span class="op">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;Gene mean exp. (norm.)&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Gene exp. variance&#39;</span>)</span></code></pre></div>
 <ul>
 <li>It is well known that UMI counts exhibit near-Poisson variation if we only consider technical noise from library preparation and sequencing. This can be used to construct a mean-variance trend in the log-counts with the <code>modelGeneVarByPoisson()</code> function (rather than simpler <code>modelGeneVar()</code>). What do you observed in this case? Can you comment on this?</li>
 </ul>
@@ -1956,7 +1958,7 @@ Show code
 <p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>graph2 &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">buildSNNGraph</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>    sce_filtered, </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="dv">10</span>, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="dv">5</span>, </span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>)</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a>sce_clust2 &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(graph2)<span class="op">$</span>membership</span>
@@ -2201,7 +2203,7 @@ Show code
 ##  collate  en_GB.UTF-8                 
 ##  ctype    en_GB.UTF-8                 
 ##  tz       Europe/Paris                
-##  date     2021-06-04                  
+##  date     2021-06-06                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package                * version    date       lib

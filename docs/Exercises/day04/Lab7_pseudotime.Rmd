@@ -261,10 +261,10 @@ fitExprs <- logcounts(sce[genes, ]) %>% # --------------------------------------
 fitExprs
 p <- ggplot(fitExprs) + 
     geom_point(aes(x = pseudotime, y = obs_expr, col = cluster), alpha = 0.5) + 
-    geom_line(aes(x = pseudotime, y = lmFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
-    geom_line(aes(x = pseudotime, y = lmFitted_expr), col = '#1b8ae6', size = 1) +
-    geom_line(aes(x = pseudotime, y = loessFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
-    geom_line(aes(x = pseudotime, y = loessFitted_expr), col = '#0d7c2e', size = 1) +
+    # geom_line(aes(x = pseudotime, y = lmFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
+    # geom_line(aes(x = pseudotime, y = lmFitted_expr), col = '#1b8ae6', size = 1) +
+    # geom_line(aes(x = pseudotime, y = loessFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
+    # geom_line(aes(x = pseudotime, y = loessFitted_expr), col = '#0d7c2e', size = 1) +
     geom_line(aes(x = pseudotime, y = gamFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
     geom_line(aes(x = pseudotime, y = gamFitted_expr), col = '#af2d0c', size = 1) +
     theme_minimal() + 
