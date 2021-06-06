@@ -172,11 +172,25 @@ ls -l ~/Share/
 ls --color -Flh ~/Share/
 ```
 
+> Two important steps 
+
 - Activate `conda` environment which unlocks the use of specific softwares such as `ffq`: 
 
 ```{sh eval = FALSE}
 conda activate scRNAseq2021
 ```
+
+- Download the `git` repository for this course from `GitHub`: 
+
+```{sh eval = FALSE}
+git clone https://github.com/js2264/scRNAseq_Physalia_2021.git
+```
+
+This downloads the repository for this course to your home folder on the AWS machine.  
+To get it on your local computer (to save the lectures and exercises), go to 
+[the GitHub repo page](https://github.com/js2264/scRNAseq_Physalia_2021), click on the 
+green `Code` button, then `Download ZIP`. Beware, the download may take a significant 
+time based on your internet connection (several hundreds MB). 
 
 ## 4. Single-cell RNA-seq datasets
 
