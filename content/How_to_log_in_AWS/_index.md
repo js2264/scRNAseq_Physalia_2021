@@ -9,7 +9,7 @@ KEY="path/to/your/key.pem"
 chmod 600 ${KEY}
 #
 USER= #e.g. user=user2
-IP= # e.g. IP=255.255.255.255
+IP=54.201.211.179
 #
 ssh -i ${KEY} ${USER}@${IP}
 ```
@@ -20,7 +20,7 @@ E.g., for user1:
 KEY="c1.pem"
 chmod 600 ${KEY}
 USER=user1
-IP=54.188.62.211
+IP=54.201.211.179
 ssh -i ${KEY} ${USER}@${IP}
 ```
 
@@ -29,5 +29,5 @@ More information is available [here](/{{<myPackageUrl>}}docs/Connection_to_the_A
 ## Today's IP
 
 ```sh
-IP="54.188.62.211"
+IP="54.201.211.179"
 ```
