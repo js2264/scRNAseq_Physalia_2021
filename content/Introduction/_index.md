@@ -37,5 +37,5 @@ IP="54.188.62.211"
 ssh -i "${KEY}" "${USER}"@"${IP}"
 ```
 
-More information is available [here](/{{<myPackageUrl>}}how_to_log_in_aws/#connect-to-pre-configured-aws-machine) if needed. 
+More information is available [here](/{{<myPackageUrl>}}docs/Connection_to_the_Amazon_EC2_service_.pdf) if needed. 
 

@@ -24,6 +24,8 @@ IP=54.188.62.211
 ssh -i ${KEY} ${USER}@${IP}
 ```
 
+More information is available [here](/{{<myPackageUrl>}}docs/Connection_to_the_Amazon_EC2_service_.pdf) if needed. 
+
 ## Today's IP
 
 ```sh
