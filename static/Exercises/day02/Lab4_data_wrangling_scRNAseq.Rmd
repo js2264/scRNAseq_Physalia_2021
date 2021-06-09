@@ -33,6 +33,7 @@ library(Seurat)
 library(dplyr)
 library(Matrix)
 library(gdata)
+library(ggplot2)
 ```
 
 ### Read in NSCLC counts matrix.
@@ -46,7 +47,7 @@ counts_matrix_filename = paste0(dirname,"/GRCh38/")
 counts <- Read10X(data.dir = counts_matrix_filename)  # Seurat function to read in 10x count data
 
 # To minimize memory use on the docker - choose only the first 1000 cells
-counts <- counts[,1:1000]
+counts <- counts[, 1:1000]
 ```
 
 ### Let's examine the sparse counts matrix
@@ -90,7 +91,7 @@ genes_per_cell <- Matrix::colSums(counts>0) # count gene only if it has non-zero
 
 Task: In a similar way, can you calculate cells per genes? replace the '?' in the command below
 ```{r cells_per_gene, eval = FALSE}
-cells_per_gene <- Matrix::?(counts>?) # only count cells where the gene is expressed
+cells_per_gene <- Matrix::rowSums(counts>0) # only count cells where the gene is expressed
 ```
 
 colSums and rowSums are functions that work on each row or column in a matrix and return the column sums or row sums as a vector. If this is true counts_per_cell should have 1 entry per cell. Let's make sure the length of the returned vector matches the matrix dimension for column. How would you do that? ( Hint:length() ).
@@ -110,7 +111,7 @@ Here we see examples of plotting a new plot, the histogram. R makes this really 
 Can you a histogram of counts per gene in log10 scale?
 
 ```{r fill_hist, eval = FALSE}
-hist(?(?+1), main='counts per gene', col='wheat')
+hist(log10(cells_per_gene+1), main='counts per gene', col='wheat')
 ```
 
 ### Plot cells ranked by their number of detected genes.
@@ -133,13 +134,13 @@ How many genes are you left with? How many cells?
 seurat <- CreateSeuratObject(counts = counts, project = "10X_NSCLC")
 
 # Subset based on number of genes detected per cell.
-seurat <- subset(seurat, subset = ?)
+seurat <- subset(seurat, subset = nFeature_RNA >= 350)
 
 # Subset based on genes detected in 3 or more cells
 cells_per_gene <- Matrix::rowSums(counts>0) 
-indices <- cells_per_gene >= ?
+indices <- cells_per_gene >= 3
 features <- rownames(seurat)[indices]
-subset(seurat, features = features)
+seurat <- subset(seurat, features = features)
 ```
 
 Almost all our analysis will be on the single object, of class Seurat. This object contains various "slots" (designated by seurat@slotname) that will store not only the raw count data, but also the results from various computations below. This has the advantage that we do not need to keep track of inidividual variables of interest - they can all be collapsed into a single object as long as these slots are pre-defined.
@@ -178,8 +179,9 @@ If you dont remember the name of the parameter you can type ?AddMetaData in the 
 An alternative way to add meta data is by using:
 seurat[["percent.mito"]] <- PercentageFeatureSet(seurat, pattern = "^MT-")
 ```{r add_mito2, eval = FALSE}
-seurat <- AddMetaData(object = seurat, ? = percent.mito, col.name = "percent.mito")
+seurat <- AddMetaData(object = seurat, metadata = percent.mito, col.name = "percent.mito")
 head(seurat@meta.data) # After adding
+head(seurat[[]])
 VlnPlot(object = seurat, features = c("nFeature_RNA", "nCount_RNA", "percent.mito"))
 ```
 
@@ -190,7 +192,7 @@ A third metric we use is the number of house keeping genes expressed in a cell. 
 
 ```{r hkgenes}
 # Load the the list of house keeping genes
-hkgenes <- read.table(paste0(dirname, "tirosh_house_keeping.txt"), skip = 2)
+hkgenes <- read.table(paste0(dirname, "tirosh_house_keeping-1.txt"), skip = 2)
 hkgenes <- as.vector(hkgenes$V1)
 
 # remove hkgenes that were not found
@@ -202,15 +204,15 @@ Task:
 2. Add this information as meta data to seurat
 3. plot all metrics: "nGene", "nUMI", "percent.mito","n.exp.hkgenes" using VlnPlot
 ```{r Add_number_of_house_keeping_genes, eval = FALSE}
-n.expressed.hkgenes <- ?(seurat[["RNA"]]@data[hkgenes.found, ] > 0)
-seurat <- AddMetaData(object = ?, ? = ?, col.name = "n.exp.hkgenes")
+n.expressed.hkgenes <- Matrix::colSums(seurat[["RNA"]]@data[hkgenes.found, ] > 0)
+seurat <- AddMetaData(object = seurat, metadata = n.expressed.hkgenes, col.name = "n.exp.hkgenes")
 VlnPlot(object = seurat, features = c("nFeature_RNA", "nCount_RNA", "percent.mito","n.exp.hkgenes"), ncol = 4)
 ```
 
 Is there a correlation between the measurements? For example, number of UMIs with number of genes?
 Can you plot the nGene vs nUMI? What is the correlation? Do you see a strange subpopulation? What do you think happened with these cells?
 ```{r, eval = FALSE}
-FeatureScatter(object = seurat, feature1 = ?, feature2 = ?)
+FeatureScatter(object = seurat, feature1 = "nFeature_RNA", feature2 = "nCount_RNA")
 ```
 
 ## Examine contents of Seurat object
@@ -279,7 +281,7 @@ Below, we look at genes involved in: T cells, the cell cycle and the stress sign
 ```{r cell_cycle_genes}
 # Read in a list of cell cycle markers, from Tirosh et al, 2015.
 # We can segregate this list into markers of G2/M phase and markers of S phase.
-cc.genes <- readLines(paste0(dirname, "regev_lab_cell_cycle_genes.txt"))
+cc.genes <- readLines(paste0(dirname, "regev_lab_cell_cycle_genes-1.txt"))
 s.genes <- cc.genes[1:43]
 g2m.genes <- cc.genes[44:97]
 seurat <- CellCycleScoring(seurat, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
@@ -289,8 +291,8 @@ Task: Use markers for dissociation to calculate dissociation score
 ```{r dissociation_signature, eval = FALSE} 
 # Genes upregulated during dissociation of tissue into single cells.
 genes.dissoc <- c("ATF3", "BTG2", "CEBPB", "CEBPD", "CXCL3", "CXCL2", "CXCL1", "DNAJA1", "DNAJB1", "DUSP1", "EGR1", "FOS", "FOSB", "HSP90AA1", "HSP90AB1", "HSPA1A", "HSPA1B", "HSPA1A", "HSPA1B", "HSPA8", "HSPB1", "HSPE1", "HSPH1", "ID3", "IER2", "JUN", "JUNB", "JUND", "MT1X", "NFKBIA", "NR4A1", "PPP1R15A", "SOCS3", "ZFP36")
-#### seurat <- AddModuleScore(?, genes.list = list(?), ctrl.size = 20, enrich.name = "genes_dissoc")
-seurat <- AddModuleScore(seurat, features = list(genes.dissoc), ctrl.size = 20, enrich.name = "genes_dissoc")
+#### seurat <- AddModuleScore(?, genes.list = list(?), ctrl.size = 20, name = "genes_dissoc")
+seurat <- AddModuleScore(seurat, features = list(genes.dissoc), ctrl.size = 20, name = "genes_dissoc")
 ```
 
 Task:
@@ -401,7 +403,7 @@ seurat <- CellCycleScoring(seurat, s.features = s.genes, g2m.features = g2m.gene
 #dissociation_signature
 # Genes upregulated during dissociation of tissue into single cells.
 genes.dissoc <- c("ATF3", "BTG2", "CEBPB", "CEBPD", "CXCL3", "CXCL2", "CXCL1", "DNAJA1", "DNAJB1", "DUSP1", "EGR1", "FOS", "FOSB", "HSP90AA1", "HSP90AB1", "HSPA1A", "HSPA1B", "HSPA1A", "HSPA1B", "HSPA8", "HSPB1", "HSPE1", "HSPH1", "ID3", "IER2", "JUN", "JUNB", "JUND", "MT1X", "NFKBIA", "NR4A1", "PPP1R15A", "SOCS3", "ZFP36")
-seurat <- AddModuleScore(seurat, features = list(genes.dissoc), ctrl.size = 20, enrich.name = "genes_dissoc")
+seurat <- AddModuleScore(seurat, features = list(genes.dissoc), ctrl.size = 20, name = "genes_dissoc")
 
 # correlation: cell cycle scoores and number of genes, eval = FALSE} 
 FeatureScatter(seurat, feature1 = "S.Score", "nFeature_RNA")

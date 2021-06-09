@@ -27,15 +27,19 @@ library(dplyr)
 library(plyr)
 library(rliger)
 
+# Only run this once, as they are not installed in our AMI environment.
+# BiocManager::install('multtest')
+# install.packages('metap')
+
 # Set folder location for saving output files. This is also the same location as input data.
-mydir <- "/Users/orr/Documents/physalia2020/src/batch_correction/"
-# mydir <- "data/batch_correction/"
+mydir <- "~/Share/batch_correction/"
 
 # Objects to save.
-Rda.sparse.path <- paste0(mydir, "pancreas_subsample.Rda")
-Rda.path <- paste0(mydir, "pancreas_nobatchcorrect.Rda")
-Rda.Seurat3.path <- paste0(mydir, "pancreas_Seurat3.Rda")
-Rda.liger.path <- paste0(mydir, "pancreas_liger.Rda")
+writedir <- "~/"
+Rda.sparse.path <- paste0(writedir, "pancreas_subsample.Rda")
+Rda.path <- paste0(writedir, "pancreas_nobatchcorrect.Rda")
+Rda.Seurat3.path <- paste0(writedir, "pancreas_Seurat3.Rda")
+Rda.liger.path <- paste0(writedir, "pancreas_liger.Rda")
 ```
 
 ## Read in pancreas expression matrices
@@ -158,7 +162,7 @@ DimPlot(gcdata, reduction = "pca", dims = c(1, 2), group.by = "tech")
 
 # Cluster the cells using the first twenty principal components.
 gcdata <- FindNeighbors(gcdata, reduction = "pca", dims = 1:20, k.param = 20)
-gcdata <- FindClusters(gcdata, resolution = 0.8, algorithm = 4, random.seed = 100)
+gcdata <- FindClusters(gcdata, resolution = 0.8, algorithm = 1, random.seed = 100)
 
 # Create a UMAP visualization. 
 gcdata <- RunUMAP(gcdata, dims = 1:20, reduction = "pca", n.neighbors = 15, min.dist = 0.5, spread = 1, metric = "euclidean", seed.use = 1)  
@@ -210,7 +214,7 @@ DimPlot(gcdata, dims = c(1, 2), reduction = "pca", split.by = "tech")
 # Clustering. Choose the dimensional reduction type to use and the number of aligned 
 # canonical correlation vectors to use.
 gcdata <- FindNeighbors(gcdata, reduction = "pca", dims = 1:20, k.param = 20)
-gcdata <- FindClusters(gcdata, resolution = 0.8, algorithm = 4, random.seed = 100)
+gcdata <- FindClusters(gcdata, resolution = 0.8, algorithm = 1, random.seed = 100)
 
 # UMAP. Choose the dimensional reduction type to use and the number of aligned 
 # canonical correlation vectors to use.
@@ -317,23 +321,19 @@ plot_grid(p[[1]], p[[2]])
 # Let's look to see how the adjusted rand index changed compared to using no batch correction.
 tech <- unlist(lapply(1:length(data.liger@H), function(x) { 
   rep(names(data.liger@H)[x], nrow(data.liger@H[[x]]))}))
-clusters <- data.liger@alignment.clusters
+clusters <- data.liger@clusters
 ari <- data.frame("tech" = tech, "clusters" = clusters)
 ari$tech <- plyr::mapvalues(ari$tech, from = c("celseq", "celseq2", "fluidigmc1", "smartseq2"), to = c(0, 1, 2, 3))
 adj.rand.index(as.numeric(ari$tech), as.numeric(ari$clusters))
 
-# Look at proportion of each batch in each cluster, and look at factor loadings across clusters
-plotClusterProportions(data.liger)
-plotClusterFactors(data.liger, use.aligned = T)
-
 # Look at genes that are specific to a dataset and shared across datasets.
 # Use the plotWordClouds function and choose 2 datasets.
-pdf(paste0(mydir, "word_clouds.pdf"))
+pdf(paste0(writedir, "word_clouds.pdf"))
 plotWordClouds(data.liger, dataset1 = "celseq2", dataset2 = "smartseq2")
 dev.off()
 
 # Look at factor loadings for each cell using plotFactors. 
-pdf(paste0(mydir, "plot_factors.pdf"))
+pdf(paste0(writedir, "plot_factors.pdf"))
 plotFactors(data.liger)
 dev.off()
 
@@ -361,8 +361,8 @@ Within your RStudio session, install [k-nearest neighbour batch effect test](htt
 
 ```
 
-# Additional exploration: Seurat 3
-Read how new version of Seurat does [data integration](https://satijalab.org/seurat/pancreas_integration_label_transfer.html)
+# Additional exploration: Seurat v4
+Read how the new version of Seurat does [data integration](https://satijalab.org/seurat/articles/integration_introduction.html)
 
 # Acknowledgements
-This document builds off a tutorial from the [Seurat website](https://www.dropbox.com/s/aji4ielg8gc70vj/multiple_pancreas_workflow.R?dl=1) and a tutorial from the [LIGER website](https://github.com/MacoskoLab/liger/blob/master/vignettes/liger-vignette.html).
+This document builds off a tutorial from the [Seurat website](https://www.dropbox.com/s/aji4ielg8gc70vj/multiple_pancreas_workflow.R?dl=1) and a tutorial from the [LIGER website](http://htmlpreview.github.io/?https://github.com/welch-lab/liger/blob/master/vignettes/Integrating_multi_scRNA_data.html).

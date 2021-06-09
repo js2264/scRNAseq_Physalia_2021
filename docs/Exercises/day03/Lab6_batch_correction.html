@@ -1652,7 +1652,7 @@ font-weight: bold
       </ul></li>
       <li><a href="#additional-exploration-regressing-out-unwanted-covariates">Additional exploration: Regressing out unwanted covariates</a></li>
       <li><a href="#additional-exploration-kbet">Additional exploration: kBET</a></li>
-      <li><a href="#additional-exploration-seurat-3">Additional exploration: Seurat 3</a></li>
+      <li><a href="#additional-exploration-seurat-v4">Additional exploration: Seurat v4</a></li>
       <li><a href="#acknowledgements">Acknowledgements</a></li>
       </ul>
     </div>
@@ -1789,7 +1789,7 @@ font-weight: bold
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true"></a></span>
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true"></a><span class="co"># Cluster the cells using the first twenty principal components.</span></span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true"></a>gcdata &lt;-<span class="st"> </span><span class="kw">FindNeighbors</span>(gcdata, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>, <span class="dt">k.param =</span> <span class="dv">20</span>)</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a>gcdata &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(gcdata, <span class="dt">resolution =</span> <span class="fl">0.8</span>, <span class="dt">algorithm =</span> <span class="dv">4</span>, <span class="dt">random.seed =</span> <span class="dv">100</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a>gcdata &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(gcdata, <span class="dt">resolution =</span> <span class="fl">0.8</span>, <span class="dt">algorithm =</span> <span class="dv">1</span>, <span class="dt">random.seed =</span> <span class="dv">100</span>)</span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true"></a></span>
 <span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a><span class="co"># Create a UMAP visualization. </span></span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true"></a>gcdata &lt;-<span class="st"> </span><span class="kw">RunUMAP</span>(gcdata, <span class="dt">dims =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">n.neighbors =</span> <span class="dv">15</span>, <span class="dt">min.dist =</span> <span class="fl">0.5</span>, <span class="dt">spread =</span> <span class="dv">1</span>, <span class="dt">metric =</span> <span class="st">&quot;euclidean&quot;</span>, <span class="dt">seed.use =</span> <span class="dv">1</span>)  </span>
@@ -1839,7 +1839,7 @@ font-weight: bold
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a><span class="co"># Clustering. Choose the dimensional reduction type to use and the number of aligned </span></span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a><span class="co"># canonical correlation vectors to use.</span></span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>gcdata &lt;-<span class="st"> </span><span class="kw">FindNeighbors</span>(gcdata, <span class="dt">reduction =</span> <span class="st">&quot;pca&quot;</span>, <span class="dt">dims =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">20</span>, <span class="dt">k.param =</span> <span class="dv">20</span>)</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>gcdata &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(gcdata, <span class="dt">resolution =</span> <span class="fl">0.8</span>, <span class="dt">algorithm =</span> <span class="dv">4</span>, <span class="dt">random.seed =</span> <span class="dv">100</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>gcdata &lt;-<span class="st"> </span><span class="kw">FindClusters</span>(gcdata, <span class="dt">resolution =</span> <span class="fl">0.8</span>, <span class="dt">algorithm =</span> <span class="dv">1</span>, <span class="dt">random.seed =</span> <span class="dv">100</span>)</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a></span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a><span class="co"># UMAP. Choose the dimensional reduction type to use and the number of aligned </span></span>
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a><span class="co"># canonical correlation vectors to use.</span></span>
@@ -1943,36 +1943,32 @@ font-weight: bold
 <span id="cb5-57"><a href="#cb5-57" aria-hidden="true"></a><span class="co"># Let&#39;s look to see how the adjusted rand index changed compared to using no batch correction.</span></span>
 <span id="cb5-58"><a href="#cb5-58" aria-hidden="true"></a>tech &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(data.liger<span class="op">@</span>H), <span class="cf">function</span>(x) { </span>
 <span id="cb5-59"><a href="#cb5-59" aria-hidden="true"></a>  <span class="kw">rep</span>(<span class="kw">names</span>(data.liger<span class="op">@</span>H)[x], <span class="kw">nrow</span>(data.liger<span class="op">@</span>H[[x]]))}))</span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span>data.liger<span class="op">@</span>alignment.clusters</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span>data.liger<span class="op">@</span>clusters</span>
 <span id="cb5-61"><a href="#cb5-61" aria-hidden="true"></a>ari &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;tech&quot;</span> =<span class="st"> </span>tech, <span class="st">&quot;clusters&quot;</span> =<span class="st"> </span>clusters)</span>
 <span id="cb5-62"><a href="#cb5-62" aria-hidden="true"></a>ari<span class="op">$</span>tech &lt;-<span class="st"> </span>plyr<span class="op">::</span><span class="kw">mapvalues</span>(ari<span class="op">$</span>tech, <span class="dt">from =</span> <span class="kw">c</span>(<span class="st">&quot;celseq&quot;</span>, <span class="st">&quot;celseq2&quot;</span>, <span class="st">&quot;fluidigmc1&quot;</span>, <span class="st">&quot;smartseq2&quot;</span>), <span class="dt">to =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span>
 <span id="cb5-63"><a href="#cb5-63" aria-hidden="true"></a><span class="kw">adj.rand.index</span>(<span class="kw">as.numeric</span>(ari<span class="op">$</span>tech), <span class="kw">as.numeric</span>(ari<span class="op">$</span>clusters))</span>
 <span id="cb5-64"><a href="#cb5-64" aria-hidden="true"></a></span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true"></a><span class="co"># Look at proportion of each batch in each cluster, and look at factor loadings across clusters</span></span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true"></a><span class="kw">plotClusterProportions</span>(data.liger)</span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true"></a><span class="kw">plotClusterFactors</span>(data.liger, <span class="dt">use.aligned =</span> T)</span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true"></a></span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true"></a><span class="co"># Look at genes that are specific to a dataset and shared across datasets.</span></span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true"></a><span class="co"># Use the plotWordClouds function and choose 2 datasets.</span></span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true"></a><span class="kw">pdf</span>(<span class="kw">paste0</span>(mydir, <span class="st">&quot;word_clouds.pdf&quot;</span>))</span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true"></a><span class="kw">plotWordClouds</span>(data.liger, <span class="dt">dataset1 =</span> <span class="st">&quot;celseq2&quot;</span>, <span class="dt">dataset2 =</span> <span class="st">&quot;smartseq2&quot;</span>)</span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true"></a><span class="kw">dev.off</span>()</span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true"></a></span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true"></a><span class="co"># Look at factor loadings for each cell using plotFactors. </span></span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true"></a><span class="kw">pdf</span>(<span class="kw">paste0</span>(mydir, <span class="st">&quot;plot_factors.pdf&quot;</span>))</span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true"></a><span class="kw">plotFactors</span>(data.liger)</span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true"></a><span class="kw">dev.off</span>()</span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true"></a></span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true"></a><span class="co"># Identify shared and batch-specific marker genes from liger factorization.</span></span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true"></a><span class="co"># Use the getFactorMarkers function and choose 2 datasets.</span></span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true"></a><span class="co"># Then plot some genes of interest using plotGene.</span></span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true"></a>markers &lt;-<span class="st"> </span><span class="kw">getFactorMarkers</span>(data.liger, <span class="dt">dataset1 =</span> <span class="st">&quot;celseq2&quot;</span>, <span class="dt">dataset2 =</span> <span class="st">&quot;smartseq2&quot;</span>, <span class="dt">num.genes =</span> <span class="dv">10</span>)</span>
-<span id="cb5-84"><a href="#cb5-84" aria-hidden="true"></a><span class="kw">plotGene</span>(data.liger, <span class="dt">gene =</span> <span class="st">&quot;INS&quot;</span>)</span>
-<span id="cb5-85"><a href="#cb5-85" aria-hidden="true"></a></span>
-<span id="cb5-86"><a href="#cb5-86" aria-hidden="true"></a><span class="co"># Save current progress.</span></span>
-<span id="cb5-87"><a href="#cb5-87" aria-hidden="true"></a><span class="kw">save</span>(data.liger, <span class="dt">file =</span> Rda.liger.path)</span>
-<span id="cb5-88"><a href="#cb5-88" aria-hidden="true"></a><span class="co"># To load the data, run the following command.</span></span>
-<span id="cb5-89"><a href="#cb5-89" aria-hidden="true"></a><span class="co"># load(Rda.liger.path)</span></span></code></pre></div>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true"></a><span class="co"># Look at genes that are specific to a dataset and shared across datasets.</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true"></a><span class="co"># Use the plotWordClouds function and choose 2 datasets.</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true"></a><span class="kw">pdf</span>(<span class="kw">paste0</span>(writedir, <span class="st">&quot;word_clouds.pdf&quot;</span>))</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true"></a><span class="kw">plotWordClouds</span>(data.liger, <span class="dt">dataset1 =</span> <span class="st">&quot;celseq2&quot;</span>, <span class="dt">dataset2 =</span> <span class="st">&quot;smartseq2&quot;</span>)</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true"></a><span class="kw">dev.off</span>()</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true"></a></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true"></a><span class="co"># Look at factor loadings for each cell using plotFactors. </span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true"></a><span class="kw">pdf</span>(<span class="kw">paste0</span>(writedir, <span class="st">&quot;plot_factors.pdf&quot;</span>))</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true"></a><span class="kw">plotFactors</span>(data.liger)</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true"></a><span class="kw">dev.off</span>()</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true"></a></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true"></a><span class="co"># Identify shared and batch-specific marker genes from liger factorization.</span></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true"></a><span class="co"># Use the getFactorMarkers function and choose 2 datasets.</span></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true"></a><span class="co"># Then plot some genes of interest using plotGene.</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true"></a>markers &lt;-<span class="st"> </span><span class="kw">getFactorMarkers</span>(data.liger, <span class="dt">dataset1 =</span> <span class="st">&quot;celseq2&quot;</span>, <span class="dt">dataset2 =</span> <span class="st">&quot;smartseq2&quot;</span>, <span class="dt">num.genes =</span> <span class="dv">10</span>)</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true"></a><span class="kw">plotGene</span>(data.liger, <span class="dt">gene =</span> <span class="st">&quot;INS&quot;</span>)</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true"></a></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true"></a><span class="co"># Save current progress.</span></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true"></a><span class="kw">save</span>(data.liger, <span class="dt">file =</span> Rda.liger.path)</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true"></a><span class="co"># To load the data, run the following command.</span></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true"></a><span class="co"># load(Rda.liger.path)</span></span></code></pre></div>
 </div>
 </div>
 <div id="additional-exploration-regressing-out-unwanted-covariates" class="section level1">
@@ -1983,13 +1979,13 @@ font-weight: bold
 <h1>Additional exploration: kBET</h1>
 <p>Within your RStudio session, install <a href="https://github.com/theislab/kBET">k-nearest neighbour batch effect test</a> and learn how to use its functionality to quantify batch effects in the pancreatic data.</p>
 </div>
-<div id="additional-exploration-seurat-3" class="section level1">
-<h1>Additional exploration: Seurat 3</h1>
-<p>Read how new version of Seurat does <a href="https://satijalab.org/seurat/pancreas_integration_label_transfer.html">data integration</a></p>
+<div id="additional-exploration-seurat-v4" class="section level1">
+<h1>Additional exploration: Seurat v4</h1>
+<p>Read how the new version of Seurat does <a href="https://satijalab.org/seurat/articles/integration_introduction.html">data integration</a></p>
 </div>
 <div id="acknowledgements" class="section level1">
 <h1>Acknowledgements</h1>
-<p>This document builds off a tutorial from the <a href="https://www.dropbox.com/s/aji4ielg8gc70vj/multiple_pancreas_workflow.R?dl=1">Seurat website</a> and a tutorial from the <a href="https://github.com/MacoskoLab/liger/blob/master/vignettes/liger-vignette.html">LIGER website</a>.</p>
+<p>This document builds off a tutorial from the <a href="https://www.dropbox.com/s/aji4ielg8gc70vj/multiple_pancreas_workflow.R?dl=1">Seurat website</a> and a tutorial from the <a href="http://htmlpreview.github.io/?https://github.com/welch-lab/liger/blob/master/vignettes/Integrating_multi_scRNA_data.html">LIGER website</a>.</p>
 </div>
 </div>
 

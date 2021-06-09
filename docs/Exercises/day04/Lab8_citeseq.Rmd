@@ -32,13 +32,13 @@ library(dplyr)
 library(plyr)
 
 # Set folder location for saving output files. This is also the same location as input data.
-# mydir <- "/mydir/src/citeseq/"
-mydir <- "/Users/orr/Documents/physalia2020/src/citeseq/"
+mydir <- "~/Share/citeseq/"
 
 # Objects to save.
-Rda.RNA.path <- paste0(mydir, "citeseq_RNA.Rda")  # cbmc clustered using RNA
-Rda.multi.path <- paste0(mydir, "citesq_cbmc_multi.rda")  # cbmc clustered and ADT added as an assay
-Rda.protein.path <- paste0(mydir, "citeseq_protein.Rda")  # cbmc clustered using protein
+writedir <- "~/"
+Rda.RNA.path <- paste0(writedir, "citeseq_RNA.Rda")  # cbmc clustered using RNA
+Rda.multi.path <- paste0(writedir, "citesq_cbmc_multi.Rda")  # cbmc clustered and ADT added as an assay
+Rda.protein.path <- paste0(writedir, "citeseq_protein.Rda")  # cbmc clustered using protein
 ```
 
 # Load in the data
@@ -296,8 +296,8 @@ The ADT-based clustering yields similar results, but with a few differences
 - However, some clusters for which the ADT data does not contain good distinguishing protein markers (i.e. Mk/Ery/DC) lose separation
 - You can verify this using FindMarkers at the RNA level, as well
 
-# Additional exploration: another example of multi-modal analysis
-For another nice example of multi-modal analysis, please explore this [single cell ATAC-Seq vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/cicero/inst/doc/website.html) and this [scATAC-seq data integration](https://satijalab.org/signac/articles/integration.html).
+# Additional exploration: another example of multi-modal analysis (single cell ATAC-Seq)
+For another nice example of multi-modal analysis, please explore this [single cell ATAC-Seq vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/cicero/inst/doc/website.html) and this [scATAC-seq data integration](https://satijalab.org/signac/articles/integrate_atac.html).
 
 # Acknowledgements
-This document is largely a tutorial from Seurat website, with some small modifications. The official vignette is available at [Using Seurat with multi-modal data](https://satijalab.org/seurat/multimodal_vignette.html).
+This document is largely a tutorial from Seurat website, with some small modifications. The official vignette is available at [Using Seurat with multi-modal data](https://satijalab.org/seurat/multimodal_vignette.html). An even more sophisticated analysis of CITE-Seq data is available using [Weighted Nearest Neighbor Analysis](https://satijalab.org/seurat/articles/weighted_nearest_neighbor_analysis.html).
