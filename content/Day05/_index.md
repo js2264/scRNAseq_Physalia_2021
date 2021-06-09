@@ -10,7 +10,9 @@ We will discuss in group(s) about the following method paper published in 2020.
 > Schwabe et al.: 
 *The transcriptome dynamics of single cells during the cell cycle*, **Molecular Systems Biology 2020** (DOI: [10.15252/msb.20209946](https://doi.org/10.15252/msb.20209946))
 
-Read it ahead and identify one or two points that you would wish to discuss with the group.
+> [Handling confounded samples for differential expression in scRNA-seq experiments](https://www.nxn.se/valent/2019/2/15/handling-confounded-samples-for-differential-expression-in-scrna-seq-experiments)
+
+Read one, or both texts, for Friday, and identify 1-2 points that you would wish to discuss with the group.
 
 ---
 
