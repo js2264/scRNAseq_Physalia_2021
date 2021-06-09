@@ -1657,7 +1657,7 @@ font-weight: bold
       <li><a href="#pseudotime-inference-and-expression-modelling">Pseudotime inference and expression modelling</a>
       <ul>
       <li><a href="#pseudotime-inference">Pseudotime inference</a></li>
-      <li><a href="#model-pseudotime-dependent-gene-expression">Model pseudotime-dependent gene expression</a></li>
+      <li><a href="#daunting-step-but-that-looks-cool-in-a-paper-modeling-pseudotime-dependent-gene-expression">Daunting step but that looks cool in a paper: modeling pseudotime-dependent gene expression</a></li>
       </ul></li>
       <li><a href="#ordering-trajectory-with-rna-velocity">Ordering trajectory with RNA velocity</a></li>
       </ul></li>
@@ -1885,8 +1885,8 @@ Show code
 </details>
 <p><br></p>
 </div>
-<div id="model-pseudotime-dependent-gene-expression" class="section level4">
-<h4>Model pseudotime-dependent gene expression</h4>
+<div id="daunting-step-but-that-looks-cool-in-a-paper-modeling-pseudotime-dependent-gene-expression" class="section level4">
+<h4>Daunting step but that looks cool in a paper: modeling pseudotime-dependent gene expression</h4>
 <p>Using pseudotime / cell, one can model gene expression along the differentiation process. This alleviates the need to study gene expression <strong>per cell</strong>, and allows one to focus on process-related effects (e.g. gene expression during a developmental trajectory).</p>
 <ul>
 <li>Try to do so for few markers of spermatogonia, spermatocytes and spermatids. You can use different models to</li>
@@ -1972,50 +1972,28 @@ Show code
 </details>
 <p><br></p>
 <ul>
-<li>RNA velocity also yields a pseudotime. How does it compare to pseudotime computed by <code>slingshot</code>?</li>
+<li>For those who want to go further… Try running <code>velociraptor</code> after removing the cells in the center of the projection. Re-run RNA velocity: did it change the trajectory of individual cells? Comment.</li>
 </ul>
 <details>
 <summary>
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>sce<span class="op">$</span>pseudotime_velocity &lt;-<span class="st"> </span>velo_out<span class="op">$</span>velocity_pseudotime</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>    <span class="dt">slingshot =</span> sce<span class="op">$</span>pseudotime, </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>    <span class="dt">velocity =</span> sce<span class="op">$</span>pseudotime_velocity, </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>AnnotatedClusters</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> slingshot, <span class="dt">y =</span> velocity, <span class="dt">col =</span> cluster)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<ul>
-<li>Try running <code>velociraptor</code> after removing the cells in the center of the projection. Re-run RNA velocity: did it change the trajectory of individual cells? Comment.</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>sce2 &lt;-<span class="st"> </span>sce[, sce<span class="op">$</span>pseudotime_velocity <span class="op">&lt;=</span><span class="st"> </span><span class="fl">0.625</span>]</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>velo_out2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">scvelo</span>(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    sce2, </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>    <span class="dt">assay.X =</span> <span class="st">&quot;spliced&quot;</span>, </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&quot;PCA&quot;</span>, </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a>    <span class="dt">mode =</span> <span class="st">&#39;dynamic&#39;</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a>)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>sce2<span class="op">$</span>pseudotime_velocity &lt;-<span class="st"> </span>velo_out2<span class="op">$</span>velocity_pseudotime</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true"></a>embedded_velo2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">embedVelocity</span>(<span class="kw">reducedDim</span>(sce2, <span class="st">&quot;PCA&quot;</span>), velo_out2)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true"></a>grid.df2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">gridVectors</span>(<span class="kw">reducedDim</span>(sce2, <span class="st">&quot;PCA&quot;</span>), embedded_velo2, <span class="dt">resolution =</span> <span class="dv">30</span>)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce2, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;pseudotime_velocity&quot;</span>, <span class="dt">point_alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_segment</span>(</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true"></a>        <span class="dt">data =</span> grid.df2, </span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true"></a>        <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> start.PC1, <span class="dt">y =</span> start.PC2, <span class="dt">xend =</span> end.PC1, <span class="dt">yend =</span> end.PC2), </span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true"></a>        <span class="dt">arrow =</span> <span class="kw">arrow</span>(<span class="dt">length =</span> <span class="kw">unit</span>(<span class="fl">0.05</span>, <span class="st">&quot;inches&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;closed&quot;</span>)</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true"></a>    )</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>velo_out2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">scvelo</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>    sce2, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>    <span class="dt">assay.X =</span> <span class="st">&quot;spliced&quot;</span>, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&quot;PCA&quot;</span>, </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>    <span class="dt">mode =</span> <span class="st">&#39;dynamic&#39;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>embedded_velo2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">embedVelocity</span>(<span class="kw">reducedDim</span>(sce2, <span class="st">&quot;PCA&quot;</span>), velo_out2)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a>grid.df2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">gridVectors</span>(<span class="kw">reducedDim</span>(sce2, <span class="st">&quot;PCA&quot;</span>), embedded_velo2, <span class="dt">resolution =</span> <span class="dv">30</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce2, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;AnnotatedClusters&quot;</span>, <span class="dt">point_alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_segment</span>(</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true"></a>        <span class="dt">data =</span> grid.df2, </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true"></a>        <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> start.PC1, <span class="dt">y =</span> start.PC2, <span class="dt">xend =</span> end.PC1, <span class="dt">yend =</span> end.PC2), </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true"></a>        <span class="dt">arrow =</span> <span class="kw">arrow</span>(<span class="dt">length =</span> <span class="kw">unit</span>(<span class="fl">0.05</span>, <span class="st">&quot;inches&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;closed&quot;</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true"></a>    )</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2034,15 +2012,15 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>sce_fit &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">fitGAM</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a>    <span class="kw">assay</span>(sce, <span class="st">&#39;spliced&#39;</span>),</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>    <span class="dt">pseudotime =</span> sce<span class="op">$</span>pseudotime,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>    <span class="dt">cellWeights =</span> <span class="kw">matrix</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">ncol</span>(sce))),</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>    <span class="dt">genes =</span> <span class="kw">which</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>    <span class="dt">nknots =</span> <span class="dv">8</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a>    <span class="dt">verbose =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a>    <span class="dt">parallel =</span> <span class="ot">FALSE</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>sce_fit &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">fitGAM</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>    <span class="kw">assay</span>(sce, <span class="st">&#39;spliced&#39;</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    <span class="dt">pseudotime =</span> sce<span class="op">$</span>pseudotime,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>    <span class="dt">cellWeights =</span> <span class="kw">matrix</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">ncol</span>(sce))),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    <span class="dt">genes =</span> <span class="kw">which</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>    <span class="dt">nknots =</span> <span class="dv">8</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a>    <span class="dt">verbose =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a>    <span class="dt">parallel =</span> <span class="ot">FALSE</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2058,83 +2036,40 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>sce_test &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">associationTest</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>    sce_fit,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>    <span class="dt">l2fc =</span> <span class="dv">1</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(meanLogFC)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">16</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a>            sce, </span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true"></a>    })</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true"></a>)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(meanLogFC)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">16</span>)</span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true"></a>            sce, </span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true"></a>    })</span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true"></a>)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>sce_test &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">startVsEndTest</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>    sce_fit,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>    <span class="dt">l2fc =</span> <span class="dv">1</span>, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>    <span class="dt">pseudotimeValues =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.8</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(logFClineage1)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">16</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true"></a>            sce, </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true"></a>    })</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true"></a>)</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(logFClineage1)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">16</span>)</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true"></a>            sce, </span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true"></a>    })</span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>sce_test &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">associationTest</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a>    sce_fit,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>    <span class="dt">l2fc =</span> <span class="dv">1</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(meanLogFC)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">16</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true"></a>            sce, </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true"></a>    })</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true"></a>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(meanLogFC)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">16</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true"></a>            sce, </span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true"></a>    })</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true"></a>)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2156,7 +2091,7 @@ Show code
 ##  collate  en_GB.UTF-8                 
 ##  ctype    en_GB.UTF-8                 
 ##  tz       Europe/Paris                
-##  date     2021-06-06                  
+##  date     2021-06-09                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package                * version  date       lib source        

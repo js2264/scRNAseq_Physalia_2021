@@ -46,6 +46,7 @@ What does the object contain (type of data, number of cells, batches, organism, 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 sce <- TENxPBMCData::TENxPBMCData('pbmc4k')
+rownames(sce) <- scuttle::uniquifyFeatureNames(rowData(sce)$ENSEMBL_ID, rowData(sce)$Symbol_TENx)
 sce
 rowData(sce)
 colData(sce)
@@ -53,40 +54,11 @@ table(sce$Library)
 ```
 </p></details><br>
 
-### Annotate genes 
-
-In order to identify interesting features (i.e. genes) to select for further analysis, we would want to know more about the biotype of each gene, their chromosomal location, etc.. 
-This is easily obtained using `Bioconductor` framework. Check the `AnnotationDbi` package and the companion `AnnotationHub` resources to understand how to access any `Ensembl` annotation from within `R`. 
-
-```{r eval = FALSE}
-ah <- AnnotationHub::AnnotationHub()
-AnnotationHub::query(ah, 'Ensembl 102 EnsDb for Homo sapiens')
-ens.hs.102 <- AnnotationHub::query(ah, 'Ensembl 102 EnsDb for Homo sapiens')[[1]]
-rowData(sce)$ID <- scuttle::uniquifyFeatureNames(rowData(sce)$ENSEMBL_ID, rowData(sce)$Symbol_TENx)
-rownames(sce) <- rowData(sce)$ID
-rowData(sce)$chr <- AnnotationDbi::mapIds(ens.hs.102, keys = rowData(sce)$ENSEMBL_ID, keytype = "GENEID", column = "SEQNAME")
-rowData(sce)$gene_biotype <- AnnotationDbi::mapIds(ens.hs.102, keys = rowData(sce)$ENSEMBL_ID, keytype = "GENEID", column = "GENEBIOTYPE")
-```
-
-- Filter the data to only retain protein-coding genes which are neither mitochondrial or ribosomal. 
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-rowData(sce)$isMito <- 1:nrow(sce) %in% which( rowData(sce)$chr == "MT")
-colData(sce)$pctMito <- colSums(counts(sce)[rowData(sce)$isMito, ]) / colSums(counts(sce))
-rowData(sce)$isRibo <- grepl('^RPL|^RPS', rowData(sce)$Symbol)
-colData(sce)$pctRibo <- colSums(counts(sce)[rowData(sce)$isRibo, ]) / colSums(counts(sce))
-sce_filtered <- sce[which(rowData(sce)$gene_biotype == 'protein_coding' & ! rowData(sce)$isMito & ! rowData(sce)$isRibo), ]
-sce_filtered
-dim(sce_filtered)
-```
-</p></details><br>
-
 ### Normalize counts using `scran`
 
 Just like in bulk high-throughput sequencing experiments, scRNAseq counts have to be normalized to the sequencing depth for each cell. 
 We can define the library size as the total sum of counts across all genes for each cell, the expected value of which is assumed to scale with any cell-specific biases. 
-However, this relies on the assumption that within the entire dataset, most genes are non-differentially expressed. 
+However, this relies on the assumption that within the entire dataset, most genes are non-differentially expressed and expressed roughly within the same range. 
 Depending on the set up of the scRNAseq experiment, this can be entirely false. To avoid relying on this hypothesis, 
 we can (1) quickly pre-cluster cells, then (2) normalize cells using their library size factor separately in each cluster, then 
 (3) rescaling size factors so that they are comparable across clusters.
@@ -94,17 +66,17 @@ we can (1) quickly pre-cluster cells, then (2) normalize cells using their libra
 All of this can be done very simply using the combo `quickCluster() + computeSumFactors() + logNormCounts()` from `scran/scuttle` packages:
 
 ```{r eval = FALSE}
-clusters <- scran::quickCluster(sce_filtered)
+clusters <- scran::quickCluster(sce)
 table(clusters)
-sce_filtered <- scran::computeSumFactors(sce_filtered, cluster = clusters)
-sce_filtered <- scuttle::logNormCounts(sce_filtered)
+sce <- scran::computeSumFactors(sce, cluster = clusters)
+sce <- scuttle::logNormCounts(sce)
 ```
 
 - Re-perform a "quick" clustering once again, to compare the results with the first clustering. How does it differ? Is this difference important? Should this be taken into account, and if so, why?
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-clusters2 <- scran::quickCluster(sce_filtered)
+clusters2 <- scran::quickCluster(sce)
 table(clusters, clusters2)
 ```
 </p></details><br>
@@ -122,23 +94,18 @@ Modelling of the mean-variance relationship can be achieved by the `modelGeneVar
 
 ```{r eval = FALSE}
 require(tidyverse)
-sce_filtered_variance <- scran::modelGeneVar(sce_filtered)
-HVGs <- sce_filtered_variance %>% 
-    as_tibble(rownames = "gene") %>% 
-    dplyr::filter(bio > 0) %>% 
-    slice_max(bio, n = 100) %>% 
-    pull(gene)
-rowData(sce_filtered)$isHVG <- rownames(sce_filtered) %in% HVGs
-head(rowData(sce_filtered))
-table(rowData(sce_filtered)$isHVG)
+sce_filtered_variance <- scran::modelGeneVar(sce)
+HVGs <- scran::getTopHVGs(sce_filtered_variance, prop = 0.1)
+rowData(sce)$isHVG <- rownames(sce) %in% HVGs
+head(rowData(sce))
+table(rowData(sce)$isHVG)
 
 ## --- Visualizing the mean-variance fit
 df <- tibble(
-    nonorm = rowMeans(counts(sce_filtered)),
     mean = metadata(sce_filtered_variance)$mean, 
     var = metadata(sce_filtered_variance)$var, 
     trend = metadata(sce_filtered_variance)$trend(mean), 
-    HVG = rowData(sce_filtered)$isHVG
+    HVG = rowData(sce)$isHVG
 )
 ggplot(df) + 
     geom_point(aes(x = mean, y = var, col = HVG), alpha = 0.4) + 
@@ -146,28 +113,6 @@ ggplot(df) +
     theme_minimal() + 
     labs(x = 'Gene mean exp. (norm.)', y = 'Gene exp. variance')
 ```
-
-- It is well known that UMI counts exhibit near-Poisson variation if we only consider technical noise from library preparation and sequencing. 
-This can be used to construct a mean-variance trend in the log-counts with the `modelGeneVarByPoisson()` function (rather than simpler `modelGeneVar()`). What do you observed in this case? Can you comment on this? 
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-sce_filtered_poissonvariance <- scran::modelGeneVarByPoisson(sce_filtered)
-df <- tibble(
-    mean = metadata(sce_filtered_variance)$mean, 
-    var = metadata(sce_filtered_variance)$var, 
-    trend = metadata(sce_filtered_variance)$trend(mean), 
-    trend_poisson = metadata(sce_filtered_poissonvariance)$trend(mean), 
-    HVG = rowData(sce_filtered)$isHVG
-)
-ggplot(df) + 
-    geom_point(aes(x = mean, y = var), col = 'black') + 
-    geom_line(aes(x = mean, y = trend), col = 'red') +
-    geom_line(aes(x = mean, y = trend_poisson), col = 'blue') +
-    theme_minimal() + 
-    ggtitle('Modelled mean-var. relationship\nred: no assumption\nblue: poisson-distribution of counts')
-```
-</p></details><br>
 
 ### PCA on filtered dataset
 
@@ -177,30 +122,18 @@ We can further compress the dataset. The most widely used approach is `PCA`:
 it computes a small number of "components" (typically 5-50) optimally summarizing the variability of the whole dataset, 
 while retaining linearity of the underlying numerical data and being computationallt quite efficient. 
 
-A `PCA` embedding of the data can be stored into a `reducedDim` slot. 
-
-```{r eval = FALSE}
-pca <- prcomp(t(logcounts(sce_filtered[rowData(sce_filtered)$isHVG,])))
-names(pca)
-dim(pca$x)
-head(pca$x[, 1:50])
-reducedDim(sce_filtered, 'pca_manual') <- pca$x[, 1:50]
-```
-
 - Try to leverage `scater` package to compute `PCA` embedding of the filtered data by taking into account the technical variability, and compare it to your manually computed PCA. Comment on the changes. 
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-sce_filtered <- scran::denoisePCA(
-    sce_filtered, 
-    technical = sce_filtered_poissonvariance, 
+sce <- scran::denoisePCA(
+    sce, 
+    technical = sce_filtered_variance, 
     subset.row = HVGs, 
     min.rank = 15
 )
 library(patchwork)
-p1 <- scater::plotReducedDim(sce_filtered, 'PCA', colour_by = 'sizeFactor') + ggtitle('denoised PCA')
-p2 <- scater::plotReducedDim(sce_filtered, 'pca_manual', colour_by = 'sizeFactor') + ggtitle('Manual PCA')
-p <- p1 + p2
+p <- scater::plotReducedDim(sce, 'PCA', colour_by = 'sizeFactor') + ggtitle('denoised PCA')
 p
 ```
 </p></details><br>
@@ -231,66 +164,7 @@ Three main approaches can be used:
 2. k-means clustering
 3. Graph-based clustering
 
-Other methods are typically built on top of these fundamental approaches. 
-
-> Hierarchical clustering 
-
-In the context of scRNA-seq, the main advantage of hierarchical clustering lies in the production of the dendrogram. 
-This is a rich summary that describes the relationships between cells and subpopulations at various resolutions and in a quantitative manner based on the branch lengths.
-However, it is very greedy as it requires to compute a cell-cell distance matrix (distance between two cells for each pair of cells). 
-
-- Compute hierarchical clustering of the PBMC dataset to see how cells relate to each other, and extract dominant clusters. How many clusters are found? Discuss. 
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-## --- Perform hierarchical clustering
-sce_dist <- dist(reducedDim(sce_filtered, "PCA"))
-sce_tree <- hclust(sce_dist, "ward.D2")
-## --- Get clusters from dendogram
-dend <- as.dendrogram(sce_tree, hang=0.1)
-sce_clust <- dynamicTreeCut::cutreeDynamic(
-    sce_tree, 
-    distM = as.matrix(sce_dist),
-    minClusterSize = 10, 
-    deepSplit = 1
-)
-table(sce_clust)
-sce_filtered$clusters_hclust <- factor(sce_clust)
-## --- Plot dendogram
-dendextend::labels_colors(dend) <- sce_clust[order.dendrogram(dend)]
-plot(dend)
-```
-</p></details><br>
-
-> k-means clustering
-
-k-means clustering is a classic technique that aims to partition cells into k clusters. 
-Each cell is assigned to the cluster with the closest centroid, which is done by minimizing 
-the within-cluster sum of squares using a random starting configuration for the k centroids.
-
-- Compute k-means clustering of the PBMC dataset. How did you choose the number of clusters? What would a different `k` yield? 
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-sce_clust <- kmeans(reducedDim(sce_filtered, "PCA"), centers = 5)
-table(sce_clust$cluster)
-sce_filtered$clusters_kmeans <- factor(sce_clust$cluster)
-```
-</p></details><br>
-
-- Try repeating the k-means clustering once again. Why/how did the resulting clusters change? Comment. Can you identify "weak" clusters? 
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-sce_clust2 <- kmeans(reducedDim(sce_filtered, "PCA"), centers = 10)
-table(sce_clust$cluster, sce_clust2$cluster)
-sce_filtered$clusters_kmeans2 <- factor(sce_clust2$cluster)
-```
-</p></details><br>
-
-> Graph-based
-
-A popular approach for single-cell clustering is the graph-based method: 
+Today, we will focus on graph-based clustering, as it is becoming the standard for scRNAseq: 
 it is a flexible and scalable technique for clustering even the largest scRNA-seq datasets. 
 We first build a graph where each node is a cell that is connected by edges to its nearest neighbors in the high-dimensional space. 
 Edges are weighted based on the similarity between the cells involved, with higher weight given to cells that are more closely related.
@@ -300,13 +174,13 @@ Edges are weighted based on the similarity between the cells involved, with high
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 graph <- scran::buildSNNGraph(
-    sce_filtered, 
-    k = 50, 
+    sce, 
+    k = 5, 
     use.dimred = 'PCA'
 )
 sce_clust <- igraph::cluster_louvain(graph)$membership
 table(sce_clust)
-sce_filtered$clusters_graph <- factor(sce_clust)
+sce$clusters_graph <- factor(sce_clust)
 ```
 </p></details><br>
 
@@ -315,13 +189,12 @@ sce_filtered$clusters_graph <- factor(sce_clust)
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 graph2 <- scran::buildSNNGraph(
-    sce_filtered, 
-    k = 5, 
+    sce, 
+    k = 50, 
     use.dimred = 'PCA'
 )
 sce_clust2 <- igraph::cluster_louvain(graph2)$membership
 table(sce_clust, sce_clust2)
-sce_filtered$clusters_graph2 <- factor(sce_clust2)
 ```
 </p></details><br>
 
@@ -338,30 +211,30 @@ it struggles at emphasizing the existence of clusters in complex datasets, when 
     - Multi-Dimensional Scaling (MDS)
     - Non-negative Matrix Factorization (NMF)
 
-- Explore the different dimensional reduction algorithms, trying different hyperparameters combinations. 
-Use the `scater::plotReducedDim()` function to plot cells in any embedding. 
+- Explore the different dimensional reduction algorithms, trying different hyperparameters combinations. When you run these commands, pay attention to how long each command takes to run! While this run, check the `Help` page for each function (e.g. `?runTSNE`)
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-reducedDims(sce_filtered)
-sce_filtered <- scater::runTSNE(sce_filtered, subset_row = HVGs)
-sce_filtered <- scater::runUMAP(sce_filtered, subset_row = HVGs)
-sce_filtered <- scater::runDiffusionMap(sce_filtered, subset_row = HVGs)
-sce_filtered <- scater::runMDS(sce_filtered, subset_row = HVGs)
-sce_filtered <- scater::runNMF(sce_filtered, subset_row = HVGs)
-reducedDims(sce_filtered)
+reducedDims(sce)
+sce <- scater::runTSNE(sce, subset_row = HVGs)
+sce <- scater::runUMAP(sce, subset_row = HVGs)
+sce <- scater::runDiffusionMap(sce, subset_row = HVGs, dimred = 'PCA')
+reducedDims(sce)
+reducedDim(sce, 'DiffusionMap')[1:10, ]
+```
+
+- Use the `scater::plotReducedDim()` function to plot cells in each embedding. Comment.
+
+```{r eval = FALSE}
 require(patchwork)
-p<- scater::plotReducedDim(sce_filtered, 'pca_manual', colour_by = 'clusters_graph') + ggtitle('manual PCA') + 
-    scater::plotReducedDim(sce_filtered, 'PCA', colour_by = 'clusters_graph') + ggtitle('denoised PCA') +
-    scater::plotReducedDim(sce_filtered, 'TSNE', colour_by = 'clusters_graph') + ggtitle('tSNE') +
-    scater::plotReducedDim(sce_filtered, 'UMAP', colour_by = 'clusters_graph') + ggtitle('UMAP') +
-    scater::plotReducedDim(sce_filtered, 'DiffusionMap', colour_by = 'clusters_graph') + ggtitle('Diffusion') +
-    scater::plotReducedDim(sce_filtered, 'MDS', colour_by = 'clusters_graph') + ggtitle('MDS') +
-    scater::plotReducedDim(sce_filtered, 'NMF', colour_by = 'clusters_graph') + ggtitle('NMF')
+p<- scater::plotReducedDim(sce, 'PCA', colour_by = 'clusters_graph') + ggtitle('denoised PCA') +
+    scater::plotReducedDim(sce, 'TSNE', colour_by = 'clusters_graph') + ggtitle('tSNE') +
+    scater::plotReducedDim(sce, 'UMAP', colour_by = 'clusters_graph') + ggtitle('UMAP') +
+    scater::plotReducedDim(sce, 'DiffusionMap', colour_by = 'clusters_graph') + ggtitle('Diffusion')   
 ```
 </p></details><br>
 
-### Comparing different clustering approaches
+### For the pros of clustering... Comparing different clustering approaches
 
 Leveraging the `bluster` package, different clustering approaches can be performed using a uniformed syntax, to compare their output. 
 
@@ -370,7 +243,7 @@ Leveraging the `bluster` package, different clustering approaches can be perform
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 clusters <- bluster::clusterSweep(
-    reducedDim(sce_filtered, 'PCA'), 
+    reducedDim(sce, 'PCA'), 
     BLUSPARAM = bluster::SNNGraphParam(),
     k = c(5L, 15L, 25L, 50L), 
     cluster.fun = c("louvain")
@@ -387,23 +260,15 @@ p <- cowplot::plot_grid(
         edge_arrow=FALSE
     ), 
     cowplot::plot_grid(
-        scater::plotReducedDim(sce_filtered, 'TSNE', colour_by = I(clusters$clusters[, 'k.5_cluster.fun.louvain'])) + ggtitle('k = 5'),
-        scater::plotReducedDim(sce_filtered, 'TSNE', colour_by = I(clusters$clusters[, 'k.15_cluster.fun.louvain'])) + ggtitle('k = 15'),
-        scater::plotReducedDim(sce_filtered, 'TSNE', colour_by = I(clusters$clusters[, 'k.25_cluster.fun.louvain'])) + ggtitle('k = 25'),
-        scater::plotReducedDim(sce_filtered, 'TSNE', colour_by = I(clusters$clusters[, 'k.50_cluster.fun.louvain'])) + ggtitle('k = 50')
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.5_cluster.fun.louvain'])) + ggtitle('k = 5'),
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.15_cluster.fun.louvain'])) + ggtitle('k = 15'),
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.25_cluster.fun.louvain'])) + ggtitle('k = 25'),
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.50_cluster.fun.louvain'])) + ggtitle('k = 50')
     ), 
     nrow = 2, 
     rel_heights = c(0.3, 0.7)
 )
-```
-</p></details><br>
-
-- Save the clustering which seems the most consistent into a `cluster` annotation in the `sce_filtered` object
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-sce_filtered$cluster <- clusters$clusters[, 'k.5_cluster.fun.louvain']
-table(sce_filtered$cluster)
+table(clusters$clusters[, 'k.5_cluster.fun.louvain'])
 ```
 </p></details><br>
 
@@ -419,37 +284,44 @@ allowing us to treat the clustering as a *proxy* for cell type identity.
 A general strategy is to perform DE tests between pairs of clusters and then combine results into a single ranking of marker genes for each cluster.
 
 ```{r eval = FALSE}
-markers <- scran::findMarkers(sce_filtered, groups = sce_filtered$cluster)
+markers <- scran::findMarkers(sce, groups = sce$clusters_graph)
 ```
 
-- Find markers strongly expressed in each cluster
+- Find markers strongly overexpressed in each cluster
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 markers <- scran::findMarkers(
-    sce_filtered, 
-    groups = sce_filtered$cluster, 
+    sce, 
+    groups = sce$clusters_graph, 
     direction = "up", 
     lfc = 1
 )
-markers <- lapply(markers, function(dat) {
-    rownames(dat[dat$Top <= 5,])
+head(markers[[1]])
+markers <- lapply(markers, function(df) {
+    rownames(df[df$Top <= 5,])
 })
 ```
 </p></details><br>
+
+- Plot average expression of the first marker of the first cluster in UMAP
+
+```{r eval = FALSE}
+p <- scater::plotReducedDim(sce, 'TSNE', colour_by = markers[[2]][[1]])
+```
 
 - For each cluster, plot average expression of its markers in reduced dimensions
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 df <- lapply(markers, function(genes) {
-    logcounts(sce_filtered[genes, ]) %>% 
+    logcounts(sce[genes, ]) %>% 
         t() %>%
         as_tibble() %>% 
         mutate(
-            cellID = sce_filtered$Barcode, 
-            x = reducedDim(sce_filtered, 'TSNE')[,1], 
-            y = reducedDim(sce_filtered, 'TSNE')[,2]
+            cellID = sce$Barcode, 
+            x = reducedDim(sce, 'TSNE')[,1], 
+            y = reducedDim(sce, 'TSNE')[,2]
         ) %>% 
         pivot_longer(cols = contains(genes), names_to = 'gene', values_to = 'expr') %>% 
         group_by(x, y, cellID) %>%
@@ -463,16 +335,16 @@ p <- ggplot(df, aes(x, y, col = ave_expr)) +
 ```
 </p></details><br>
 
-- For each cluster, plot average expression of its markers as a dotplot 
+- For data visualization aficionados... For each cluster, plot average expression of its markers as a dotplot 
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 genes <- unique(unlist(markers))
-df <- logcounts(sce_filtered[genes, ]) %>% 
+df <- logcounts(sce[genes, ]) %>% 
         t() %>%
         as_tibble() %>% 
         mutate(
-            cluster = sce_filtered$cluster, 
+            cluster = sce$clusters_graph, 
         ) %>% 
         pivot_longer(cols = contains(genes), names_to = 'gene', values_to = 'expr') %>% 
         group_by(cluster, gene) %>%
@@ -504,13 +376,13 @@ This reference is available as a `SummarizedExperiment` containing log-normalize
 ```{r eval = FALSE}
 ref <- celldex::BlueprintEncodeData()
 prediction_types <- SingleR::SingleR(
-    test = sce_filtered, 
+    test = sce, 
     ref = ref, 
     labels = ref$label.main
 )
-sce_filtered$annotation <- prediction_types$labels
-table(sce_filtered$annotation)
-table(sce_filtered$annotation, sce_filtered$cluster)
+sce$annotation <- prediction_types$labels
+table(sce$annotation)
+table(sce$annotation, sce$clusters_graph)
 ```
 
 - Using `scater` and `SingleR` utilities, check the annotation score for each cell in the scRNAseq. Did the automated annotation work robuslty? How does it compare to our defined clusters? Is automated annotation as sensitive as graph-based clustering?
@@ -518,9 +390,9 @@ table(sce_filtered$annotation, sce_filtered$cluster)
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 p <- SingleR::plotScoreHeatmap(prediction_types)
-p <- scater::plotReducedDim(sce_filtered, 'TSNE', colour_by = 'annotation') + ggtitle('Automated annotation')
+p <- scater::plotReducedDim(sce, 'TSNE', colour_by = 'annotation') + ggtitle('Automated annotation')
 p <- pheatmap::pheatmap(
-    log2(table(Assigned = sce_filtered$annotation, Cluster = sce_filtered$cluster)+10), 
+    log2(table(Assigned = sce$annotation, Cluster = sce$clusters_graph)+10), 
     color=colorRampPalette(c("white", "darkred"))(101)
 )
 ```

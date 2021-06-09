@@ -1645,7 +1645,6 @@ font-weight: bold
       <li><a href="#dimensional-reduction-for-clustering">1. Dimensional reduction for clustering</a>
       <ul>
       <li><a href="#preparing-dataset">Preparing dataset</a></li>
-      <li><a href="#annotate-genes">Annotate genes</a></li>
       <li><a href="#normalize-counts-using-scran">Normalize counts using <code>scran</code></a></li>
       <li><a href="#feature-selection">Feature selection</a></li>
       <li><a href="#pca-on-filtered-dataset">PCA on filtered dataset</a></li>
@@ -1654,7 +1653,7 @@ font-weight: bold
       <ul>
       <li><a href="#clustering-algorithms">Clustering algorithms</a></li>
       <li><a href="#dimensional-reduction-for-clustering-visualization">Dimensional reduction for clustering visualization</a></li>
-      <li><a href="#comparing-different-clustering-approaches">Comparing different clustering approaches</a></li>
+      <li><a href="#for-the-pros-of-clustering-comparing-different-clustering-approaches">For the pros of clustering… Comparing different clustering approaches</a></li>
       </ul></li>
       <li><a href="#cell-annotation">3. Cell annotation</a>
       <ul>
@@ -1690,51 +1689,23 @@ Show code
 </summary>
 <p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>TENxPBMCData<span class="op">::</span><span class="kw">TENxPBMCData</span>(<span class="st">&#39;pbmc4k&#39;</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>sce</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">rowData</span>(sce)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="kw">colData</span>(sce)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="kw">table</span>(sce<span class="op">$</span>Library)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-</div>
-<div id="annotate-genes" class="section level3">
-<h3>Annotate genes</h3>
-<p>In order to identify interesting features (i.e. genes) to select for further analysis, we would want to know more about the biotype of each gene, their chromosomal location, etc.. This is easily obtained using <code>Bioconductor</code> framework. Check the <code>AnnotationDbi</code> package and the companion <code>AnnotationHub</code> resources to understand how to access any <code>Ensembl</code> annotation from within <code>R</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>ah &lt;-<span class="st"> </span>AnnotationHub<span class="op">::</span><span class="kw">AnnotationHub</span>()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>AnnotationHub<span class="op">::</span><span class="kw">query</span>(ah, <span class="st">&#39;Ensembl 102 EnsDb for Homo sapiens&#39;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>ens.hs<span class="fl">.102</span> &lt;-<span class="st"> </span>AnnotationHub<span class="op">::</span><span class="kw">query</span>(ah, <span class="st">&#39;Ensembl 102 EnsDb for Homo sapiens&#39;</span>)[[<span class="dv">1</span>]]</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>ID &lt;-<span class="st"> </span>scuttle<span class="op">::</span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol_TENx)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span><span class="kw">rowData</span>(sce)<span class="op">$</span>ID</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>chr &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">mapIds</span>(ens.hs<span class="fl">.102</span>, <span class="dt">keys =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="dt">keytype =</span> <span class="st">&quot;GENEID&quot;</span>, <span class="dt">column =</span> <span class="st">&quot;SEQNAME&quot;</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>gene_biotype &lt;-<span class="st"> </span>AnnotationDbi<span class="op">::</span><span class="kw">mapIds</span>(ens.hs<span class="fl">.102</span>, <span class="dt">keys =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="dt">keytype =</span> <span class="st">&quot;GENEID&quot;</span>, <span class="dt">column =</span> <span class="st">&quot;GENEBIOTYPE&quot;</span>)</span></code></pre></div>
-<ul>
-<li>Filter the data to only retain protein-coding genes which are neither mitochondrial or ribosomal.</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>isMito &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(sce) <span class="op">%in%</span><span class="st"> </span><span class="kw">which</span>( <span class="kw">rowData</span>(sce)<span class="op">$</span>chr <span class="op">==</span><span class="st"> &quot;MT&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="kw">colData</span>(sce)<span class="op">$</span>pctMito &lt;-<span class="st"> </span><span class="kw">colSums</span>(<span class="kw">counts</span>(sce)[<span class="kw">rowData</span>(sce)<span class="op">$</span>isMito, ]) <span class="op">/</span><span class="st"> </span><span class="kw">colSums</span>(<span class="kw">counts</span>(sce))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>isRibo &lt;-<span class="st"> </span><span class="kw">grepl</span>(<span class="st">&#39;^RPL|^RPS&#39;</span>, <span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="kw">colData</span>(sce)<span class="op">$</span>pctRibo &lt;-<span class="st"> </span><span class="kw">colSums</span>(<span class="kw">counts</span>(sce)[<span class="kw">rowData</span>(sce)<span class="op">$</span>isRibo, ]) <span class="op">/</span><span class="st"> </span><span class="kw">colSums</span>(<span class="kw">counts</span>(sce))</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>sce[<span class="kw">which</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>gene_biotype <span class="op">==</span><span class="st"> &#39;protein_coding&#39;</span> <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="st"> </span><span class="kw">rowData</span>(sce)<span class="op">$</span>isMito <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="st"> </span><span class="kw">rowData</span>(sce)<span class="op">$</span>isRibo), ]</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>sce_filtered</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="kw">dim</span>(sce_filtered)</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="kw">rownames</span>(sce) &lt;-<span class="st"> </span>scuttle<span class="op">::</span><span class="kw">uniquifyFeatureNames</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>ENSEMBL_ID, <span class="kw">rowData</span>(sce)<span class="op">$</span>Symbol_TENx)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>sce</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="kw">rowData</span>(sce)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="kw">colData</span>(sce)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="kw">table</span>(sce<span class="op">$</span>Library)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
 </div>
 <div id="normalize-counts-using-scran" class="section level3">
 <h3>Normalize counts using <code>scran</code></h3>
-<p>Just like in bulk high-throughput sequencing experiments, scRNAseq counts have to be normalized to the sequencing depth for each cell. We can define the library size as the total sum of counts across all genes for each cell, the expected value of which is assumed to scale with any cell-specific biases. However, this relies on the assumption that within the entire dataset, most genes are non-differentially expressed. Depending on the set up of the scRNAseq experiment, this can be entirely false. To avoid relying on this hypothesis, we can (1) quickly pre-cluster cells, then (2) normalize cells using their library size factor separately in each cluster, then (3) rescaling size factors so that they are comparable across clusters.</p>
+<p>Just like in bulk high-throughput sequencing experiments, scRNAseq counts have to be normalized to the sequencing depth for each cell. We can define the library size as the total sum of counts across all genes for each cell, the expected value of which is assumed to scale with any cell-specific biases. However, this relies on the assumption that within the entire dataset, most genes are non-differentially expressed and expressed roughly within the same range. Depending on the set up of the scRNAseq experiment, this can be entirely false. To avoid relying on this hypothesis, we can (1) quickly pre-cluster cells, then (2) normalize cells using their library size factor separately in each cluster, then (3) rescaling size factors so that they are comparable across clusters.</p>
 <p>All of this can be done very simply using the combo <code>quickCluster() + computeSumFactors() + logNormCounts()</code> from <code>scran/scuttle</code> packages:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">quickCluster</span>(sce_filtered)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">table</span>(clusters)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce_filtered, <span class="dt">cluster =</span> clusters)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scuttle<span class="op">::</span><span class="kw">logNormCounts</span>(sce_filtered)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">quickCluster</span>(sce)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="kw">table</span>(clusters)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">computeSumFactors</span>(sce, <span class="dt">cluster =</span> clusters)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>scuttle<span class="op">::</span><span class="kw">logNormCounts</span>(sce)</span></code></pre></div>
 <ul>
 <li>Re-perform a “quick” clustering once again, to compare the results with the first clustering. How does it differ? Is this difference important? Should this be taken into account, and if so, why?</li>
 </ul>
@@ -1743,8 +1714,8 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>clusters2 &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">quickCluster</span>(sce_filtered)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="kw">table</span>(clusters, clusters2)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>clusters2 &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">quickCluster</span>(sce)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="kw">table</span>(clusters, clusters2)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1753,66 +1724,30 @@ Show code
 <h3>Feature selection</h3>
 <p>We often use scRNAseq data in exploratory analyses to characterize heterogeneity across cells. Procedures like clustering and dimensionality reduction compare cells based on their gene expression profiles. The choice of genes to include in this comparison may have a major impact on the performance of downstream methods. Ideally, one wants to only select genes that contain useful information about the biology of the system while removing genes that contain random noise. This aims to preserve interesting biological structure without the variance that obscures that structure.</p>
 <p>The simplest approach to feature selection is to simply compute the variance of the log-normalized expression values, to select the most variable genes. Modelling of the mean-variance relationship can be achieved by the <code>modelGeneVar()</code> function from the <code>scran</code> package:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">require</span>(tidyverse)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>sce_filtered_variance &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">modelGeneVar</span>(sce_filtered)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>HVGs &lt;-<span class="st"> </span>sce_filtered_variance <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">as_tibble</span>(<span class="dt">rownames =</span> <span class="st">&quot;gene&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(bio <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="st">    </span><span class="kw">slice_max</span>(bio, <span class="dt">n =</span> <span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a><span class="st">    </span><span class="kw">pull</span>(gene)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce_filtered) <span class="op">%in%</span><span class="st"> </span>HVGs</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">rowData</span>(sce_filtered))</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a><span class="kw">table</span>(<span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a><span class="co">## --- Visualizing the mean-variance fit</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="dt">nonorm =</span> <span class="kw">rowMeans</span>(<span class="kw">counts</span>(sce_filtered)),</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>    <span class="dt">mean =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>mean, </span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    <span class="dt">var =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>var, </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>    <span class="dt">trend =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>    <span class="dt">HVG =</span> <span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a>)</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a><span class="kw">ggplot</span>(df) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> var, <span class="dt">col =</span> HVG), <span class="dt">alpha =</span> <span class="fl">0.4</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend), <span class="dt">col =</span> <span class="st">&#39;darkred&#39;</span>) <span class="op">+</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;Gene mean exp. (norm.)&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Gene exp. variance&#39;</span>)</span></code></pre></div>
-<ul>
-<li>It is well known that UMI counts exhibit near-Poisson variation if we only consider technical noise from library preparation and sequencing. This can be used to construct a mean-variance trend in the log-counts with the <code>modelGeneVarByPoisson()</code> function (rather than simpler <code>modelGeneVar()</code>). What do you observed in this case? Can you comment on this?</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>sce_filtered_poissonvariance &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">modelGeneVarByPoisson</span>(sce_filtered)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>    <span class="dt">mean =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>mean, </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>    <span class="dt">var =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>var, </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>    <span class="dt">trend =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>    <span class="dt">trend_poisson =</span> <span class="kw">metadata</span>(sce_filtered_poissonvariance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a>    <span class="dt">HVG =</span> <span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a>)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a><span class="kw">ggplot</span>(df) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> var), <span class="dt">col =</span> <span class="st">&#39;black&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend), <span class="dt">col =</span> <span class="st">&#39;red&#39;</span>) <span class="op">+</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend_poisson), <span class="dt">col =</span> <span class="st">&#39;blue&#39;</span>) <span class="op">+</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&#39;Modelled mean-var. relationship</span><span class="ch">\n</span><span class="st">red: no assumption</span><span class="ch">\n</span><span class="st">blue: poisson-distribution of counts&#39;</span>)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">require</span>(tidyverse)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>sce_filtered_variance &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">modelGeneVar</span>(sce)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>HVGs &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">getTopHVGs</span>(sce_filtered_variance, <span class="dt">prop =</span> <span class="fl">0.1</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG &lt;-<span class="st"> </span><span class="kw">rownames</span>(sce) <span class="op">%in%</span><span class="st"> </span>HVGs</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">rowData</span>(sce))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="kw">table</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="co">## --- Visualizing the mean-variance fit</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>    <span class="dt">mean =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>mean, </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>    <span class="dt">var =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span>var, </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a>    <span class="dt">trend =</span> <span class="kw">metadata</span>(sce_filtered_variance)<span class="op">$</span><span class="kw">trend</span>(mean), </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a>    <span class="dt">HVG =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a><span class="kw">ggplot</span>(df) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> var, <span class="dt">col =</span> HVG), <span class="dt">alpha =</span> <span class="fl">0.4</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> mean, <span class="dt">y =</span> trend), <span class="dt">col =</span> <span class="st">&#39;darkred&#39;</span>) <span class="op">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;Gene mean exp. (norm.)&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Gene exp. variance&#39;</span>)</span></code></pre></div>
 </div>
 <div id="pca-on-filtered-dataset" class="section level3">
 <h3>PCA on filtered dataset</h3>
 <p>We now have normalized counts filtered for the top 500 genes varying with the greatest biological significance.<br />
 Still, that represents a 500 x nCells (~8,000) dataset (each row being a feature). This is still too big to reliably use in standard clustering approaches. We can further compress the dataset. The most widely used approach is <code>PCA</code>: it computes a small number of “components” (typically 5-50) optimally summarizing the variability of the whole dataset, while retaining linearity of the underlying numerical data and being computationallt quite efficient.</p>
-<p>A <code>PCA</code> embedding of the data can be stored into a <code>reducedDim</code> slot.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>pca &lt;-<span class="st"> </span><span class="kw">prcomp</span>(<span class="kw">t</span>(<span class="kw">logcounts</span>(sce_filtered[<span class="kw">rowData</span>(sce_filtered)<span class="op">$</span>isHVG,])))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="kw">names</span>(pca)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="kw">dim</span>(pca<span class="op">$</span>x)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="kw">head</span>(pca<span class="op">$</span>x[, <span class="dv">1</span><span class="op">:</span><span class="dv">50</span>])</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a><span class="kw">reducedDim</span>(sce_filtered, <span class="st">&#39;pca_manual&#39;</span>) &lt;-<span class="st"> </span>pca<span class="op">$</span>x[, <span class="dv">1</span><span class="op">:</span><span class="dv">50</span>]</span></code></pre></div>
 <ul>
 <li>Try to leverage <code>scater</code> package to compute <code>PCA</code> embedding of the filtered data by taking into account the technical variability, and compare it to your manually computed PCA. Comment on the changes.</li>
 </ul>
@@ -1821,17 +1756,15 @@ Still, that represents a 500 x nCells (~8,000) dataset (each row being a feature
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">denoisePCA</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>    sce_filtered, </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>    <span class="dt">technical =</span> sce_filtered_poissonvariance, </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs, </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a>    <span class="dt">min.rank =</span> <span class="dv">15</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a><span class="kw">library</span>(patchwork)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;sizeFactor&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;denoised PCA&#39;</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;pca_manual&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;sizeFactor&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;Manual PCA&#39;</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true"></a>p &lt;-<span class="st"> </span>p1 <span class="op">+</span><span class="st"> </span>p2</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true"></a>p</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">denoisePCA</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>    sce, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>    <span class="dt">technical =</span> sce_filtered_variance, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>    <span class="dt">min.rank =</span> <span class="dv">15</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a><span class="kw">library</span>(patchwork)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;sizeFactor&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;denoised PCA&#39;</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a>p</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1843,7 +1776,7 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>?scater<span class="op">::</span><span class="kw">runPCA</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>?scater<span class="op">::</span><span class="kw">runPCA</span>()</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1861,74 +1794,7 @@ Show code
 <li>k-means clustering</li>
 <li>Graph-based clustering</li>
 </ol>
-<p>Other methods are typically built on top of these fundamental approaches.</p>
-<blockquote>
-<p>Hierarchical clustering</p>
-</blockquote>
-<p>In the context of scRNA-seq, the main advantage of hierarchical clustering lies in the production of the dendrogram. This is a rich summary that describes the relationships between cells and subpopulations at various resolutions and in a quantitative manner based on the branch lengths. However, it is very greedy as it requires to compute a cell-cell distance matrix (distance between two cells for each pair of cells).</p>
-<ul>
-<li>Compute hierarchical clustering of the PBMC dataset to see how cells relate to each other, and extract dominant clusters. How many clusters are found? Discuss.</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="co">## --- Perform hierarchical clustering</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>sce_dist &lt;-<span class="st"> </span><span class="kw">dist</span>(<span class="kw">reducedDim</span>(sce_filtered, <span class="st">&quot;PCA&quot;</span>))</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>sce_tree &lt;-<span class="st"> </span><span class="kw">hclust</span>(sce_dist, <span class="st">&quot;ward.D2&quot;</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="co">## --- Get clusters from dendogram</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>dend &lt;-<span class="st"> </span><span class="kw">as.dendrogram</span>(sce_tree, <span class="dt">hang=</span><span class="fl">0.1</span>)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>sce_clust &lt;-<span class="st"> </span>dynamicTreeCut<span class="op">::</span><span class="kw">cutreeDynamic</span>(</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>    sce_tree, </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>    <span class="dt">distM =</span> <span class="kw">as.matrix</span>(sce_dist),</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a>    <span class="dt">minClusterSize =</span> <span class="dv">10</span>, </span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true"></a>    <span class="dt">deepSplit =</span> <span class="dv">1</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true"></a>)</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true"></a><span class="kw">table</span>(sce_clust)</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_hclust &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust)</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true"></a><span class="co">## --- Plot dendogram</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true"></a>dendextend<span class="op">::</span><span class="kw">labels_colors</span>(dend) &lt;-<span class="st"> </span>sce_clust[<span class="kw">order.dendrogram</span>(dend)]</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true"></a><span class="kw">plot</span>(dend)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<blockquote>
-<p>k-means clustering</p>
-</blockquote>
-<p>k-means clustering is a classic technique that aims to partition cells into k clusters. Each cell is assigned to the cluster with the closest centroid, which is done by minimizing the within-cluster sum of squares using a random starting configuration for the k centroids.</p>
-<ul>
-<li>Compute k-means clustering of the PBMC dataset. How did you choose the number of clusters? What would a different <code>k</code> yield?</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>sce_clust &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce_filtered, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers =</span> <span class="dv">5</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="kw">table</span>(sce_clust<span class="op">$</span>cluster)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_kmeans &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust<span class="op">$</span>cluster)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<ul>
-<li>Try repeating the k-means clustering once again. Why/how did the resulting clusters change? Comment. Can you identify “weak” clusters?</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>sce_clust2 &lt;-<span class="st"> </span><span class="kw">kmeans</span>(<span class="kw">reducedDim</span>(sce_filtered, <span class="st">&quot;PCA&quot;</span>), <span class="dt">centers =</span> <span class="dv">10</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="kw">table</span>(sce_clust<span class="op">$</span>cluster, sce_clust2<span class="op">$</span>cluster)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_kmeans2 &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust2<span class="op">$</span>cluster)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<blockquote>
-<p>Graph-based</p>
-</blockquote>
-<p>A popular approach for single-cell clustering is the graph-based method: it is a flexible and scalable technique for clustering even the largest scRNA-seq datasets. We first build a graph where each node is a cell that is connected by edges to its nearest neighbors in the high-dimensional space. Edges are weighted based on the similarity between the cells involved, with higher weight given to cells that are more closely related.</p>
+<p>Today, we will focus on graph-based clustering, as it is becoming the standard for scRNAseq: it is a flexible and scalable technique for clustering even the largest scRNA-seq datasets. We first build a graph where each node is a cell that is connected by edges to its nearest neighbors in the high-dimensional space. Edges are weighted based on the similarity between the cells involved, with higher weight given to cells that are more closely related.</p>
 <ul>
 <li>Compute graph-based clustering of the PBMC dataset.</li>
 </ul>
@@ -1937,14 +1803,14 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>graph &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">buildSNNGraph</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>    sce_filtered, </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="dv">50</span>, </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a>sce_clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(graph)<span class="op">$</span>membership</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a><span class="kw">table</span>(sce_clust)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_graph &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>graph &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">buildSNNGraph</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>    sce, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="dv">5</span>, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>sce_clust &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(graph)<span class="op">$</span>membership</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a><span class="kw">table</span>(sce_clust)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a>sce<span class="op">$</span>clusters_graph &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1956,14 +1822,13 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>graph2 &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">buildSNNGraph</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>    sce_filtered, </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="dv">5</span>, </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a>sce_clust2 &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(graph2)<span class="op">$</span>membership</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a><span class="kw">table</span>(sce_clust, sce_clust2)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a>sce_filtered<span class="op">$</span>clusters_graph2 &lt;-<span class="st"> </span><span class="kw">factor</span>(sce_clust2)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>graph2 &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">buildSNNGraph</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>    sce, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="dv">50</span>, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&#39;PCA&#39;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a>sce_clust2 &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">cluster_louvain</span>(graph2)<span class="op">$</span>membership</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a><span class="kw">table</span>(sce_clust, sce_clust2)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1978,34 +1843,33 @@ Show code
 - Multi-Dimensional Scaling (MDS)
 - Non-negative Matrix Factorization (NMF)</code></pre>
 <ul>
-<li>Explore the different dimensional reduction algorithms, trying different hyperparameters combinations. Use the <code>scater::plotReducedDim()</code> function to plot cells in any embedding.</li>
+<li>Explore the different dimensional reduction algorithms, trying different hyperparameters combinations. When you run these commands, pay attention to how long each command takes to run! While this run, check the <code>Help</code> page for each function (e.g. <code>?runTSNE</code>)</li>
 </ul>
 <details>
 <summary>
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="kw">reducedDims</span>(sce_filtered)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runUMAP</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runDiffusionMap</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runMDS</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a>sce_filtered &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runNMF</span>(sce_filtered, <span class="dt">subset_row =</span> HVGs)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a><span class="kw">reducedDims</span>(sce_filtered)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a><span class="kw">require</span>(patchwork)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a>p&lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;pca_manual&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;manual PCA&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;denoised PCA&#39;</span>) <span class="op">+</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;tSNE&#39;</span>) <span class="op">+</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;UMAP&#39;</span>) <span class="op">+</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;DiffusionMap&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;Diffusion&#39;</span>) <span class="op">+</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;MDS&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;MDS&#39;</span>) <span class="op">+</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;NMF&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;NMF&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="kw">reducedDims</span>(sce)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runTSNE</span>(sce, <span class="dt">subset_row =</span> HVGs)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runUMAP</span>(sce, <span class="dt">subset_row =</span> HVGs)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>sce &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">runDiffusionMap</span>(sce, <span class="dt">subset_row =</span> HVGs, <span class="dt">dimred =</span> <span class="st">&#39;PCA&#39;</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a><span class="kw">reducedDims</span>(sce)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a><span class="kw">reducedDim</span>(sce, <span class="st">&#39;DiffusionMap&#39;</span>)[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ]</span></code></pre></div>
+<ul>
+<li>Use the <code>scater::plotReducedDim()</code> function to plot cells in each embedding. Comment.</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="kw">require</span>(patchwork)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>p&lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;denoised PCA&#39;</span>) <span class="op">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;tSNE&#39;</span>) <span class="op">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;UMAP&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;UMAP&#39;</span>) <span class="op">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;DiffusionMap&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;clusters_graph&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;Diffusion&#39;</span>)   </span></code></pre></div>
 </p>
 </details>
 <p><br></p>
 </div>
-<div id="comparing-different-clustering-approaches" class="section level3">
-<h3>Comparing different clustering approaches</h3>
+<div id="for-the-pros-of-clustering-comparing-different-clustering-approaches" class="section level3">
+<h3>For the pros of clustering… Comparing different clustering approaches</h3>
 <p>Leveraging the <code>bluster</code> package, different clustering approaches can be performed using a uniformed syntax, to compare their output.</p>
 <ul>
 <li>Using <code>clusterSweep()</code>, compare the effect of different <code>k</code> neighbor values when performing graph-based clustering.</li>
@@ -2015,45 +1879,33 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span>bluster<span class="op">::</span><span class="kw">clusterSweep</span>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a>    <span class="kw">reducedDim</span>(sce_filtered, <span class="st">&#39;PCA&#39;</span>), </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>    <span class="dt">BLUSPARAM =</span> bluster<span class="op">::</span><span class="kw">SNNGraphParam</span>(),</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="kw">c</span>(5L, 15L, 25L, 50L), </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a>    <span class="dt">cluster.fun =</span> <span class="kw">c</span>(<span class="st">&quot;louvain&quot;</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a><span class="kw">colnames</span>(clusters<span class="op">$</span>clusters)</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a><span class="kw">head</span>(clusters<span class="op">$</span>clusters)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a>clusters<span class="op">$</span>parameters</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true"></a><span class="kw">require</span>(patchwork)</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true"></a><span class="kw">require</span>(ggraph)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true"></a>    clustree<span class="op">::</span><span class="kw">clustree</span>(</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true"></a>        clusters<span class="op">$</span>clusters <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">setNames</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(.)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>(),</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true"></a>        <span class="dt">prefix =</span> <span class="st">&#39;X&#39;</span>,</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true"></a>        <span class="dt">edge_arrow=</span><span class="ot">FALSE</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true"></a>    ), </span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true"></a>    cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.5_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 5&#39;</span>),</span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.15_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 15&#39;</span>),</span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.25_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 25&#39;</span>),</span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.50_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 50&#39;</span>)</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true"></a>    ), </span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true"></a>    <span class="dt">nrow =</span> <span class="dv">2</span>, </span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true"></a>    <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="fl">0.3</span>, <span class="fl">0.7</span>)</span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true"></a>)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<ul>
-<li>Save the clustering which seems the most consistent into a <code>cluster</code> annotation in the <code>sce_filtered</code> object</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a>sce_filtered<span class="op">$</span>cluster &lt;-<span class="st"> </span>clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.5_cluster.fun.louvain&#39;</span>]</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a><span class="kw">table</span>(sce_filtered<span class="op">$</span>cluster)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span>bluster<span class="op">::</span><span class="kw">clusterSweep</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>    <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>), </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    <span class="dt">BLUSPARAM =</span> bluster<span class="op">::</span><span class="kw">SNNGraphParam</span>(),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>    <span class="dt">k =</span> <span class="kw">c</span>(5L, 15L, 25L, 50L), </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    <span class="dt">cluster.fun =</span> <span class="kw">c</span>(<span class="st">&quot;louvain&quot;</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a><span class="kw">colnames</span>(clusters<span class="op">$</span>clusters)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a><span class="kw">head</span>(clusters<span class="op">$</span>clusters)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>clusters<span class="op">$</span>parameters</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true"></a><span class="kw">require</span>(patchwork)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true"></a><span class="kw">require</span>(ggraph)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true"></a>    clustree<span class="op">::</span><span class="kw">clustree</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true"></a>        clusters<span class="op">$</span>clusters <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">setNames</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">ncol</span>(.)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>(),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true"></a>        <span class="dt">prefix =</span> <span class="st">&#39;X&#39;</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true"></a>        <span class="dt">edge_arrow=</span><span class="ot">FALSE</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true"></a>    ), </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true"></a>    cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.5_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 5&#39;</span>),</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.15_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 15&#39;</span>),</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.25_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 25&#39;</span>),</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="kw">I</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.50_cluster.fun.louvain&#39;</span>])) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;k = 50&#39;</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true"></a>    ), </span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true"></a>    <span class="dt">nrow =</span> <span class="dv">2</span>, </span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true"></a>    <span class="dt">rel_heights =</span> <span class="kw">c</span>(<span class="fl">0.3</span>, <span class="fl">0.7</span>)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true"></a>)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true"></a><span class="kw">table</span>(clusters<span class="op">$</span>clusters[, <span class="st">&#39;k.5_cluster.fun.louvain&#39;</span>])</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2065,27 +1917,32 @@ Show code
 <h3>Find marker genes</h3>
 <p>To interpret clustering results, one needs to identify the genes that drive separation between clusters. These marker genes allow to assign biological meaning to each cluster based on their functional annotation. In the most obvious case, the marker genes for each cluster are <em>a priori</em> associated with particular cell types, allowing us to treat the clustering as a <em>proxy</em> for cell type identity.</p>
 <p>A general strategy is to perform DE tests between pairs of clusters and then combine results into a single ranking of marker genes for each cluster.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a>markers &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">findMarkers</span>(sce_filtered, <span class="dt">groups =</span> sce_filtered<span class="op">$</span>cluster)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>markers &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">findMarkers</span>(sce, <span class="dt">groups =</span> sce<span class="op">$</span>clusters_graph)</span></code></pre></div>
 <ul>
-<li>Find markers strongly expressed in each cluster</li>
+<li>Find markers strongly overexpressed in each cluster</li>
 </ul>
 <details>
 <summary>
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>markers &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">findMarkers</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>    sce_filtered, </span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>    <span class="dt">groups =</span> sce_filtered<span class="op">$</span>cluster, </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a>    <span class="dt">direction =</span> <span class="st">&quot;up&quot;</span>, </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a>    <span class="dt">lfc =</span> <span class="dv">1</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a>)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true"></a>markers &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(dat) {</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true"></a>    <span class="kw">rownames</span>(dat[dat<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,])</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>markers &lt;-<span class="st"> </span>scran<span class="op">::</span><span class="kw">findMarkers</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>    sce, </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>    <span class="dt">groups =</span> sce<span class="op">$</span>clusters_graph, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>    <span class="dt">direction =</span> <span class="st">&quot;up&quot;</span>, </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>    <span class="dt">lfc =</span> <span class="dv">1</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a><span class="kw">head</span>(markers[[<span class="dv">1</span>]])</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>markers &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(df) {</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a>    <span class="kw">rownames</span>(df[df<span class="op">$</span>Top <span class="op">&lt;=</span><span class="st"> </span><span class="dv">5</span>,])</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a>})</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
+<ul>
+<li>Plot average expression of the first marker of the first cluster in UMAP</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> markers[[<span class="dv">2</span>]][[<span class="dv">1</span>]])</span></code></pre></div>
 <ul>
 <li>For each cluster, plot average expression of its markers in reduced dimensions</li>
 </ul>
@@ -2094,60 +1951,60 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(genes) {</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a>    <span class="kw">logcounts</span>(sce_filtered[genes, ]) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true"></a><span class="st">        </span><span class="kw">t</span>() <span class="op">%&gt;%</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true"></a><span class="st">        </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true"></a><span class="st">        </span><span class="kw">mutate</span>(</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true"></a>            <span class="dt">cellID =</span> sce_filtered<span class="op">$</span>Barcode, </span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true"></a>            <span class="dt">x =</span> <span class="kw">reducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>)[,<span class="dv">1</span>], </span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true"></a>            <span class="dt">y =</span> <span class="kw">reducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>)[,<span class="dv">2</span>]</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true"></a>        ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true"></a><span class="st">        </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">contains</span>(genes), <span class="dt">names_to =</span> <span class="st">&#39;gene&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;expr&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true"></a><span class="st">        </span><span class="kw">group_by</span>(x, y, cellID) <span class="op">%&gt;%</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true"></a><span class="st">        </span><span class="kw">summarize</span>(<span class="dt">ave_expr =</span> <span class="kw">mean</span>(expr))</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&#39;marker_group&#39;</span>)</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, y, <span class="dt">col =</span> ave_expr)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>marker_group) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_color_viridis_c</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">lapply</span>(markers, <span class="cf">function</span>(genes) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>    <span class="kw">logcounts</span>(sce[genes, ]) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a><span class="st">        </span><span class="kw">t</span>() <span class="op">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a><span class="st">        </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true"></a><span class="st">        </span><span class="kw">mutate</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true"></a>            <span class="dt">cellID =</span> sce<span class="op">$</span>Barcode, </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true"></a>            <span class="dt">x =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>)[,<span class="dv">1</span>], </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true"></a>            <span class="dt">y =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>)[,<span class="dv">2</span>]</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true"></a>        ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true"></a><span class="st">        </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">contains</span>(genes), <span class="dt">names_to =</span> <span class="st">&#39;gene&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;expr&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true"></a><span class="st">        </span><span class="kw">group_by</span>(x, y, cellID) <span class="op">%&gt;%</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true"></a><span class="st">        </span><span class="kw">summarize</span>(<span class="dt">ave_expr =</span> <span class="kw">mean</span>(expr))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true"></a>}) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&#39;marker_group&#39;</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, y, <span class="dt">col =</span> ave_expr)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>marker_group) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_color_viridis_c</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
 <ul>
-<li>For each cluster, plot average expression of its markers as a dotplot</li>
+<li>For data visualization aficionados… For each cluster, plot average expression of its markers as a dotplot</li>
 </ul>
 <details>
 <summary>
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a>genes &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">unlist</span>(markers))</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">logcounts</span>(sce_filtered[genes, ]) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true"></a><span class="st">        </span><span class="kw">t</span>() <span class="op">%&gt;%</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true"></a><span class="st">        </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true"></a><span class="st">        </span><span class="kw">mutate</span>(</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true"></a>            <span class="dt">cluster =</span> sce_filtered<span class="op">$</span>cluster, </span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true"></a>        ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true"></a><span class="st">        </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">contains</span>(genes), <span class="dt">names_to =</span> <span class="st">&#39;gene&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;expr&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true"></a><span class="st">        </span><span class="kw">group_by</span>(cluster, gene) <span class="op">%&gt;%</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true"></a><span class="st">        </span><span class="kw">summarize</span>(<span class="dt">ave_expr =</span> <span class="kw">mean</span>(expr))</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true"></a>ordered_genes &lt;-<span class="st"> </span><span class="kw">pivot_wider</span>(df, <span class="dt">names_from =</span> gene, <span class="dt">values_from =</span> ave_expr) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>cluster) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true"></a><span class="st">    </span><span class="kw">t</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">dist</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">hclust</span>()</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(</span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true"></a>    <span class="dt">x =</span> cluster, </span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true"></a>    <span class="dt">y =</span> <span class="kw">factor</span>(gene, <span class="dt">levels =</span> ordered_genes<span class="op">$</span>labels[ordered_genes<span class="op">$</span>order]), </span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true"></a>    <span class="dt">col =</span> ave_expr, </span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true"></a>    <span class="dt">size =</span> ave_expr</span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true"></a>)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span></span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a>genes &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">unlist</span>(markers))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a>df &lt;-<span class="st"> </span><span class="kw">logcounts</span>(sce[genes, ]) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a><span class="st">        </span><span class="kw">t</span>() <span class="op">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a><span class="st">        </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true"></a><span class="st">        </span><span class="kw">mutate</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a>            <span class="dt">cluster =</span> sce<span class="op">$</span>clusters_graph, </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a>        ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a><span class="st">        </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">contains</span>(genes), <span class="dt">names_to =</span> <span class="st">&#39;gene&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;expr&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a><span class="st">        </span><span class="kw">group_by</span>(cluster, gene) <span class="op">%&gt;%</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a><span class="st">        </span><span class="kw">summarize</span>(<span class="dt">ave_expr =</span> <span class="kw">mean</span>(expr))</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a>ordered_genes &lt;-<span class="st"> </span><span class="kw">pivot_wider</span>(df, <span class="dt">names_from =</span> gene, <span class="dt">values_from =</span> ave_expr) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">select</span>(<span class="op">-</span>cluster) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a><span class="st">    </span><span class="kw">t</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">dist</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">hclust</span>()</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true"></a>    <span class="dt">x =</span> cluster, </span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true"></a>    <span class="dt">y =</span> <span class="kw">factor</span>(gene, <span class="dt">levels =</span> ordered_genes<span class="op">$</span>labels[ordered_genes<span class="op">$</span>order]), </span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true"></a>    <span class="dt">col =</span> ave_expr, </span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true"></a>    <span class="dt">size =</span> ave_expr</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true"></a>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2155,15 +2012,15 @@ Show code
 <div id="automated-cell-annotation" class="section level3">
 <h3>Automated cell annotation</h3>
 <p>Many cell type reference databases are available over the Internet. Today, we will use a reference constructed from <code>Blueprint</code> and <code>ENCODE</code> data (<code>Martens and Stunnenberg 2013</code>; <code>The ENCODE Project Consortium 2012</code>). This reference is available as a <code>SummarizedExperiment</code> containing log-normalized gene expression for manually annotated samples.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true"></a>ref &lt;-<span class="st"> </span>celldex<span class="op">::</span><span class="kw">BlueprintEncodeData</span>()</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true"></a>prediction_types &lt;-<span class="st"> </span>SingleR<span class="op">::</span><span class="kw">SingleR</span>(</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true"></a>    <span class="dt">test =</span> sce_filtered, </span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true"></a>    <span class="dt">ref =</span> ref, </span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true"></a>    <span class="dt">labels =</span> ref<span class="op">$</span>label.main</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true"></a>)</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true"></a>sce_filtered<span class="op">$</span>annotation &lt;-<span class="st"> </span>prediction_types<span class="op">$</span>labels</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true"></a><span class="kw">table</span>(sce_filtered<span class="op">$</span>annotation)</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true"></a><span class="kw">table</span>(sce_filtered<span class="op">$</span>annotation, sce_filtered<span class="op">$</span>cluster)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>ref &lt;-<span class="st"> </span>celldex<span class="op">::</span><span class="kw">BlueprintEncodeData</span>()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a>prediction_types &lt;-<span class="st"> </span>SingleR<span class="op">::</span><span class="kw">SingleR</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>    <span class="dt">test =</span> sce, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a>    <span class="dt">ref =</span> ref, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a>    <span class="dt">labels =</span> ref<span class="op">$</span>label.main</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a>sce<span class="op">$</span>annotation &lt;-<span class="st"> </span>prediction_types<span class="op">$</span>labels</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a><span class="kw">table</span>(sce<span class="op">$</span>annotation)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a><span class="kw">table</span>(sce<span class="op">$</span>annotation, sce<span class="op">$</span>clusters_graph)</span></code></pre></div>
 <ul>
 <li>Using <code>scater</code> and <code>SingleR</code> utilities, check the annotation score for each cell in the scRNAseq. Did the automated annotation work robuslty? How does it compare to our defined clusters? Is automated annotation as sensitive as graph-based clustering?</li>
 </ul>
@@ -2172,12 +2029,12 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true"></a>p &lt;-<span class="st"> </span>SingleR<span class="op">::</span><span class="kw">plotScoreHeatmap</span>(prediction_types)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce_filtered, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;annotation&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;Automated annotation&#39;</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true"></a>p &lt;-<span class="st"> </span>pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true"></a>    <span class="kw">log2</span>(<span class="kw">table</span>(<span class="dt">Assigned =</span> sce_filtered<span class="op">$</span>annotation, <span class="dt">Cluster =</span> sce_filtered<span class="op">$</span>cluster)<span class="op">+</span><span class="dv">10</span>), </span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true"></a>    <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;darkred&quot;</span>))(<span class="dv">101</span>)</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a>p &lt;-<span class="st"> </span>SingleR<span class="op">::</span><span class="kw">plotScoreHeatmap</span>(prediction_types)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;TSNE&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;annotation&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;Automated annotation&#39;</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a>p &lt;-<span class="st"> </span>pheatmap<span class="op">::</span><span class="kw">pheatmap</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a>    <span class="kw">log2</span>(<span class="kw">table</span>(<span class="dt">Assigned =</span> sce<span class="op">$</span>annotation, <span class="dt">Cluster =</span> sce<span class="op">$</span>clusters_graph)<span class="op">+</span><span class="dv">10</span>), </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a>    <span class="dt">color=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;darkred&quot;</span>))(<span class="dv">101</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a>)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2203,7 +2060,7 @@ Show code
 ##  collate  en_GB.UTF-8                 
 ##  ctype    en_GB.UTF-8                 
 ##  tz       Europe/Paris                
-##  date     2021-06-06                  
+##  date     2021-06-09                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package                * version    date       lib

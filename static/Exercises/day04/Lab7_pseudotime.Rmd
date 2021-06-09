@@ -222,7 +222,7 @@ sce$pseudotime <- (-1 * slingshot::slingPseudotime(sce_slingshot)[, 'Lineage1'])
 ```
 </p></details><br>
 
-#### Model pseudotime-dependent gene expression
+#### Daunting step but that looks cool in a paper: modeling pseudotime-dependent gene expression
 
 Using pseudotime / cell, one can model gene expression along the differentiation process. This alleviates the need to 
 study gene expression **per cell**, and allows one to focus on process-related effects (e.g. gene expression during a developmental trajectory). 
@@ -306,27 +306,10 @@ p <- scater::plotReducedDim(sce, 'PCA', colour_by = "AnnotatedClusters", point_a
 ```
 </p></details><br>
 
-- RNA velocity also yields a pseudotime. How does it compare to pseudotime computed by `slingshot`? 
+- For those who want to go further... Try running `velociraptor` after removing the cells in the center of the projection. Re-run RNA velocity: did it change the trajectory of individual cells? Comment. 
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-sce$pseudotime_velocity <- velo_out$velocity_pseudotime
-p <- tibble(
-    slingshot = sce$pseudotime, 
-    velocity = sce$pseudotime_velocity, 
-    cluster = sce$AnnotatedClusters
-) %>% 
-    ggplot(aes(x = slingshot, y = velocity, col = cluster)) + 
-    geom_point() + 
-    theme_minimal()
-```
-</p></details><br>
-
-- Try running `velociraptor` after removing the cells in the center of the projection. Re-run RNA velocity: did it change the trajectory of individual cells? Comment. 
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-sce2 <- sce[, sce$pseudotime_velocity <= 0.625]
 velo_out2 <- velociraptor::scvelo(
     sce2, 
     assay.X = "spliced", 
@@ -334,10 +317,9 @@ velo_out2 <- velociraptor::scvelo(
     use.dimred = "PCA", 
     mode = 'dynamic'
 )
-sce2$pseudotime_velocity <- velo_out2$velocity_pseudotime
 embedded_velo2 <- velociraptor::embedVelocity(reducedDim(sce2, "PCA"), velo_out2)
 grid.df2 <- velociraptor::gridVectors(reducedDim(sce2, "PCA"), embedded_velo2, resolution = 30)
-p <- scater::plotReducedDim(sce2, 'PCA', colour_by = "pseudotime_velocity", point_alpha = 0.5) +
+p <- scater::plotReducedDim(sce2, 'PCA', colour_by = "AnnotatedClusters", point_alpha = 0.5) +
     geom_segment(
         data = grid.df2, 
         mapping = aes(x = start.PC1, y = start.PC2, xend = end.PC1, yend = end.PC2), 
@@ -399,46 +381,6 @@ p <- cowplot::plot_grid(
     })
 )
 res <- sce_test %>% drop_na() %>% arrange(desc(meanLogFC)) %>% tail(16)
-p <- cowplot::plot_grid(
-    plotlist = lapply(1:16, function(K) {
-        scater::plotReducedDim(
-            sce, 
-            'DiffusionMap',
-            colour_by = rownames(res)[K], 
-            point_alpha = 0.3
-        ) + 
-        theme_void() + 
-        ggtitle(rownames(res)[K]) + 
-        scale_color_gradientn(colours = c('#ffecae', '#ffc46c', '#ff7e14', '#c9430f', '#8d0909')) + 
-        theme(legend.position = 'none')
-    })
-)
-```
-</p></details><br>
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-sce_test <- tradeSeq::startVsEndTest(
-    sce_fit,
-    l2fc = 1, 
-    pseudotimeValues = c(0.5, 0.8)
-)
-res <- sce_test %>% drop_na() %>% arrange(desc(logFClineage1)) %>% head(16)
-p <- cowplot::plot_grid(
-    plotlist = lapply(1:16, function(K) {
-        scater::plotReducedDim(
-            sce, 
-            'DiffusionMap',
-            colour_by = rownames(res)[K], 
-            point_alpha = 0.3
-        ) + 
-        theme_void() + 
-        ggtitle(rownames(res)[K]) + 
-        scale_color_gradientn(colours = c('#ffecae', '#ffc46c', '#ff7e14', '#c9430f', '#8d0909')) + 
-        theme(legend.position = 'none')
-    })
-)
-res <- sce_test %>% drop_na() %>% arrange(desc(logFClineage1)) %>% tail(16)
 p <- cowplot::plot_grid(
     plotlist = lapply(1:16, function(K) {
         scater::plotReducedDim(
