@@ -15,10 +15,10 @@ Most of single-cell RNA-seq analysis takes place either in `python` or in `R`. H
 `RStudio` is an `IDE` (Integrated Development Environment, in other words: a nice graphical interface to run `R`-related commands). 
 
 For this workshop, we have installed `R` and `RStudio` on AWS. We can directly use `RStudio` (actually, `RStudio-server` since it is installed on an AWS remote server). 
-Simply open a browser and copy-paste [the following address](http://34.221.141.249:8787): 
+Simply open a browser and copy-paste [the following address](http://54.191.179.190:8787): 
 
 ```{sh eval = FALSE}
-http://34.221.141.249:8787
+http://54.191.179.190:8787
 ```
 
 An `RStudio` log in page will appear; to log in, use your `user` ID for both ID and password. 

@@ -14,10 +14,10 @@ we'd like to be able to use Rtudio directly from there. Here is how we can do!
 
 ## RStudio 
 
-Simply go to [the following address](http://34.221.141.249:8787): 
+Simply go to [the following address](http://54.191.179.190:8787): 
 
 ```sh
-"http://34.221.141.249:8787"
+"http://54.191.179.190:8787"
 ```
 
 Don't forget, you can run a `bash` terminal from within RStudio! This may come handy if you want to process some data with `cellranger`, for example. To do this, simply click on the `terminal` button next on the bottom left panel. You should now be in your own `${home}` directory (`~`). 
