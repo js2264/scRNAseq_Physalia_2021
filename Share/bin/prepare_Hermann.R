@@ -6,10 +6,13 @@ require(tidyverse)
 ### Import cells
 
 sce <- scRNAseq::HermannSpermatogenesisData(strip = TRUE, location = TRUE)
+
+### Clarify the names of the cell types
+
 sce$celltype[grepl('spermatogonia', sce$celltype)] <- 'Spermatogonia'
 sce$celltype[sce$celltype == 'DIplotene/Secondary spermatocytes'] <- 'Secondary spermatocytes'
 sce$celltype[grepl('tene', sce$celltype)] <- 'Primary spermatocytes'
-sce$AnnotatedClusters <- factor(
+sce$label <- factor(
     sce$celltype, 
     levels = c(
         'Spermatogonia',
@@ -22,26 +25,23 @@ sce$AnnotatedClusters <- factor(
     )
 )
 
-### Filter to remove unwanted cells
-
-sce <- sce[, !is.na(sce$AnnotatedClusters) & sce$AnnotatedClusters != 'Sertoli cells']
-
-### Filter to remove unnecessary genes
+### Add human-readable gene names
 
 ah <- AnnotationHub::AnnotationHub()
 AnnotationHub::query(ah, 'Ensembl 102 EnsDb for Mus musculus')
 ens.mm.102 <- AnnotationHub::query(ah, 'Ensembl 102 EnsDb for Mus musculus')[[1]]
 rowData(sce)$ID <- rownames(sce)
 rowData(sce)$Symbol <- AnnotationDbi::mapIds(ens.mm.102, keys = rowData(sce)$ID, keytype = "GENEID", column = "GENENAME")
-rowData(sce)$uID <- scuttle::uniquifyFeatureNames(rowData(sce)$ID, rowData(sce)$Symbol)
-rownames(sce) <- rowData(sce)$uID
-rowData(sce)$chr <- AnnotationDbi::mapIds(ens.mm.102, keys = rowData(sce)$ID, keytype = "GENEID", column = "SEQNAME")
+rownames(sce) <- scuttle::uniquifyFeatureNames(rowData(sce)$ID, rowData(sce)$Symbol)
+
+### Filter to remove unwanted genes (non-protein-coding)
+
 rowData(sce)$gene_biotype <- AnnotationDbi::mapIds(ens.mm.102, keys = rowData(sce)$ID, keytype = "GENEID", column = "GENEBIOTYPE")
-rowData(sce)$isMito <- 1:nrow(sce) %in% which( rowData(sce)$chr == "MT" )
-colData(sce)$pctMito <- colSums(assay(sce, 'spliced')[rowData(sce)$isMito, ]) / colSums(assay(sce, 'spliced'))
-rowData(sce)$isRibo <- grepl('^Rpl|^Rps', rowData(sce)$Symbol)
-colData(sce)$pctRibo <- colSums(assay(sce, 'spliced')[rowData(sce)$isRibo, ]) / colSums(assay(sce, 'spliced'))
-sce <- sce[which(rowData(sce)$gene_biotype == 'protein_coding' & ! rowData(sce)$isMito & ! rowData(sce)$isRibo), ]
+sce <- sce[which(rowData(sce)$gene_biotype == 'protein_coding'), ]
+
+### Filter to remove unwanted cells (Sertoli or NA)
+
+sce <- sce[, !is.na(sce$label) & sce$label != 'Sertoli cells']
 
 ### Normalize counts 
 
@@ -49,12 +49,8 @@ sce <- scuttle::logNormCounts(sce, assay.type = 'spliced')
 
 ### Feature selection
 
-sce_poissonvariance <- scran::modelGeneVarByPoisson(sce, assay.type = 'spliced')
-HVGs <- sce_poissonvariance %>% 
-    as_tibble(rownames = "gene") %>% 
-    dplyr::filter(bio > 0) %>% 
-    slice_max(bio, n = 500) %>% 
-    pull(gene)
+sce_poissonvariance <- scran::modelGeneVar(sce, assay.type = 'spliced')
+HVGs <- scran::getTopHVGs(sce_poissonvariance, p = 0.1)
 rowData(sce)$isHVG <- rownames(sce) %in% HVGs
 
 ### Dimension reduction on filtered dataset
@@ -68,3 +64,4 @@ sce <- scran::denoisePCA(
 )
 sce <- scater::runDiffusionMap(sce, subset_row = HVGs)
 
+message("The `sce` object was successfuly created!")

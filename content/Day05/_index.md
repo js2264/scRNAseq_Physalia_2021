@@ -5,7 +5,7 @@ day: "Day 05"
 
 ## Journal club (1h)    
 
-We will discuss in group(s) about the following method paper published in 2020. 
+We will discuss in groups either a paper on cell cycle analysis, or this informative blog post on testing for differential expression.
 
 > Schwabe et al.: 
 *The transcriptome dynamics of single cells during the cell cycle*, **Molecular Systems Biology 2020** (DOI: [10.15252/msb.20209946](https://doi.org/10.15252/msb.20209946))
@@ -57,7 +57,7 @@ Here are few suggestions to analyse these cells:
 
 During the last hour or so, each group will give a very brief presentation of their work. 
 
-Each presentation should be ~5-6 slides max, and should definitely take less than 10' max. 
+Each presentation should be +/- 4 slides max, and should definitely take less than 10' max. 
 
 Focus on the important points: 
 

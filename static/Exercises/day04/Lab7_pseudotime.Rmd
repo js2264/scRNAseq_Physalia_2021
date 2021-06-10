@@ -29,26 +29,26 @@ require(tidyverse)
 
 ### Preparing dataset 
 
-We will prepare scRNAseq data corresponding to differentiating sperm cells, generated in `Hermann et al., Cell Rep. 2018` (doi: 10.1016/j.celrep.2018.10.026). 
+We will prepare scRNAseq data corresponding to differentiating sperm cells, 
+generated in `Hermann et al., Cell Rep. 2018` (doi: 10.1016/j.celrep.2018.10.026). 
 
 - Inspect the script available in `~/Share/bin/prepare_Hermann.R`. Do you understand each step? How can you exectute this script within R to generate the desired `SingleCellExperiment` object?
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 source("~/Share/bin/prepare_Hermann.R")
+sce
 ```
 </p></details><br>
 
-### Visualization of clustered and embedded data
-
-- Is the resulting object comparable to the published set (check their published paper to see how their embedding looks like)? What changed? Which information was provided by the authors and retained? Comment on the `DiffusionMap` embedding vs `PCA`. 
+- Check the available embeddings of the data.
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-sce
+reducedDims(sce)
 require(patchwork)
-p<- scater::plotReducedDim(sce, 'PCA', colour_by = 'AnnotatedClusters') + ggtitle('PCA') + 
-    scater::plotReducedDim(sce, 'DiffusionMap', colour_by = 'AnnotatedClusters') + ggtitle('DiffusionMap')
+p<- scater::plotReducedDim(sce, 'PCA', colour_by = 'label') + ggtitle('PCA') + 
+    scater::plotReducedDim(sce, 'DiffusionMap', colour_by = 'label') + ggtitle('DiffusionMap')
 ```
 </p></details><br>
 
@@ -59,7 +59,8 @@ p<- scater::plotReducedDim(sce, 'PCA', colour_by = 'AnnotatedClusters') + ggtitl
 An important question in scRNAseq field of research is: how to identify a cell trajectory 
 from high-dimensional expression data and map individual cells onto it? 
 A large number of methods have currently emerged, each one with their own specificities, assumptions, and strengths. 
-A nice breakdown (from 2019, so already very outdated!) is available from `Saelens et al., Nat. Biotech. 2018` (doi: 10.1038/s41587-019-0071-9): 
+A nice breakdown (from 2019, so already very outdated!) is available from 
+`Saelens et al., Nat. Biotech. 2018` (doi: 10.1038/s41587-019-0071-9): 
 
 ![](.img/2021-06-01-11-29-36.png)
 
@@ -71,73 +72,52 @@ A nice breakdown (from 2019, so already very outdated!) is available from `Saele
 sce_slingshot <- slingshot::slingshot(
     sce, 
     reducedDim = 'PCA', 
-    clusterLabels = sce$AnnotatedClusters
+    approx_points = 200, 
+    smoother = 'loess', 
+    span = 0.4
 )
+sce_slingshot
 ```
 
-- Check the inferred trajectory(ies). Do they fit your expectations? Try changing the different parameters of `slingshot`. What do you observe? Discuss. 
+- Check the inferred trajectory(ies). Do they fit your expectations? 
 
-<details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-inferred_traj <- slingshot::slingCurves(sce_slingshot)[[1]]
-names(inferred_traj)
-pca_curve <- as.data.frame(inferred_traj$s)
+inferred_trajectory <- slingshot::slingCurves(sce_slingshot)[[1]]
+names(inferred_trajectory)
+pca_curve <- as.data.frame(inferred_trajectory$s)
 p <- tibble(
     x = reducedDim(sce, 'PCA')[,1], 
     y = reducedDim(sce, 'PCA')[,2], 
-    cluster = sce$AnnotatedClusters
+    cluster = sce$label
 ) %>% 
     ggplot() + 
     geom_point(aes(x, y, col = cluster)) + 
     geom_path(data = pca_curve, aes(x = PC1, y = PC2)) + 
     theme_minimal() + 
     coord_fixed()
-## --- Try other parameters
-sce_slingshot2 <- slingshot::slingshot(
-    sce, 
-    reducedDim = 'PCA', 
-    clusterLabels = sce$AnnotatedClusters, 
-    approx_points = 200, 
-    smoother = 'loess', 
-    span = 0.4
-)
-pca_curve2 <- as.data.frame(slingshot::slingCurves(sce_slingshot2)[[1]]$s)
-p <- tibble(
-    x = reducedDim(sce, 'PCA')[,1], 
-    y = reducedDim(sce, 'PCA')[,2], 
-    cluster = sce$AnnotatedClusters
-) %>% 
-    ggplot() + 
-    geom_point(aes(x, y, col = cluster)) + 
-    geom_path(data = pca_curve2, aes(x = PC1, y = PC2)) + 
-    theme_minimal() + 
-    coord_fixed()
 ```
-</p></details><br>
 
-- Project the trajectory in one of the available non-linear embeddings. Can you comment on the qualitative differences when observing the trajectory in linear or non-linear embeddings? 
+Try adding cluster information to `slingshot`. What do you observe? Discuss. 
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
 sce_slingshot <- slingshot::slingshot(
     sce, 
     reducedDim = 'PCA', 
-    clusterLabels = sce$AnnotatedClusters, 
+    clusterLabels = sce$label, 
     approx_points = 200, 
     smoother = 'loess', 
     span = 0.4
 )
-inferred_traj <- slingshot::slingCurves(sce_slingshot)[[1]]
-embedded_traj <- slingshot::embedCurves(sce_slingshot, "DiffusionMap")
-diffusion_curve <- as.data.frame(slingshot::slingCurves(embedded_traj)[[1]]$s[slingshot::slingCurves(embedded_traj)[[1]]$ord, ])
+pca_curve <- as.data.frame(slingshot::slingCurves(sce_slingshot)[[1]]$s)
 p <- tibble(
-    x = reducedDim(sce, 'DiffusionMap')[,1], 
-    y = reducedDim(sce, 'DiffusionMap')[,2], 
-    cluster = sce$AnnotatedClusters
+    x = reducedDim(sce, 'PCA')[,1], 
+    y = reducedDim(sce, 'PCA')[,2], 
+    cluster = sce$label
 ) %>% 
     ggplot() + 
     geom_point(aes(x, y, col = cluster)) + 
-    geom_path(data = diffusion_curve, aes(x = DC1, y = DC2)) + 
+    geom_path(data = pca_curve, aes(x = PC1, y = PC2)) + 
     theme_minimal() + 
     coord_fixed()
 ```
@@ -145,9 +125,11 @@ p <- tibble(
 
 #### Dynverse 
 
-More TI algorithms can now be explored within `R`, even those relying on `Python` scripts, thanks to the `dynverse` package. 
+More TI algorithms can now be explored within `R`, even those relying on `Python` scripts, 
+thanks to the `dynverse` package. 
 
-The `dynverse` facilitates trajectory inference with 50+ different algorithms, using a unified syntax. Here are the main steps of the recommended workflow: 
+The `dynverse` facilitates trajectory inference with 50+ different algorithms, using a unified syntax. 
+Here are the main steps of the recommended workflow: 
 
 ```{r eval = FALSE}
 library(dyno)
@@ -164,7 +146,7 @@ dataset <- add_grouping(
     dataset,
     tibble(
         cell_id = colnames(sce), 
-        group_id = sce$AnnotatedClusters
+        group_id = sce$label
     )
 )
 
@@ -201,9 +183,9 @@ is generally used as a proxy for its relative age.
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-sce$pseudotime <- slingshot::slingPseudotime(sce_slingshot2)[, 'Lineage1']
+sce$pseudotime <- slingshot::slingPseudotime(sce_slingshot)[, 'Lineage1']
 p <- tibble(
-    cluster = sce$AnnotatedClusters, 
+    cluster = sce$label, 
     pseudotime = sce$pseudotime
 ) %>% 
     ggplot(aes(x = cluster, y = pseudotime, fill = cluster)) + 
@@ -217,17 +199,17 @@ p <- tibble(
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-sce$pseudotime <- (-1 * slingshot::slingPseudotime(sce_slingshot)[, 'Lineage1']) %>% 
-    scales::rescale(c(0, 1))
+sce$pseudotime <- (-1 * slingshot::slingPseudotime(sce_slingshot)[, 'Lineage1'])
 ```
 </p></details><br>
 
-#### Daunting step but that looks cool in a paper: modeling pseudotime-dependent gene expression
+#### Bonus: daunting snippet but that makes a cool figure for a paper: modeling pseudotime-dependent gene expression
 
-Using pseudotime / cell, one can model gene expression along the differentiation process. This alleviates the need to 
-study gene expression **per cell**, and allows one to focus on process-related effects (e.g. gene expression during a developmental trajectory). 
+Using pseudotime / cell, one can model gene expression along the differentiation process. 
+This alleviates the need to study gene expression **per cell**, and allows one to focus 
+on process-related effects (e.g. gene expression during a developmental trajectory). 
 
-- Try to do so for few markers of spermatogonia, spermatocytes and spermatids. You can use different models to 
+- Try to do so for few markers of spermatogonia, spermatocytes and spermatids.
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
@@ -241,7 +223,7 @@ fitExprs <- logcounts(sce[genes, ]) %>% # --------------------------------------
     as_tibble() %>% 
     mutate(  # ----------------------------------------------------------------- Add information for each cell
         cellID = colnames(sce), 
-        cluster = sce$AnnotatedClusters, 
+        cluster = sce$label, 
         pseudotime = sce$pseudotime
     ) %>% 
     pivot_longer(contains(genes), names_to = 'gene', values_to = 'obs_expr') %>% # - Pivot in "long" tidy format 
@@ -258,19 +240,14 @@ fitExprs <- logcounts(sce[genes, ]) %>% # --------------------------------------
     ) %>% 
     dplyr::select(-ends_with('Model')) %>%
     unnest(c(data, ends_with('_expr'))) # -------------------------------------- Unnest all the modelled expressions
-fitExprs
 p <- ggplot(fitExprs) + 
     geom_point(aes(x = pseudotime, y = obs_expr, col = cluster), alpha = 0.5) + 
-    # geom_line(aes(x = pseudotime, y = lmFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
-    # geom_line(aes(x = pseudotime, y = lmFitted_expr), col = '#1b8ae6', size = 1) +
-    # geom_line(aes(x = pseudotime, y = loessFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
-    # geom_line(aes(x = pseudotime, y = loessFitted_expr), col = '#0d7c2e', size = 1) +
     geom_line(aes(x = pseudotime, y = gamFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
     geom_line(aes(x = pseudotime, y = gamFitted_expr), col = '#af2d0c', size = 1) +
     theme_minimal() + 
     facet_wrap(~gene) + 
     labs(y = 'logcounts') + 
-    ggtitle('Fitted models of pseudotime-dependent gene expression\nBlue: linear; green: loess; red: GAM')
+    ggtitle('Fitted models of pseudotime-dependent gene expression')
 ```
 </p></details><br>
 
@@ -291,13 +268,13 @@ assays(sce)
 velo_out <- velociraptor::scvelo(
     sce, 
     assay.X = "spliced", 
-    subset.row = HVGs[1:100], 
+    subset.row = sce$isHVG[1:100], 
     use.dimred = "PCA", 
     mode = 'dynamic'
 )
 embedded_velo <- velociraptor::embedVelocity(reducedDim(sce, "PCA"), velo_out)
 grid.df <- velociraptor::gridVectors(reducedDim(sce, "PCA"), embedded_velo, resolution = 30)
-p <- scater::plotReducedDim(sce, 'PCA', colour_by = "AnnotatedClusters", point_alpha = 0.5) +
+p <- scater::plotReducedDim(sce, 'PCA', colour_by = "label", point_alpha = 0.5) +
     geom_segment(
         data = grid.df, 
         mapping = aes(x = start.PC1, y = start.PC2, xend = end.PC1, yend = end.PC2), 
@@ -306,34 +283,12 @@ p <- scater::plotReducedDim(sce, 'PCA', colour_by = "AnnotatedClusters", point_a
 ```
 </p></details><br>
 
-- For those who want to go further... Try running `velociraptor` after removing the cells in the center of the projection. Re-run RNA velocity: did it change the trajectory of individual cells? Comment. 
-
-<details><summary>Show code</summary><p>
-```{r eval = FALSE}
-velo_out2 <- velociraptor::scvelo(
-    sce2, 
-    assay.X = "spliced", 
-    subset.row = HVGs[1:100], 
-    use.dimred = "PCA", 
-    mode = 'dynamic'
-)
-embedded_velo2 <- velociraptor::embedVelocity(reducedDim(sce2, "PCA"), velo_out2)
-grid.df2 <- velociraptor::gridVectors(reducedDim(sce2, "PCA"), embedded_velo2, resolution = 30)
-p <- scater::plotReducedDim(sce2, 'PCA', colour_by = "AnnotatedClusters", point_alpha = 0.5) +
-    geom_segment(
-        data = grid.df2, 
-        mapping = aes(x = start.PC1, y = start.PC2, xend = end.PC1, yend = end.PC2), 
-        arrow = arrow(length = unit(0.05, "inches"), type = "closed")
-    )
-```
-</p></details><br>
-
-## 3. Differential expression along differentiation trajectory
+## Bonus: Differential expression along differentiation trajectory
 
 ### Model gene expression 
 
 Gene expression can be modelled as a function of pseudotime using GAM. 
-This can be done manually using the `mgcv` package (see hereabove), but for scRNAseq, 
+This can be done manually using the `mgcv` package for instance (see hereabove), but for scRNAseq, 
 it can be done more easily with dedicated tools. 
 
 - Using `tradeSeq` utilities, fit a GAM to the scRNAseq counts based on 
@@ -366,37 +321,13 @@ sce_test <- tradeSeq::associationTest(
     l2fc = 1
 )
 res <- sce_test %>% drop_na() %>% arrange(desc(meanLogFC)) %>% head(16)
-p <- cowplot::plot_grid(
-    plotlist = lapply(1:16, function(K) {
-        scater::plotReducedDim(
-            sce, 
-            'DiffusionMap',
-            colour_by = rownames(res)[K], 
-            point_alpha = 0.3
-        ) + 
-        theme_void() + 
-        ggtitle(rownames(res)[K]) + 
-        scale_color_gradientn(colours = c('#ffecae', '#ffc46c', '#ff7e14', '#c9430f', '#8d0909')) + 
-        theme(legend.position = 'none')
-    })
-)
-res <- sce_test %>% drop_na() %>% arrange(desc(meanLogFC)) %>% tail(16)
-p <- cowplot::plot_grid(
-    plotlist = lapply(1:16, function(K) {
-        scater::plotReducedDim(
-            sce, 
-            'DiffusionMap',
-            colour_by = rownames(res)[K], 
-            point_alpha = 0.3
-        ) + 
-        theme_void() + 
-        ggtitle(rownames(res)[K]) + 
-        scale_color_gradientn(colours = c('#ffecae', '#ffc46c', '#ff7e14', '#c9430f', '#8d0909')) + 
-        theme(legend.position = 'none')
-    })
+p <- scater::plotReducedDim(
+    sce, 
+    'DiffusionMap',
+    colour_by = rownames(res)[1], 
+    point_alpha = 0.3
 )
 ```
-</p></details><br>
 
 ## Acknowledgements 
 

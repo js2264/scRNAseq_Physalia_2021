@@ -1645,7 +1645,6 @@ font-weight: bold
       <li><a href="#preparing-data-for-trajectory-analysis">1. Preparing data for trajectory analysis</a>
       <ul>
       <li><a href="#preparing-dataset">Preparing dataset</a></li>
-      <li><a href="#visualization-of-clustered-and-embedded-data">Visualization of clustered and embedded data</a></li>
       </ul></li>
       <li><a href="#trajectory-pseudotime-inference">2. Trajectory pseudotime inference</a>
       <ul>
@@ -1657,11 +1656,11 @@ font-weight: bold
       <li><a href="#pseudotime-inference-and-expression-modelling">Pseudotime inference and expression modelling</a>
       <ul>
       <li><a href="#pseudotime-inference">Pseudotime inference</a></li>
-      <li><a href="#daunting-step-but-that-looks-cool-in-a-paper-modeling-pseudotime-dependent-gene-expression">Daunting step but that looks cool in a paper: modeling pseudotime-dependent gene expression</a></li>
+      <li><a href="#bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression">Bonus: daunting snippet but that makes a cool figure for a paper: modeling pseudotime-dependent gene expression</a></li>
       </ul></li>
       <li><a href="#ordering-trajectory-with-rna-velocity">Ordering trajectory with RNA velocity</a></li>
       </ul></li>
-      <li><a href="#differential-expression-along-differentiation-trajectory">3. Differential expression along differentiation trajectory</a>
+      <li><a href="#bonus-differential-expression-along-differentiation-trajectory">Bonus: Differential expression along differentiation trajectory</a>
       <ul>
       <li><a href="#model-gene-expression">Model gene expression</a></li>
       <li><a href="#check-differentially-expressed-genes">Check differentially expressed genes</a></li>
@@ -1693,25 +1692,23 @@ font-weight: bold
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">source</span>(<span class="st">&quot;~/Share/bin/prepare_Hermann.R&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">source</span>(<span class="st">&quot;~/Share/bin/prepare_Hermann.R&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>sce</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
-</div>
-<div id="visualization-of-clustered-and-embedded-data" class="section level3">
-<h3>Visualization of clustered and embedded data</h3>
 <ul>
-<li>Is the resulting object comparable to the published set (check their published paper to see how their embedding looks like)? What changed? Which information was provided by the authors and retained? Comment on the <code>DiffusionMap</code> embedding vs <code>PCA</code>.</li>
+<li>Check the available embeddings of the data.</li>
 </ul>
 <details>
 <summary>
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>sce</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">reducedDims</span>(sce)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="kw">require</span>(patchwork)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>p&lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;AnnotatedClusters&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;PCA&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;DiffusionMap&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;AnnotatedClusters&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;DiffusionMap&#39;</span>)</span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>p&lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;label&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;PCA&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="st">    </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;DiffusionMap&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&#39;label&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&#39;DiffusionMap&#39;</span>)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1729,55 +1726,28 @@ Show code
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>sce_slingshot &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingshot</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>    sce, </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>    <span class="dt">reducedDim =</span> <span class="st">&#39;PCA&#39;</span>, </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>    <span class="dt">clusterLabels =</span> sce<span class="op">$</span>AnnotatedClusters</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>)</span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>    <span class="dt">approx_points =</span> <span class="dv">200</span>, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>    <span class="dt">smoother =</span> <span class="st">&#39;loess&#39;</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>    <span class="dt">span =</span> <span class="fl">0.4</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>sce_slingshot</span></code></pre></div>
 <ul>
-<li>Check the inferred trajectory(ies). Do they fit your expectations? Try changing the different parameters of <code>slingshot</code>. What do you observe? Discuss.</li>
+<li>Check the inferred trajectory(ies). Do they fit your expectations?</li>
 </ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>inferred_traj &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingCurves</span>(sce_slingshot)[[<span class="dv">1</span>]]</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">names</span>(inferred_traj)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>pca_curve &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(inferred_traj<span class="op">$</span>s)</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>inferred_trajectory &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingCurves</span>(sce_slingshot)[[<span class="dv">1</span>]]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">names</span>(inferred_trajectory)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>pca_curve &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(inferred_trajectory<span class="op">$</span>s)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>    <span class="dt">x =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)[,<span class="dv">1</span>], </span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>    <span class="dt">y =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)[,<span class="dv">2</span>], </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>AnnotatedClusters</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>label</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(x, y, <span class="dt">col =</span> cluster)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_path</span>(<span class="dt">data =</span> pca_curve, <span class="kw">aes</span>(<span class="dt">x =</span> PC1, <span class="dt">y =</span> PC2)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">coord_fixed</span>()</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a><span class="co">## --- Try other parameters</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>sce_slingshot2 &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingshot</span>(</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>    sce, </span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>    <span class="dt">reducedDim =</span> <span class="st">&#39;PCA&#39;</span>, </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>    <span class="dt">clusterLabels =</span> sce<span class="op">$</span>AnnotatedClusters, </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>    <span class="dt">approx_points =</span> <span class="dv">200</span>, </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a>    <span class="dt">smoother =</span> <span class="st">&#39;loess&#39;</span>, </span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>    <span class="dt">span =</span> <span class="fl">0.4</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a>pca_curve2 &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(slingshot<span class="op">::</span><span class="kw">slingCurves</span>(sce_slingshot2)[[<span class="dv">1</span>]]<span class="op">$</span>s)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a>    <span class="dt">x =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)[,<span class="dv">1</span>], </span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a>    <span class="dt">y =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)[,<span class="dv">2</span>], </span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>AnnotatedClusters</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(x, y, <span class="dt">col =</span> cluster)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_path</span>(<span class="dt">data =</span> pca_curve2, <span class="kw">aes</span>(<span class="dt">x =</span> PC1, <span class="dt">y =</span> PC2)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a><span class="st">    </span><span class="kw">coord_fixed</span>()</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
-<ul>
-<li>Project the trajectory in one of the available non-linear embeddings. Can you comment on the qualitative differences when observing the trajectory in linear or non-linear embeddings?</li>
-</ul>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a><span class="st">    </span><span class="kw">coord_fixed</span>()</span></code></pre></div>
+<p>Try adding cluster information to <code>slingshot</code>. What do you observe? Discuss.</p>
 <details>
 <summary>
 Show code
@@ -1786,24 +1756,22 @@ Show code
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>sce_slingshot &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingshot</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>    sce, </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>    <span class="dt">reducedDim =</span> <span class="st">&#39;PCA&#39;</span>, </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>    <span class="dt">clusterLabels =</span> sce<span class="op">$</span>AnnotatedClusters, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>    <span class="dt">clusterLabels =</span> sce<span class="op">$</span>label, </span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>    <span class="dt">approx_points =</span> <span class="dv">200</span>, </span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a>    <span class="dt">smoother =</span> <span class="st">&#39;loess&#39;</span>, </span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>    <span class="dt">span =</span> <span class="fl">0.4</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a>inferred_traj &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingCurves</span>(sce_slingshot)[[<span class="dv">1</span>]]</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a>embedded_traj &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">embedCurves</span>(sce_slingshot, <span class="st">&quot;DiffusionMap&quot;</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a>diffusion_curve &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(slingshot<span class="op">::</span><span class="kw">slingCurves</span>(embedded_traj)[[<span class="dv">1</span>]]<span class="op">$</span>s[slingshot<span class="op">::</span><span class="kw">slingCurves</span>(embedded_traj)[[<span class="dv">1</span>]]<span class="op">$</span>ord, ])</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a>    <span class="dt">x =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;DiffusionMap&#39;</span>)[,<span class="dv">1</span>], </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a>    <span class="dt">y =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;DiffusionMap&#39;</span>)[,<span class="dv">2</span>], </span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>AnnotatedClusters</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(x, y, <span class="dt">col =</span> cluster)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_path</span>(<span class="dt">data =</span> diffusion_curve, <span class="kw">aes</span>(<span class="dt">x =</span> DC1, <span class="dt">y =</span> DC2)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true"></a><span class="st">    </span><span class="kw">coord_fixed</span>()</span></code></pre></div>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a>pca_curve &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(slingshot<span class="op">::</span><span class="kw">slingCurves</span>(sce_slingshot)[[<span class="dv">1</span>]]<span class="op">$</span>s)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a>    <span class="dt">x =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)[,<span class="dv">1</span>], </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a>    <span class="dt">y =</span> <span class="kw">reducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>)[,<span class="dv">2</span>], </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>label</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(x, y, <span class="dt">col =</span> cluster)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_path</span>(<span class="dt">data =</span> pca_curve, <span class="kw">aes</span>(<span class="dt">x =</span> PC1, <span class="dt">y =</span> PC2)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a><span class="st">    </span><span class="kw">coord_fixed</span>()</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1826,7 +1794,7 @@ Show code
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>    dataset,</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>    <span class="kw">tibble</span>(</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>        <span class="dt">cell_id =</span> <span class="kw">colnames</span>(sce), </span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>        <span class="dt">group_id =</span> sce<span class="op">$</span>AnnotatedClusters</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>        <span class="dt">group_id =</span> sce<span class="op">$</span>label</span>
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>    )</span>
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>)</span>
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a></span>
@@ -1859,9 +1827,9 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>sce<span class="op">$</span>pseudotime &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingPseudotime</span>(sce_slingshot2)[, <span class="st">&#39;Lineage1&#39;</span>]</span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>sce<span class="op">$</span>pseudotime &lt;-<span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingPseudotime</span>(sce_slingshot)[, <span class="st">&#39;Lineage1&#39;</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">tibble</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>AnnotatedClusters, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>    <span class="dt">cluster =</span> sce<span class="op">$</span>label, </span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>    <span class="dt">pseudotime =</span> sce<span class="op">$</span>pseudotime</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> cluster, <span class="dt">y =</span> pseudotime, <span class="dt">fill =</span> cluster)) <span class="op">+</span><span class="st"> </span></span>
@@ -1879,17 +1847,16 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>sce<span class="op">$</span>pseudotime &lt;-<span class="st"> </span>(<span class="op">-</span><span class="dv">1</span> <span class="op">*</span><span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingPseudotime</span>(sce_slingshot)[, <span class="st">&#39;Lineage1&#39;</span>]) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="st">    </span>scales<span class="op">::</span><span class="kw">rescale</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>sce<span class="op">$</span>pseudotime &lt;-<span class="st"> </span>(<span class="op">-</span><span class="dv">1</span> <span class="op">*</span><span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingPseudotime</span>(sce_slingshot)[, <span class="st">&#39;Lineage1&#39;</span>])</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
 </div>
-<div id="daunting-step-but-that-looks-cool-in-a-paper-modeling-pseudotime-dependent-gene-expression" class="section level4">
-<h4>Daunting step but that looks cool in a paper: modeling pseudotime-dependent gene expression</h4>
+<div id="bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression" class="section level4">
+<h4>Bonus: daunting snippet but that makes a cool figure for a paper: modeling pseudotime-dependent gene expression</h4>
 <p>Using pseudotime / cell, one can model gene expression along the differentiation process. This alleviates the need to study gene expression <strong>per cell</strong>, and allows one to focus on process-related effects (e.g. gene expression during a developmental trajectory).</p>
 <ul>
-<li>Try to do so for few markers of spermatogonia, spermatocytes and spermatids. You can use different models to</li>
+<li>Try to do so for few markers of spermatogonia, spermatocytes and spermatids.</li>
 </ul>
 <details>
 <summary>
@@ -1906,7 +1873,7 @@ Show code
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(  <span class="co"># ----------------------------------------------------------------- Add information for each cell</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true"></a>        <span class="dt">cellID =</span> <span class="kw">colnames</span>(sce), </span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true"></a>        <span class="dt">cluster =</span> sce<span class="op">$</span>AnnotatedClusters, </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true"></a>        <span class="dt">cluster =</span> sce<span class="op">$</span>label, </span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true"></a>        <span class="dt">pseudotime =</span> sce<span class="op">$</span>pseudotime</span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true"></a>    ) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true"></a><span class="st">    </span><span class="kw">pivot_longer</span>(<span class="kw">contains</span>(genes), <span class="dt">names_to =</span> <span class="st">&#39;gene&#39;</span>, <span class="dt">values_to =</span> <span class="st">&#39;obs_expr&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># - Pivot in &quot;long&quot; tidy format </span></span>
@@ -1923,19 +1890,14 @@ Show code
 <span id="cb9-25"><a href="#cb9-25" aria-hidden="true"></a>    ) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true"></a><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="op">-</span><span class="kw">ends_with</span>(<span class="st">&#39;Model&#39;</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true"></a><span class="st">    </span><span class="kw">unnest</span>(<span class="kw">c</span>(data, <span class="kw">ends_with</span>(<span class="st">&#39;_expr&#39;</span>))) <span class="co"># -------------------------------------- Unnest all the modelled expressions</span></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true"></a>fitExprs</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fitExprs) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pseudotime, <span class="dt">y =</span> obs_expr, <span class="dt">col =</span> cluster), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true"></a><span class="st">    </span><span class="co"># geom_line(aes(x = pseudotime, y = lmFitted_expr), col = &#39;white&#39;, size = 2, alpha = 0.5) + </span></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true"></a><span class="st">    </span><span class="co"># geom_line(aes(x = pseudotime, y = lmFitted_expr), col = &#39;#1b8ae6&#39;, size = 1) +</span></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true"></a><span class="st">    </span><span class="co"># geom_line(aes(x = pseudotime, y = loessFitted_expr), col = &#39;white&#39;, size = 2, alpha = 0.5) + </span></span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true"></a><span class="st">    </span><span class="co"># geom_line(aes(x = pseudotime, y = loessFitted_expr), col = &#39;#0d7c2e&#39;, size = 1) +</span></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pseudotime, <span class="dt">y =</span> gamFitted_expr), <span class="dt">col =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pseudotime, <span class="dt">y =</span> gamFitted_expr), <span class="dt">col =</span> <span class="st">&#39;#af2d0c&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true"></a><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>gene) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true"></a><span class="st">    </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&#39;logcounts&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&#39;Fitted models of pseudotime-dependent gene expression</span><span class="ch">\n</span><span class="st">Blue: linear; green: loess; red: GAM&#39;</span>)</span></code></pre></div>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(fitExprs) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pseudotime, <span class="dt">y =</span> obs_expr, <span class="dt">col =</span> cluster), <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pseudotime, <span class="dt">y =</span> gamFitted_expr), <span class="dt">col =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> pseudotime, <span class="dt">y =</span> gamFitted_expr), <span class="dt">col =</span> <span class="st">&#39;#af2d0c&#39;</span>, <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true"></a><span class="st">    </span><span class="kw">facet_wrap</span>(<span class="op">~</span>gene) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true"></a><span class="st">    </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&#39;logcounts&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&#39;Fitted models of pseudotime-dependent gene expression&#39;</span>)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1956,13 +1918,13 @@ Show code
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>velo_out &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">scvelo</span>(</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>    sce, </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>    <span class="dt">assay.X =</span> <span class="st">&quot;spliced&quot;</span>, </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="dt">subset.row =</span> sce<span class="op">$</span>isHVG[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&quot;PCA&quot;</span>, </span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>    <span class="dt">mode =</span> <span class="st">&#39;dynamic&#39;</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>)</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>embedded_velo &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">embedVelocity</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>), velo_out)</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>grid.df &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">gridVectors</span>(<span class="kw">reducedDim</span>(sce, <span class="st">&quot;PCA&quot;</span>), embedded_velo, <span class="dt">resolution =</span> <span class="dv">30</span>)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;AnnotatedClusters&quot;</span>, <span class="dt">point_alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;label&quot;</span>, <span class="dt">point_alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_segment</span>(</span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>        <span class="dt">data =</span> grid.df, </span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a>        <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> start.PC1, <span class="dt">y =</span> start.PC2, <span class="dt">xend =</span> end.PC1, <span class="dt">yend =</span> end.PC2), </span>
@@ -1971,39 +1933,13 @@ Show code
 </p>
 </details>
 <p><br></p>
-<ul>
-<li>For those who want to go further… Try running <code>velociraptor</code> after removing the cells in the center of the projection. Re-run RNA velocity: did it change the trajectory of individual cells? Comment.</li>
-</ul>
-<details>
-<summary>
-Show code
-</summary>
-<p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>velo_out2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">scvelo</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>    sce2, </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>    <span class="dt">assay.X =</span> <span class="st">&quot;spliced&quot;</span>, </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>    <span class="dt">subset.row =</span> HVGs[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&quot;PCA&quot;</span>, </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>    <span class="dt">mode =</span> <span class="st">&#39;dynamic&#39;</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>embedded_velo2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">embedVelocity</span>(<span class="kw">reducedDim</span>(sce2, <span class="st">&quot;PCA&quot;</span>), velo_out2)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a>grid.df2 &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">gridVectors</span>(<span class="kw">reducedDim</span>(sce2, <span class="st">&quot;PCA&quot;</span>), embedded_velo2, <span class="dt">resolution =</span> <span class="dv">30</span>)</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(sce2, <span class="st">&#39;PCA&#39;</span>, <span class="dt">colour_by =</span> <span class="st">&quot;AnnotatedClusters&quot;</span>, <span class="dt">point_alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_segment</span>(</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true"></a>        <span class="dt">data =</span> grid.df2, </span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true"></a>        <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> start.PC1, <span class="dt">y =</span> start.PC2, <span class="dt">xend =</span> end.PC1, <span class="dt">yend =</span> end.PC2), </span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true"></a>        <span class="dt">arrow =</span> <span class="kw">arrow</span>(<span class="dt">length =</span> <span class="kw">unit</span>(<span class="fl">0.05</span>, <span class="st">&quot;inches&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;closed&quot;</span>)</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true"></a>    )</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
 </div>
 </div>
-<div id="differential-expression-along-differentiation-trajectory" class="section level2">
-<h2>3. Differential expression along differentiation trajectory</h2>
+<div id="bonus-differential-expression-along-differentiation-trajectory" class="section level2">
+<h2>Bonus: Differential expression along differentiation trajectory</h2>
 <div id="model-gene-expression" class="section level3">
 <h3>Model gene expression</h3>
-<p>Gene expression can be modelled as a function of pseudotime using GAM. This can be done manually using the <code>mgcv</code> package (see hereabove), but for scRNAseq, it can be done more easily with dedicated tools.</p>
+<p>Gene expression can be modelled as a function of pseudotime using GAM. This can be done manually using the <code>mgcv</code> package for instance (see hereabove), but for scRNAseq, it can be done more easily with dedicated tools.</p>
 <ul>
 <li>Using <code>tradeSeq</code> utilities, fit a GAM to the scRNAseq counts based on the <code>slingshot</code> pseudotime value for each cell.</li>
 </ul>
@@ -2012,15 +1948,15 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>sce_fit &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">fitGAM</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>    <span class="kw">assay</span>(sce, <span class="st">&#39;spliced&#39;</span>),</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    <span class="dt">pseudotime =</span> sce<span class="op">$</span>pseudotime,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>    <span class="dt">cellWeights =</span> <span class="kw">matrix</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">ncol</span>(sce))),</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    <span class="dt">genes =</span> <span class="kw">which</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>    <span class="dt">nknots =</span> <span class="dv">8</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a>    <span class="dt">verbose =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a>    <span class="dt">parallel =</span> <span class="ot">FALSE</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>sce_fit &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">fitGAM</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>    <span class="kw">assay</span>(sce, <span class="st">&#39;spliced&#39;</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>    <span class="dt">pseudotime =</span> sce<span class="op">$</span>pseudotime,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>    <span class="dt">cellWeights =</span> <span class="kw">matrix</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">ncol</span>(sce))),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>    <span class="dt">genes =</span> <span class="kw">which</span>(<span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>    <span class="dt">nknots =</span> <span class="dv">8</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>    <span class="dt">verbose =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>    <span class="dt">parallel =</span> <span class="ot">FALSE</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a>)</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -2036,43 +1972,17 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>sce_test &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">associationTest</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a>    sce_fit,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>    <span class="dt">l2fc =</span> <span class="dv">1</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(meanLogFC)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">16</span>)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true"></a>            sce, </span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true"></a>    })</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true"></a>)</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(meanLogFC)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dv">16</span>)</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true"></a>p &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true"></a>    <span class="dt">plotlist =</span> <span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="cf">function</span>(K) {</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true"></a>        scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true"></a>            sce, </span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true"></a>            <span class="st">&#39;DiffusionMap&#39;</span>,</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true"></a>            <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[K], </span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true"></a>            <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true"></a>        ) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true"></a><span class="st">        </span><span class="kw">ggtitle</span>(<span class="kw">rownames</span>(res)[K]) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true"></a><span class="st">        </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours =</span> <span class="kw">c</span>(<span class="st">&#39;#ffecae&#39;</span>, <span class="st">&#39;#ffc46c&#39;</span>, <span class="st">&#39;#ff7e14&#39;</span>, <span class="st">&#39;#c9430f&#39;</span>, <span class="st">&#39;#8d0909&#39;</span>)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true"></a><span class="st">        </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;none&#39;</span>)</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true"></a>    })</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true"></a>)</span></code></pre></div>
-</p>
-</details>
-<p><br></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>sce_test &lt;-<span class="st"> </span>tradeSeq<span class="op">::</span><span class="kw">associationTest</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>    sce_fit,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    <span class="dt">l2fc =</span> <span class="dv">1</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>res &lt;-<span class="st"> </span>sce_test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(meanLogFC)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dv">16</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>p &lt;-<span class="st"> </span>scater<span class="op">::</span><span class="kw">plotReducedDim</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a>    sce, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a>    <span class="st">&#39;DiffusionMap&#39;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>    <span class="dt">colour_by =</span> <span class="kw">rownames</span>(res)[<span class="dv">1</span>], </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true"></a>    <span class="dt">point_alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true"></a>)</span></code></pre></div>
 </div>
 </div>
 <div id="acknowledgements" class="section level2">
@@ -2091,7 +2001,7 @@ Show code
 ##  collate  en_GB.UTF-8                 
 ##  ctype    en_GB.UTF-8                 
 ##  tz       Europe/Paris                
-##  date     2021-06-09                  
+##  date     2021-06-10                  
 ## 
 ## ─ Packages ───────────────────────────────────────────────────────────────────
 ##  package                * version  date       lib source        
