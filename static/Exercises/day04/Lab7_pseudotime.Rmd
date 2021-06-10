@@ -199,7 +199,7 @@ p <- tibble(
 
 <details><summary>Show code</summary><p>
 ```{r eval = FALSE}
-sce$pseudotime <- (-1 * slingshot::slingPseudotime(sce_slingshot)[, 'Lineage1'])
+sce$pseudotime <- scales::rescale((-1 * slingshot::slingPseudotime(sce_slingshot)[, 'Lineage1']), c(0, 1))
 ```
 </p></details><br>
 
@@ -268,7 +268,7 @@ assays(sce)
 velo_out <- velociraptor::scvelo(
     sce, 
     assay.X = "spliced", 
-    subset.row = sce$isHVG[1:100], 
+    subset.row = rowData(sce)$isHVG, 
     use.dimred = "PCA", 
     mode = 'dynamic'
 )

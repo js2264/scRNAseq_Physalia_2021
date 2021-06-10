@@ -1847,7 +1847,7 @@ Show code
 Show code
 </summary>
 <p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>sce<span class="op">$</span>pseudotime &lt;-<span class="st"> </span>(<span class="op">-</span><span class="dv">1</span> <span class="op">*</span><span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingPseudotime</span>(sce_slingshot)[, <span class="st">&#39;Lineage1&#39;</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>sce<span class="op">$</span>pseudotime &lt;-<span class="st"> </span>scales<span class="op">::</span><span class="kw">rescale</span>((<span class="op">-</span><span class="dv">1</span> <span class="op">*</span><span class="st"> </span>slingshot<span class="op">::</span><span class="kw">slingPseudotime</span>(sce_slingshot)[, <span class="st">&#39;Lineage1&#39;</span>]), <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code></pre></div>
 </p>
 </details>
 <p><br></p>
@@ -1918,7 +1918,7 @@ Show code
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>velo_out &lt;-<span class="st"> </span>velociraptor<span class="op">::</span><span class="kw">scvelo</span>(</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>    sce, </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>    <span class="dt">assay.X =</span> <span class="st">&quot;spliced&quot;</span>, </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="dt">subset.row =</span> sce<span class="op">$</span>isHVG[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>], </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="dt">subset.row =</span> <span class="kw">rowData</span>(sce)<span class="op">$</span>isHVG, </span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>    <span class="dt">use.dimred =</span> <span class="st">&quot;PCA&quot;</span>, </span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>    <span class="dt">mode =</span> <span class="st">&#39;dynamic&#39;</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>)</span>
