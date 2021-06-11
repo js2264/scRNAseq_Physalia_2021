@@ -3,7 +3,7 @@ title: "5. Day 05"
 day: "Day 05"
 ---
 
-## Journal club (1h)    
+## Journal club (1h)
 
 We will discuss in groups either a paper on cell cycle analysis, or this informative blog post on testing for differential expression.
 

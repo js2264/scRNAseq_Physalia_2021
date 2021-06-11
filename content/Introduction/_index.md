@@ -19,12 +19,12 @@ time based on your internet connection (several hundreds MB).
 
 ## To log in RStudio server: 
 
-[Simply go to the following web page](http://54.191.179.190:8787/): `http://54.191.179.190:8787/`
+[Simply go to the following web page](http://54.200.240.166:8787/): `http://54.200.240.166:8787/`
 
 ## IP for today (2021-06-07): 
 
 ```sh
-IP="54.191.179.190"
+IP="54.200.240.166"
 ```
 
 ## To log by SSH to your AWS session: 
@@ -33,7 +33,7 @@ IP="54.191.179.190"
 KEY="path/to/key.pem"
 chmod 600 "${KEY}"
 USER="myuserID"
-IP="54.191.179.190"
+IP="54.200.240.166"
 ssh -i "${KEY}" "${USER}"@"${IP}"
 ```
 
